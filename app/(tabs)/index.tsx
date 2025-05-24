@@ -1,9 +1,38 @@
 import { Link } from "expo-router";
-import { Notu, NotuCache, NotuHttpClient, Space, Tag } from "notu";
-import { useEffect, useState } from "react";
+import { Note, NoteTag, Notu, NotuCache, NotuHttpClient, Space, Tag } from "notu";
+import { ReactNode, useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
+import NoteTagBadge from "../components/NoteTagBadge";
 import TagBadge from "../components/TagBadge";
-import { NotuRenderTools } from "../helpers/NotuRenderTools";
+import { getTextContrastColor } from "../helpers/ColorHelpers";
+import { NoteTagDataComponentFactory, NotuRenderTools } from "../helpers/NotuRenderTools";
+
+
+class TestNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
+
+    getBadgeComponent(noteTag: NoteTag, note: Note, notu: Notu): ReactNode {
+        const backgroundColor = noteTag.tag.color ?? '#AABBCC';
+        const textColor = getTextContrastColor(backgroundColor);
+
+        return (
+            <View>
+                <Text style={{ color: textColor }}>Hi, this is cool</Text>
+            </View>
+        );
+    }
+
+    getEditorComponent(noteTag: NoteTag, note: Note, notu: Notu, refreshCallback: () => void): ReactNode {
+        return (
+            <View>
+                <Text>Even cooler!</Text>
+            </View>
+        );
+    }
+
+    validate(noteTag: NoteTag, note: Note, notu: Notu): Promise<boolean> {
+        return Promise.resolve(true);
+    }
+}
 
 const renderTools = new NotuRenderTools(
     new Notu(
@@ -16,7 +45,12 @@ const renderTools = new NotuRenderTools(
                 return Promise.resolve([]);
             }
         })
-    )
+    ),
+    (tag: Tag, note: Note) => {
+        if (tag.name == 'Test tag')
+            return new TestNoteTagDataComponentFactory();
+        return null;
+    }
 );
 
 export default function Index() {
@@ -26,6 +60,10 @@ export default function Index() {
     const tag = new Tag('Test tag').in(space);
     tag.id = 123;
     tag.color = '#D00';
+    tag.clean();
+
+    const note = new Note('Test').in(space);
+    note.addTag(tag);
 
     const [isLoaded, setIsLoaded] = useState(false);
     useEffect(() => {
@@ -44,7 +82,11 @@ export default function Index() {
             <Link href="/about" style={styles.button}>Go to About screen</Link>
 
             {isLoaded && (
-                <Text style={styles.text}>Here's a simple tag badge: <TagBadge tag={tag} notuRenderTools={renderTools} contextSpace={space} useUniqueName={false} onDelete={() => {}}/></Text>
+                <View>
+                    <Text style={styles.text}>Here's a simple tag badge: <TagBadge tag={tag} notuRenderTools={renderTools} contextSpace={space} useUniqueName={false} onDelete={() => {}}/></Text>
+
+                    <Text style={styles.text}>Here's a simple note tag badge: <NoteTagBadge noteTag={note.getTag(tag)} note={note} notuRenderTools={renderTools} contextSpace={space} useUniqueName={false} onDelete={() => {}}/></Text>
+                </View>
             )}
         </View>
     );
