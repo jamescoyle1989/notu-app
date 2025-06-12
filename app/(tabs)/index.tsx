@@ -1,9 +1,10 @@
-import { Link } from "expo-router";
 import { Note, NoteTag, Notu, NotuCache, NotuHttpClient, Space, Tag } from "notu";
 import { ReactNode, useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import NoteTagBadge from "../components/NoteTagBadge";
+import { NoteViewer, NoteViewerAction } from "../components/NoteViewer";
 import TagBadge from "../components/TagBadge";
+import appStyles from '../helpers/AppStyles';
 import { getTextContrastColor } from "../helpers/ColorHelpers";
 import { NoteTagDataComponentFactory, NotuRenderTools } from "../helpers/NotuRenderTools";
 
@@ -75,39 +76,22 @@ export default function Index() {
     }, []);
 
     return (
-        <View
-            style={styles.container}
-        >
-            <Text style={styles.text}>Edit app/index.tsx to edit this screen.</Text>
-            <Link href="/about" style={styles.button}>Go to About screen</Link>
+        <View style={appStyles.container}>
+
+            <Text style={appStyles.whiteText}>Edit app/index.tsx to edit this screen.</Text>
 
             {isLoaded && (
                 <View>
-                    <Text style={styles.text}>Here's a simple tag badge: <TagBadge tag={tag} notuRenderTools={renderTools} contextSpace={space} useUniqueName={false} onDelete={() => {}}/></Text>
+                    <Text style={appStyles.whiteText}>Here's a simple tag badge: <TagBadge tag={tag} notuRenderTools={renderTools} contextSpace={space} useUniqueName={false} onDelete={() => {}}/></Text>
 
-                    <Text style={styles.text}>Here's a simple note tag badge: <NoteTagBadge noteTag={note.getTag(tag)} note={note} notuRenderTools={renderTools} contextSpace={space} useUniqueName={false} onDelete={() => {}}/></Text>
+                    <Text style={appStyles.whiteText}>Here's a simple note tag badge: <NoteTagBadge noteTag={note.getTag(tag)} note={note} notuRenderTools={renderTools} contextSpace={space} useUniqueName={false} onDelete={() => {}}/></Text>
+
+                    <NoteViewer note={note} actions={[
+                        new NoteViewerAction('Test', () => {}, false),
+                        new NoteViewerAction('Test 2', () => {}, true)
+                    ]}/>
                 </View>
             )}
         </View>
     );
 }
-
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#25292E',
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-
-    text: {
-        color: '#FFF'
-    },
-
-    button: {
-        fontSize: 20,
-        textDecorationLine: 'underline',
-        color: '#FFF'
-    }
-})
