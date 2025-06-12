@@ -1,5 +1,8 @@
-import { Note, NoteTag, Notu, Tag } from "notu";
+import { Note, NoteTag, Notu, splitNoteTextIntoComponents, Tag } from "notu";
+import { NoteComponent, NoteComponentProcessor } from "notu/dist/types/notecomponents/NoteComponent";
 import { ReactNode } from "react";
+import { NoteParagraph } from "../notecomponents/NoteParagraph";
+import { DefaultTextProcessor } from "../notecomponents/NoteText";
 
 export class NotuRenderTools {
     private _notu: Notu;
@@ -7,12 +10,24 @@ export class NotuRenderTools {
 
     private _noteTagDataComponentResolver: (tag: Tag, note: Note) => NoteTagDataComponentFactory | null;
 
+    private _noteTextSplitter: (note: Note) => Array<any>;
+    get noteTextSplitter(): (note: Note) => Array<any> { return this._noteTextSplitter; }
+
     constructor(
         notu: Notu,
+        noteComponentProcessors: Array<NoteComponentProcessor>,
         noteTagDataComponentResolver: (tag: Tag, note: Note) => NoteTagDataComponentFactory | null
     ) {
         this._notu = notu;
         this._noteTagDataComponentResolver = noteTagDataComponentResolver;
+
+        this._noteTextSplitter = (note: Note) => splitNoteTextIntoComponents(
+            note,
+            notu,
+            noteComponentProcessors,
+            new DefaultTextProcessor(),
+            (components: Array<NoteComponent>) => new NoteParagraph(components)
+        );
     }
 
     getComponentFactoryForNoteTag(tag: Tag, note: Note) {

@@ -1,8 +1,10 @@
 import { Overlay } from '@rneui/base';
 import { Note } from "notu";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Text, TouchableHighlight, TouchableOpacity, View } from "react-native";
 import appStyles from '../helpers/AppStyles';
+import { NotuRenderTools } from '../helpers/NotuRenderTools';
+import { NoteComponentContainer } from './NoteComponentContainer';
 
 
 export class NoteViewerAction {
@@ -29,6 +31,7 @@ export class NoteViewerAction {
 
 interface NoteViewerProps {
     note: Note,
+    notuRenderTools: NotuRenderTools,
     actions: Array<NoteViewerAction>,
     showDate?: boolean
 }
@@ -36,10 +39,12 @@ interface NoteViewerProps {
 
 export const NoteViewer = ({
     note,
+    notuRenderTools,
     actions,
     showDate = true
 }: NoteViewerProps) => {
 
+    const textComponents = useMemo(() => notuRenderTools.noteTextSplitter(note), [note, note.text]);
     const [showActions, setShowActions] = useState(false);
     const [actionBeingConfirmed, setActionBeingConfirmed] = useState<NoteViewerAction>();
 
@@ -108,7 +113,7 @@ export const NoteViewer = ({
         <TouchableHighlight onLongPress={showNoteActions}>
             
             <View>
-                <Text style={appStyles.whiteText}>{note.text}</Text>
+                {textComponents.map((x, index) => (<NoteComponentContainer key={index} component={x}/>))}
 
                 <Overlay isVisible={showActions} onBackdropPress={() => hideOverlay()}>
                     <Text style={appStyles.whiteText}>Available Actions</Text>

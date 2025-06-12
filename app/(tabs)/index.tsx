@@ -7,6 +7,7 @@ import TagBadge from "../components/TagBadge";
 import appStyles from '../helpers/AppStyles';
 import { getTextContrastColor } from "../helpers/ColorHelpers";
 import { NoteTagDataComponentFactory, NotuRenderTools } from "../helpers/NotuRenderTools";
+import { NoteTextProcessor } from "../notecomponents/NoteText";
 
 
 class TestNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
@@ -47,6 +48,9 @@ const renderTools = new NotuRenderTools(
             }
         })
     ),
+    [
+        new NoteTextProcessor()
+    ],
     (tag: Tag, note: Note) => {
         if (tag.name == 'Test tag')
             return new TestNoteTagDataComponentFactory();
@@ -86,7 +90,7 @@ export default function Index() {
 
                     <Text style={appStyles.whiteText}>Here's a simple note tag badge: <NoteTagBadge noteTag={note.getTag(tag)} note={note} notuRenderTools={renderTools} contextSpace={space} useUniqueName={false} onDelete={() => {}}/></Text>
 
-                    <NoteViewer note={note} actions={[
+                    <NoteViewer note={note} notuRenderTools={renderTools} actions={[
                         new NoteViewerAction('Test', () => {}, false),
                         new NoteViewerAction('Test 2', () => {}, true)
                     ]}/>
