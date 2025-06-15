@@ -1,6 +1,7 @@
 import { Note, NoteTag, Notu, NotuCache, NotuHttpClient, Space, Tag } from "notu";
 import { ReactNode, useEffect, useState } from "react";
 import { Text, View } from "react-native";
+import NoteEditor from "../components/NoteEditor";
 import NoteTagBadge from "../components/NoteTagBadge";
 import { NoteViewer, NoteViewerAction } from "../components/NoteViewer";
 import TagBadge from "../components/TagBadge";
@@ -94,6 +95,12 @@ export default function Index() {
                         new NoteViewerAction('Test', () => {}, false),
                         new NoteViewerAction('Test 2', () => {}, true)
                     ]}/>
+
+                    <NoteEditor note={note}
+                                notuRenderTools={renderTools}
+                                tags={[tag]}
+                                onSave={() => {}}
+                                onCancel={() => {}}/>
                 </View>
             )}
         </View>
