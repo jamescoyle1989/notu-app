@@ -2,8 +2,8 @@ import { Overlay } from '@rneui/base';
 import { Note } from "notu";
 import { useMemo, useState } from "react";
 import { Text, TouchableHighlight, TouchableOpacity, View } from "react-native";
-import appStyles from '../helpers/AppStyles';
 import { NotuRenderTools } from '../helpers/NotuRenderTools';
+import s from '../helpers/NotuStyles';
 import { NoteComponentContainer } from './NoteComponentContainer';
 
 
@@ -79,29 +79,29 @@ export const NoteViewer = ({
         if (actionBeingConfirmed !== action) {
             return (
                 <TouchableOpacity key={index}
-                                  style={[appStyles.button, appStyles.vMargin]}
+                                  style={[s.touch.button, s.margin.v3]}
                                   onPress={() => onActionPress(action)}>
-                    <Text style={appStyles.whiteText}>{action.name}</Text>
+                    <Text style={s.text.plain}>{action.name}</Text>
                 </TouchableOpacity>
             );
         }
         else {
             return (
                 <View key={index}>
-                    <TouchableOpacity style={[appStyles.button, appStyles.vMargin]}
+                    <TouchableOpacity style={[s.touch.button, s.margin.v3]}
                                       onPress={() => {}}>
-                        <Text style={appStyles.whiteText}>{action.name}</Text>
+                        <Text style={s.text.plain}>{action.name}</Text>
                     </TouchableOpacity>
                     <View style={{
                         flexDirection: 'row'
                     }}>
-                        <TouchableOpacity style={[appStyles.button, appStyles.success]}
+                        <TouchableOpacity style={[s.touch.button, s.touch.success]}
                                           onPress={() => onActionConfirmed(action)}>
-                            <Text style={appStyles.whiteText}>Confirm</Text>
+                            <Text style={s.text.plain}>Confirm</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={[appStyles.button, appStyles.danger]}
+                        <TouchableOpacity style={[s.touch.button, s.touch.danger]}
                                           onPress={() => onActionCancelled(action)}>
-                            <Text style={appStyles.whiteText}>Cancel</Text>
+                            <Text style={s.text.plain}>Cancel</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -116,7 +116,7 @@ export const NoteViewer = ({
                 {textComponents.map((x, index) => (<NoteComponentContainer key={index} component={x}/>))}
 
                 <Overlay isVisible={showActions} onBackdropPress={() => hideOverlay()}>
-                    <Text style={appStyles.whiteText}>Available Actions</Text>
+                    <Text style={s.text.plain}>Available Actions</Text>
                     {actions.map((x, index) => renderAction(x, index))}
                 </Overlay>
             </View>

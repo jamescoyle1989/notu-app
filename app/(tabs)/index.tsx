@@ -5,9 +5,9 @@ import NoteEditor from "../components/NoteEditor";
 import NoteTagBadge from "../components/NoteTagBadge";
 import { NoteViewer, NoteViewerAction } from "../components/NoteViewer";
 import TagBadge from "../components/TagBadge";
-import appStyles from '../helpers/AppStyles';
 import { getTextContrastColor } from "../helpers/ColorHelpers";
 import { NoteTagDataComponentFactory, NotuRenderTools } from "../helpers/NotuRenderTools";
+import s from '../helpers/NotuStyles';
 import { NoteTextProcessor } from "../notecomponents/NoteText";
 
 
@@ -81,15 +81,15 @@ export default function Index() {
     }, []);
 
     return (
-        <View style={appStyles.container}>
+        <View style={s.view.background}>
 
-            <Text style={appStyles.whiteText}>Edit app/index.tsx to edit this screen.</Text>
+            <Text style={s.text.plain}>Edit app/index.tsx to edit this screen.</Text>
 
             {isLoaded && (
                 <View>
-                    <Text style={appStyles.whiteText}>Here's a simple tag badge: <TagBadge tag={tag} notuRenderTools={renderTools} contextSpace={space} useUniqueName={false} onDelete={() => {}}/></Text>
+                    <Text style={s.text.plain}>Here's a simple tag badge: <TagBadge tag={tag} notuRenderTools={renderTools} contextSpace={space} useUniqueName={false} onDelete={() => {}}/></Text>
 
-                    <Text style={appStyles.whiteText}>Here's a simple note tag badge: <NoteTagBadge noteTag={note.getTag(tag)} note={note} notuRenderTools={renderTools} contextSpace={space} useUniqueName={false} onDelete={() => {}}/></Text>
+                    <Text style={s.text.plain}>Here's a simple note tag badge: <NoteTagBadge noteTag={note.getTag(tag)} note={note} notuRenderTools={renderTools} contextSpace={space} useUniqueName={false} onDelete={() => {}}/></Text>
 
                     <NoteViewer note={note} notuRenderTools={renderTools} actions={[
                         new NoteViewerAction('Test', () => {}, false),

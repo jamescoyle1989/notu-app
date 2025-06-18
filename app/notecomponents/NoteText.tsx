@@ -1,7 +1,7 @@
 import { Note, NoteComponentInfo } from 'notu';
 import React from 'react';
 import { Text } from "react-native";
-import appStyles from '../helpers/AppStyles';
+import s from '../helpers/NotuStyles';
 
 export class NoteText {
     private _displayText: string;
@@ -21,7 +21,7 @@ export class NoteText {
             return;
 
         return (
-            <Text style={appStyles.whiteText}>{this._displayText}</Text>
+            <Text style={s.text.plain}>{this._displayText}</Text>
         )
     }
 
