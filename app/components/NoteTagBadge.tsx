@@ -21,7 +21,7 @@ export default function NoteTagBadge({
     notuRenderTools,
     contextSpace,
     onDelete = undefined,
-    useUniqueName
+    useUniqueName = false
 }: NoteTagBadgeProps) {
     
     const tagDisplayName = useUniqueName 
@@ -52,7 +52,7 @@ export default function NoteTagBadge({
             </Text>
             {renderNoteTagData()}
             {!!onDelete && (
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => onDelete()}>
                     <Ionicons name='remove-circle-outline' size={18} color={textColor} />
                 </TouchableOpacity>
             )}

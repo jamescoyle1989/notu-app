@@ -1,9 +1,11 @@
-import { Note, Tag } from "notu";
+import { Note, NoteTag, Tag } from "notu";
 import { useRef, useState } from "react";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Dropdown } from 'react-native-element-dropdown';
 import { useManualRefresh } from "../helpers/Hooks";
 import { NotuRenderTools } from "../helpers/NotuRenderTools";
 import s from '../helpers/NotuStyles';
+import NoteTagBadge from "./NoteTagBadge";
 import TagEditor from "./TagEditor";
 
 interface NoteEditorProps {
@@ -36,6 +38,7 @@ export default function NoteEditor({
         return (<Text style={s.text.plain}>Note must define the space that it belongs to</Text>);
 
     const [error, setError] = useState<string>(null);
+    const [tagsDropdownFocused, setTagsDropdownFocused] = useState(false);
     const textRef = useRef(null);
     const manualRefresh = useManualRefresh();
 
@@ -70,8 +73,74 @@ export default function NoteEditor({
         manualRefresh();
     }
 
+    function getTagsThatCanBeAdded(): Array<Tag> {
+        return tags.filter(t => {
+            if (t.isPrivate && t.space.id != note.space.id)
+                return false;
+            if (t.isCommon && note.space.name != 'Common' && note.space.id != t.space.id)
+                return false;
+            if (note.tags.find(nt => nt.tag.id == t.id))
+                return false;
+            return true;
+        });
+    }
+
+    function getTagsDropdownData(): Array<{label: string, value: number}> {
+        return getTagsThatCanBeAdded().map(t => ({
+            label: t.getQualifiedName(note.space.id),
+            value: t.id
+        }));
+    }
+
+    function addTagIdToNote(tagId: number): void {
+        const tag = getTagsThatCanBeAdded().find(t => t.id == tagId);
+        if (!tag) {
+            setError('Unable to add tag, something went wrong');
+            return;
+        }
+        else {
+            setError('All good!');
+        }
+        note.addTag(tag);
+        manualRefresh();
+    }
+
+    function removeTagFromNote(noteTag: NoteTag): void {
+        note.removeTag(noteTag.tag);
+        manualRefresh();
+    }
+
+    function renderNoteTagData(noteTag: NoteTag) {
+        const componentFactory = notuRenderTools.getComponentFactoryForNoteTag(noteTag.tag, note);
+        if (!componentFactory)
+            return;
+
+        if (!noteTag.data)
+            noteTag.data = {};
+
+        const editorComponent = componentFactory.getEditorComponent(
+            noteTag,
+            note,
+            notuRenderTools.notu,
+            manualRefresh
+        );
+        if (!editorComponent)
+            return;
+
+        return (
+            <View key={noteTag.tag.id}>
+                <Text style={[s.text.plain, s.text.bold]}>{noteTag.tag.getQualifiedName(note.space.id)}</Text>
+                {editorComponent}
+            </View>
+        );
+    }
+
+    const tagsDropdownData = getTagsDropdownData();
+
     return (
         <View>
+            {!!error && (<Text style={[s.text.danger, s.text.bold]}>{error}</Text>)}
+
             <Text style={[s.text.plain, s.text.bold]}>{note.space.name}</Text>
 
             <Text style={[s.text.plain, s.text.italic]}>{noteDateStr}</Text>
@@ -81,6 +150,42 @@ export default function NoteEditor({
             <Text style={[s.text.plain, s.text.bold]}>Text</Text>
 
             <TextInput value={note.text} multiline={true} onChangeText={onTextChange}/>
+
+            {tagsDropdownData.length > 0 && (
+                <Text style={[s.text.plain, s.text.bold]}>Tags</Text>
+            )}
+
+            {tagsDropdownData.length > 0 && (
+                <Dropdown style={[s.dropdown.main, tagsDropdownFocused && s.dropdown.focused]}
+                          placeholderStyle={s.dropdown.placeholder}
+                          selectedTextStyle={s.dropdown.selected}
+                          data={tagsDropdownData}
+                          maxHeight={300}
+                          labelField='label'
+                          valueField='value'
+                          value={null}
+                          onFocus={() => setTagsDropdownFocused(true)}
+                          onBlur={() => setTagsDropdownFocused(false)}
+                          onChange={item => {
+                              addTagIdToNote(item.value);
+                              setTagsDropdownFocused(false);
+                          }}/>
+            )}
+
+            {note.tags.length > 0 && (
+                <View style={s.view.row}>
+                    {note.tags.map(nt => (
+                        <NoteTagBadge key={nt.tag.id}
+                                      noteTag={nt}
+                                      note={note}
+                                      notuRenderTools={notuRenderTools}
+                                      contextSpace={note.space}
+                                      onDelete={() => removeTagFromNote(nt)}/>
+                    ))}
+                </View>
+            )}
+
+            {note.tags.map(nt => renderNoteTagData(nt))}
 
             <TouchableOpacity style={s.touch.button} onPress={submitNote}>
                 <Text style={s.text.plain}>Submit</Text>

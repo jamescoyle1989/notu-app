@@ -67,6 +67,10 @@ export default function Index() {
     tag.id = 123;
     tag.color = '#D00';
     tag.clean();
+    const tag2 = new Tag('Test tag 2').in(space);
+    tag2.id = 234;
+    tag2.color = '#0D0';
+    tag2.clean();
 
     const note = new Note('Test').in(space);
     note.addTag(tag);
@@ -98,7 +102,7 @@ export default function Index() {
 
                     <NoteEditor note={note}
                                 notuRenderTools={renderTools}
-                                tags={[tag]}
+                                tags={[tag, tag2]}
                                 onSave={() => {}}
                                 onCancel={() => {}}/>
                 </View>
