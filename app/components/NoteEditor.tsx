@@ -149,14 +149,17 @@ export default function NoteEditor({
 
             <Text style={[s.text.plain, s.text.bold]}>Text</Text>
 
-            <TextInput value={note.text} multiline={true} onChangeText={onTextChange}/>
+            <TextInput value={note.text}
+                       multiline={true}
+                       onChangeText={onTextChange}
+                       style={[s.border.main, s.text.plain]}/>
 
             {tagsDropdownData.length > 0 && (
                 <Text style={[s.text.plain, s.text.bold]}>Tags</Text>
             )}
 
             {tagsDropdownData.length > 0 && (
-                <Dropdown style={[s.dropdown.main, tagsDropdownFocused && s.dropdown.focused]}
+                <Dropdown style={[s.dropdown.main, s.border.main, tagsDropdownFocused && s.dropdown.focused]}
                           placeholderStyle={s.dropdown.placeholder}
                           selectedTextStyle={s.dropdown.selected}
                           data={tagsDropdownData}

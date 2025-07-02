@@ -1,12 +1,28 @@
 import { StyleSheet } from "react-native";
 
+const border = StyleSheet.create({
+
+    main: {
+        borderColor: 'gray',
+        borderWidth: 1,
+        borderRadius: 8
+    },
+
+    joinedLeft: {
+        borderTopLeftRadius: 0,
+        borderBottomLeftRadius: 0
+    },
+
+    joinedRight: {
+        borderTopRightRadius: 0,
+        borderBottomRightRadius: 0
+    }
+});
+
 const dropdown = StyleSheet.create({
 
     main: {
         height: 50,
-        borderColor: 'gray',
-        borderWidth: 0.5,
-        borderRadius: 8,
         paddingHorizontal: 8
     },
 
@@ -58,6 +74,7 @@ const text = StyleSheet.create({
 const touch = StyleSheet.create({
     button: {
         alignItems: 'center',
+        justifyContent: 'center',
         backgroundColor: '#498BD1',
         padding: 7,
         borderRadius: 5
@@ -81,10 +98,27 @@ const view = StyleSheet.create({
     background: {
         backgroundColor: '#25292E',
         flex: 1
+    },
+
+    autoSize: {
+        flexBasis: 'auto'
+    },
+
+    grow1: {
+        flexGrow: 1
+    },
+
+    grow2: {
+        flexGrow: 2
+    },
+
+    grow3: {
+        flexGrow: 3
     }
 });
 
 export default {
+    border,
     dropdown,
     margin,
     text,
