@@ -86,6 +86,10 @@ const touch = StyleSheet.create({
 
     danger: {
         backgroundColor: '#F04438'
+    },
+
+    inactive: {
+        backgroundColor: '#666'
     }
 });
 

@@ -2,6 +2,7 @@ import { Note, NoteTag, Notu, NotuCache, NotuHttpClient, Space, Tag } from "notu
 import { ReactNode, useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import NoteEditor from "../components/NoteEditor";
+import NoteSearch from "../components/NoteSearch";
 import NoteTagBadge from "../components/NoteTagBadge";
 import { NoteViewer, NoteViewerAction } from "../components/NoteViewer";
 import TagBadge from "../components/TagBadge";
@@ -76,6 +77,7 @@ export default function Index() {
     note.addTag(tag);
 
     const [isLoaded, setIsLoaded] = useState(false);
+    const [query, setQuery] = useState(`text LIKE '%test%'`);
     useEffect(() => {
         async function loadCacheData() {
             await renderTools.notu.cache.populate();
@@ -88,6 +90,9 @@ export default function Index() {
         <View style={s.view.background}>
 
             <Text style={s.text.plain}>Edit app/index.tsx to edit this screen.</Text>
+
+            <NoteSearch space={space} notu={renderTools.notu}
+                        query={query} onQueryChanged={v => setQuery(v)}/>
 
             {isLoaded && (
                 <View>
