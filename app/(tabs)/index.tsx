@@ -2,9 +2,10 @@ import { Note, NoteTag, Notu, NotuCache, NotuHttpClient, Space, Tag } from "notu
 import { ReactNode, useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import NoteEditor from "../components/NoteEditor";
+import NoteList from "../components/NoteList";
 import NoteSearch from "../components/NoteSearch";
 import NoteTagBadge from "../components/NoteTagBadge";
-import { NoteViewer, NoteViewerAction } from "../components/NoteViewer";
+import { NoteViewerAction } from "../components/NoteViewer";
 import TagBadge from "../components/TagBadge";
 import { getTextContrastColor } from "../helpers/ColorHelpers";
 import { NoteTagDataComponentFactory, NotuRenderTools } from "../helpers/NotuRenderTools";
@@ -75,12 +76,18 @@ export default function Index() {
 
     const note = new Note('Test').in(space);
     note.addTag(tag);
+    note.id = 1;
+
+    const note2 = new Note('Test 2').in(space);
+    note2.addTag(tag2);
+    note2.id = 2;
 
     const [isLoaded, setIsLoaded] = useState(false);
     const [query, setQuery] = useState(`text LIKE '%test%'`);
     useEffect(() => {
         async function loadCacheData() {
             await renderTools.notu.cache.populate();
+            console.log('hi2');
             setIsLoaded(true);
         }
         loadCacheData();
@@ -91,19 +98,21 @@ export default function Index() {
 
             <Text style={s.text.plain}>Edit app/index.tsx to edit this screen.</Text>
 
-            <NoteSearch space={space} notu={renderTools.notu}
-                        query={query} onQueryChanged={v => setQuery(v)}/>
-
             {isLoaded && (
                 <View>
-                    <Text style={s.text.plain}>Here's a simple tag badge: <TagBadge tag={tag} notuRenderTools={renderTools} contextSpace={space} useUniqueName={false} onDelete={() => {}}/></Text>
+                    <NoteSearch space={space} notu={renderTools.notu}
+                                query={query} onQueryChanged={v => setQuery(v)}/>
+
+                    <Text style={s.text.plain}>Here's a simple tag badge: <TagBadge tag={tag2} notuRenderTools={renderTools} contextSpace={space} useUniqueName={false} onDelete={() => {}}/></Text>
 
                     <Text style={s.text.plain}>Here's a simple note tag badge: <NoteTagBadge noteTag={note.getTag(tag)} note={note} notuRenderTools={renderTools} contextSpace={space} useUniqueName={false} onDelete={() => {}}/></Text>
 
-                    <NoteViewer note={note} notuRenderTools={renderTools} actions={[
-                        new NoteViewerAction('Test', () => {}, false),
-                        new NoteViewerAction('Test 2', () => {}, true)
-                    ]}/>
+                    <NoteList notes={[note, note2]}
+                              notuRenderTools={renderTools}
+                              actionsGenerator={n => [
+                                new NoteViewerAction('Test Action 1', () => {}, false),
+                                new NoteViewerAction('Test Action 2', () => {}, true)
+                              ]}/>
 
                     <NoteEditor note={note}
                                 notuRenderTools={renderTools}

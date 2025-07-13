@@ -98,9 +98,6 @@ export default function NoteEditor({
             setError('Unable to add tag, something went wrong');
             return;
         }
-        else {
-            setError('All good!');
-        }
         note.addTag(tag);
         manualRefresh();
     }

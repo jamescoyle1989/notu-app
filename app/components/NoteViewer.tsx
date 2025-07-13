@@ -5,6 +5,7 @@ import { Text, TouchableHighlight, TouchableOpacity, View } from "react-native";
 import { NotuRenderTools } from '../helpers/NotuRenderTools';
 import s from '../helpers/NotuStyles';
 import { NoteComponentContainer } from './NoteComponentContainer';
+import NoteTagBadge from './NoteTagBadge';
 
 
 export class NoteViewerAction {
@@ -119,6 +120,16 @@ export const NoteViewer = ({
                     <Text style={s.text.plain}>Available Actions</Text>
                     {actions.map((x, index) => renderAction(x, index))}
                 </Overlay>
+
+                <View style={s.view.row}>
+                    {note.tags.map(nt => (
+                        <NoteTagBadge key={nt.tag.id}
+                                    noteTag={nt} note={note}
+                                    notuRenderTools={notuRenderTools}
+                                    contextSpace={note.space}
+                                    useUniqueName={true}/>
+                    ))}
+                </View>
             </View>
         </TouchableHighlight>
     )
