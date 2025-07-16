@@ -1,5 +1,5 @@
 import { Note, Notu, Space } from "notu";
-import { useState } from "react";
+import React, { useCallback, useImperativeHandle, useState } from "react";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import s from '../helpers/NotuStyles';
 
@@ -15,20 +15,38 @@ interface NoteSearchProps {
     /** If notu param has not been defined, then use this prop for handling the manual fetching of notes */
     onFetchRequested?: (query: string, space: Space) => Promise<Array<Note>>,
     /** Callback that gets fired when the search has been executed and notes returned */
-    onFetched?: (notes: Array<Note>) => void
+    onFetched?: (notes: Array<Note>) => void,
+    autoFetch?: boolean
+}
+
+export interface NoteSearchCommands {
+    refresh: () => void
 }
 
 
-export default function NoteSearch({
-    space,
-    notu,
-    query,
-    onQueryChanged,
-    onFetchRequested,
-    onFetched
-}: NoteSearchProps) {
+export const NoteSearch = React.forwardRef((
+    {
+        space,
+        notu,
+        query,
+        onQueryChanged,
+        onFetchRequested,
+        onFetched,
+        autoFetch = false
+    }: NoteSearchProps,
+    ref: React.ForwardedRef<NoteSearchCommands>
+) => {
 
     const [error, setError] = useState<string>(null);
+
+    useImperativeHandle(ref, () => ({
+        refresh: () => onSearchSubmit()
+    }));
+
+    useCallback(() => {
+        if (autoFetch)
+            onSearchSubmit();
+    }, []);
 
     function onSearchTextChange(newValue: string): void {
         setError(null);
@@ -96,4 +114,4 @@ export default function NoteSearch({
             )}
         </View>
     )
-}
+});

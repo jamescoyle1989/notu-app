@@ -3,9 +3,10 @@ import { ReactNode, useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import NoteEditor from "../components/NoteEditor";
 import NoteList from "../components/NoteList";
-import NoteSearch from "../components/NoteSearch";
+import { NoteSearch } from "../components/NoteSearch";
 import NoteTagBadge from "../components/NoteTagBadge";
 import { NoteViewerAction } from "../components/NoteViewer";
+import SearchList from "../components/SearchList";
 import TagBadge from "../components/TagBadge";
 import { getTextContrastColor } from "../helpers/ColorHelpers";
 import { NoteTagDataComponentFactory, NotuRenderTools } from "../helpers/NotuRenderTools";
@@ -87,7 +88,6 @@ export default function Index() {
     useEffect(() => {
         async function loadCacheData() {
             await renderTools.notu.cache.populate();
-            console.log('hi2');
             setIsLoaded(true);
         }
         loadCacheData();
@@ -119,6 +119,17 @@ export default function Index() {
                                 tags={[tag, tag2]}
                                 onSave={() => {}}
                                 onCancel={() => {}}/>
+
+                    <SearchList query={`#Test`}
+                                searchSpace={space}
+                                notuRenderTools={renderTools}
+                                actionsGenerator={n => [
+                                    new NoteViewerAction('Test Action 1', () => {}, false),
+                                    new NoteViewerAction('Test Action 2', () => {}, true)
+                                ]}
+                                actionsBar={() => (
+                                    <Text style={s.text.plain}>Hello from actions bar</Text>
+                                )}/>
                 </View>
             )}
         </View>
