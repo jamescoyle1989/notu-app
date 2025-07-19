@@ -1,4 +1,6 @@
+import * as SQLite from 'expo-sqlite';
 import { Note, NoteTag, Notu, NotuCache, NotuHttpClient, Space, Tag } from "notu";
+//import { ExpoSQLiteConnection, NotuSQLiteCacheFetcher, NotuSQLiteClient } from "notu-sqlite";
 import { ReactNode, useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import NoteEditor from "../components/NoteEditor";
@@ -39,6 +41,20 @@ class TestNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
         return Promise.resolve(true);
     }
 }
+
+const db = SQLite.openDatabaseSync('notu');
+/*const notuCache = new NotuCache(
+    new NotuSQLiteCacheFetcher(
+        async () => new ExpoSQLiteConnection(db)
+    )
+);
+const notu = new Notu(
+    new NotuSQLiteClient(
+        async () => new ExpoSQLiteConnection(db),
+        notuCache
+    ),
+    notuCache
+);*/
 
 const renderTools = new NotuRenderTools(
     new Notu(
