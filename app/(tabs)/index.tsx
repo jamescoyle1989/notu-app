@@ -1,19 +1,16 @@
 import * as SQLite from 'expo-sqlite';
-import { Note, NoteTag, Notu, NotuCache, NotuHttpClient, Space, Tag } from "notu";
-//import { ExpoSQLiteConnection, NotuSQLiteCacheFetcher, NotuSQLiteClient } from "notu-sqlite";
+import { Note, NoteTag, Notu, NotuCache, Space, Tag } from "notu";
 import { ReactNode, useEffect, useState } from "react";
-import { Text, View } from "react-native";
-import NoteEditor from "../components/NoteEditor";
-import NoteList from "../components/NoteList";
-import { NoteSearch } from "../components/NoteSearch";
-import NoteTagBadge from "../components/NoteTagBadge";
+import { ScrollView, Text, View } from "react-native";
 import { NoteViewerAction } from "../components/NoteViewer";
 import SearchList from "../components/SearchList";
-import TagBadge from "../components/TagBadge";
 import { getTextContrastColor } from "../helpers/ColorHelpers";
 import { NoteTagDataComponentFactory, NotuRenderTools } from "../helpers/NotuRenderTools";
 import s from '../helpers/NotuStyles';
 import { NoteTextProcessor } from "../notecomponents/NoteText";
+import { NotuSQLiteCacheFetcher } from '../sqlite/NotuSQLiteCacheFetcher';
+import { NotuSQLiteClient } from '../sqlite/NotuSQLiteClient';
+import { ExpoSQLiteConnection } from '../sqlite/SQLiteConnection';
 
 
 class TestNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
@@ -42,102 +39,93 @@ class TestNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
     }
 }
 
-const db = SQLite.openDatabaseSync('notu');
-/*const notuCache = new NotuCache(
-    new NotuSQLiteCacheFetcher(
-        async () => new ExpoSQLiteConnection(db)
-    )
-);
-const notu = new Notu(
-    new NotuSQLiteClient(
-        async () => new ExpoSQLiteConnection(db),
-        notuCache
-    ),
-    notuCache
-);*/
-
-const renderTools = new NotuRenderTools(
-    new Notu(
-        new NotuHttpClient('asdf'),
-        new NotuCache({
-            getSpacesData() {
-                return Promise.resolve([]);
-            },
-            getTagsData() {
-                return Promise.resolve([]);
-            }
-        })
-    ),
-    [
-        new NoteTextProcessor()
-    ],
-    (tag: Tag, note: Note) => {
-        if (tag.name == 'Test tag')
-            return new TestNoteTagDataComponentFactory();
-        return null;
-    }
-);
-
 export default function Index() {
-
-    const space = new Space('Test space');
-    space.id = 1;
-    const tag = new Tag('Test tag').in(space);
-    tag.id = 123;
-    tag.color = '#D00';
-    tag.clean();
-    const tag2 = new Tag('Test tag 2').in(space);
-    tag2.id = 234;
-    tag2.color = '#0D0';
-    tag2.clean();
-
-    const note = new Note('Test').in(space);
-    note.addTag(tag);
-    note.id = 1;
-
-    const note2 = new Note('Test 2').in(space);
-    note2.addTag(tag2);
-    note2.id = 2;
-
+    
     const [isLoaded, setIsLoaded] = useState(false);
-    const [query, setQuery] = useState(`text LIKE '%test%'`);
+    const [notu, setNotu] = useState<Notu>(null);
+    const [renderTools, setRenderTools] = useState<NotuRenderTools>(null);
+    const [error, setError] = useState('');
+    const [dbInfo, setDbInfo] = useState('');
     useEffect(() => {
         async function loadCacheData() {
-            await renderTools.notu.cache.populate();
-            setIsLoaded(true);
+            try {
+                const db = await SQLite.openDatabaseAsync('notu.db', { useNewConnection: true });
+                setDbInfo(`path: ${db.databasePath}`)
+                const notuCache = new NotuCache(
+                    new NotuSQLiteCacheFetcher(
+                        async () => Promise.resolve(new ExpoSQLiteConnection(db))
+                    )
+                );
+                const notuVal = new Notu(
+                    new NotuSQLiteClient(
+                        async () => Promise.resolve(new ExpoSQLiteConnection(db)),
+                        notuCache
+                    ),
+                    notuCache
+                );
+                setNotu(notuVal);
+
+                const renderToolsVal = new NotuRenderTools(
+                    notuVal,
+                    [
+                        new NoteTextProcessor()
+                    ],
+                    (tag: Tag, note: Note) => {
+                        if (tag.name == 'Test tag')
+                            return new TestNoteTagDataComponentFactory();
+                        return null;
+                    }
+                );
+                setRenderTools(renderToolsVal);
+
+                await notuVal.setup();
+                await notuVal.cache.populate();
+
+                let commonSpace = notuVal.getSpaceByName('Common');
+                if (!commonSpace) {
+                    commonSpace = new Space('Common').v('1.0.0');
+                    await notuVal.saveSpace(commonSpace);
+
+                    const setup = new Note('This contains all the expected tags for Common space to work correctly.')
+                        .in(commonSpace).setOwnTag('Setup');
+                    setup.ownTag.asPrivate();
+                    await notuVal.saveNotes([setup]);
+
+                    const thought = new Note('This marks a note as being some thought that I\'ve had on a particular subject.')
+                        .in(commonSpace).setOwnTag('Thought');
+                    thought.ownTag.asPublic();
+                    thought.addTag(setup.ownTag);
+
+                    const info = new Note('This marks a note as being some info about a particular subject that may be useful later.')
+                        .in(commonSpace).setOwnTag('Info');
+                    info.ownTag.asPublic();
+                    info.addTag(setup.ownTag);
+
+                    await notuVal.saveNotes([thought, info]);
+                }
+
+                setIsLoaded(true);
+                setError('');
+            }
+            catch (err) {
+                setError(`'${err.message}' at '${err.stack}'`);
+            }
         }
         loadCacheData();
     }, []);
 
     return (
         <View style={s.view.background}>
-
-            <Text style={s.text.plain}>Edit app/index.tsx to edit this screen.</Text>
+            <ScrollView>
+                <Text style={s.text.plain}>Date: {new Date().toLocaleTimeString()}</Text>
+                <Text style={s.text.plain}>Info: {dbInfo}</Text>
+                <Text style={s.text.plain}>Error: {error}</Text>
+            </ScrollView>
 
             {isLoaded && (
                 <View>
-                    <NoteSearch space={space} notu={renderTools.notu}
-                                query={query} onQueryChanged={v => setQuery(v)}/>
-
-                    <Text style={s.text.plain}>Here's a simple tag badge: <TagBadge tag={tag2} notuRenderTools={renderTools} contextSpace={space} useUniqueName={false} onDelete={() => {}}/></Text>
-
-                    <Text style={s.text.plain}>Here's a simple note tag badge: <NoteTagBadge noteTag={note.getTag(tag)} note={note} notuRenderTools={renderTools} contextSpace={space} useUniqueName={false} onDelete={() => {}}/></Text>
-
-                    <NoteList notes={[note, note2]}
-                              notuRenderTools={renderTools}
-                              actionsGenerator={n => [
-                                new NoteViewerAction('Test Action 1', () => {}, false),
-                                new NoteViewerAction('Test Action 2', () => {}, true)
-                              ]}/>
-
-                    <NoteEditor note={note}
-                                notuRenderTools={renderTools}
-                                tags={[tag, tag2]}
-                                onSave={() => {}}
-                                onCancel={() => {}}/>
-
-                    <SearchList query={`#Test`}
-                                searchSpace={space}
+                    <SearchList query={`#Setup`}
+                                searchSpace={notu.getSpaceByName('Common')}
                                 notuRenderTools={renderTools}
                                 actionsGenerator={n => [
                                     new NoteViewerAction('Test Action 1', () => {}, false),
