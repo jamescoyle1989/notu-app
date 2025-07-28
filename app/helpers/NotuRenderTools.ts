@@ -1,4 +1,4 @@
-import { Note, NoteTag, Notu, splitNoteTextIntoComponents, Tag } from "notu";
+import { Note, NoteTag, Notu, Space, splitNoteTextIntoComponents, Tag } from "notu";
 import { NoteComponent, NoteComponentProcessor } from "notu/dist/types/notecomponents/NoteComponent";
 import { ReactNode } from "react";
 import { NoteParagraph } from "../notecomponents/NoteParagraph";
@@ -10,16 +10,20 @@ export class NotuRenderTools {
 
     private _noteTagDataComponentResolver: (tag: Tag, note: Note) => NoteTagDataComponentFactory | null;
 
+    private _spaceSettingsComponentResolver: (space: Space) => SpaceSettingsComponentFactory | null;
+
     private _noteTextSplitter: (note: Note) => Array<any>;
     get noteTextSplitter(): (note: Note) => Array<any> { return this._noteTextSplitter; }
 
     constructor(
         notu: Notu,
         noteComponentProcessors: Array<NoteComponentProcessor>,
-        noteTagDataComponentResolver: (tag: Tag, note: Note) => NoteTagDataComponentFactory | null
+        noteTagDataComponentResolver: (tag: Tag, note: Note) => NoteTagDataComponentFactory | null,
+        spaceSettingsComponentResolver: (space: Space) => SpaceSettingsComponentFactory | null
     ) {
         this._notu = notu;
         this._noteTagDataComponentResolver = noteTagDataComponentResolver;
+        this._spaceSettingsComponentResolver = spaceSettingsComponentResolver;
 
         this._noteTextSplitter = (note: Note) => splitNoteTextIntoComponents(
             note,
@@ -30,8 +34,12 @@ export class NotuRenderTools {
         );
     }
 
-    getComponentFactoryForNoteTag(tag: Tag, note: Note) {
+    getComponentFactoryForNoteTag(tag: Tag, note: Note): NoteTagDataComponentFactory | null {
         return this._noteTagDataComponentResolver(tag, note);
+    }
+
+    getSettingsComponentFactoryForSpace(space: Space): SpaceSettingsComponentFactory | null {
+        return this._spaceSettingsComponentResolver(space);
     }
 }
 
@@ -45,4 +53,12 @@ export interface NoteTagDataComponentFactory {
 
     // Called when onConfirm has indicated that we want to proceed with saving the note
     validate(noteTag: NoteTag, note: Note, notu: Notu): Promise<boolean>;
+}
+
+
+export interface SpaceSettingsComponentFactory {
+
+    getEditorComponent(space: Space, notu: Notu): ReactNode;
+
+    validate(space: Space, notu: Notu): Promise<boolean>;
 }

@@ -5,12 +5,28 @@ import { ScrollView, Text, View } from "react-native";
 import { NoteViewerAction } from "../components/NoteViewer";
 import SearchList from "../components/SearchList";
 import { getTextContrastColor } from "../helpers/ColorHelpers";
-import { NoteTagDataComponentFactory, NotuRenderTools } from "../helpers/NotuRenderTools";
+import { NoteTagDataComponentFactory, NotuRenderTools, SpaceSettingsComponentFactory } from "../helpers/NotuRenderTools";
 import s from '../helpers/NotuStyles';
 import { NoteTextProcessor } from "../notecomponents/NoteText";
 import { NotuSQLiteCacheFetcher } from '../sqlite/NotuSQLiteCacheFetcher';
 import { NotuSQLiteClient } from '../sqlite/NotuSQLiteClient';
 import { ExpoSQLiteConnection } from '../sqlite/SQLiteConnection';
+
+
+class CommonSpaceSettingsComponentFactory implements SpaceSettingsComponentFactory {
+
+    getEditorComponent(space: Space, notu: Notu): ReactNode {
+        return (
+            <View>
+                <Text>I am settings for the Common space!</Text>
+            </View>
+        );
+    }
+
+    validate(space: Space, notu: Notu): Promise<boolean> {
+        return Promise.resolve(true);
+    }
+}
 
 
 class TestNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
@@ -73,6 +89,11 @@ export default function Index() {
                     (tag: Tag, note: Note) => {
                         if (tag.name == 'Test tag')
                             return new TestNoteTagDataComponentFactory();
+                        return null;
+                    },
+                    (space: Space) => {
+                        if (space.name == 'Common')
+                            return new CommonSpaceSettingsComponentFactory();
                         return null;
                     }
                 );
