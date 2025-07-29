@@ -32,7 +32,7 @@ export class NotuSQLiteClient {
                         id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
                         name TEXT NOT NULL,
                         version TEXT NOT NULL,
-                        useCommonSpace INTEGER NOT NULL
+                        settings TEXT NULL
                     )`
                 );
                 
@@ -88,15 +88,15 @@ export class NotuSQLiteClient {
         try {
             if (space.isNew) {
                 space.id = (await connection.run(
-                    'INSERT INTO Space (name, version, useCommonSpace) VALUES (?, ?, ?);',
-                    space.name, space.version, space.useCommonSpace ? 1 : 0
+                    'INSERT INTO Space (name, version, settings) VALUES (?, ?, ?);',
+                    space.name, space.version, JSON.stringify(space.settings)
                 )).lastInsertRowId as number;
                 space.clean();
             }
             else if (space.isDirty) {
                 await connection.run(
-                    'UPDATE Space SET name = ?, version = ?, useCommonSpace = ? WHERE id = ?;',
-                    space.name, space.version, space.useCommonSpace ? 1 : 0, space.id
+                    'UPDATE Space SET name = ?, version = ?, settings = ? WHERE id = ?;',
+                    space.name, space.version, JSON.stringify(space.settings), space.id
                 );
                 space.clean();
             }
@@ -206,9 +206,9 @@ export class NotuSQLiteClient {
                 }
                 if (!note.isDeleted) {
                     if (!!note.ownTag)
-                        this._saveTag(note.ownTag, connection);
-                    this._saveNoteTags(note.id, note.tags, connection);
-                    this._deleteNoteTags(note.id, note.tagsPendingDeletion, connection);
+                        await this._saveTag(note.ownTag, connection);
+                    await this._saveNoteTags(note.id, note.tags, connection);
+                    await this._deleteNoteTags(note.id, note.tagsPendingDeletion, connection);
                 }
             }
 

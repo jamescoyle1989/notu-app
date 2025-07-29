@@ -15,13 +15,14 @@ export class NotuSQLiteCacheFetcher {
         const connection = await this._connectionFactory();
         try {
             return (await connection
-                .getAll('SELECT id, name, version, useCommonSpace FROM Space;'))
+                .getAll('SELECT id, name, version, settings FROM Space;'))
                 .map(x => ({
                     state: 'CLEAN',
                     id: x.id,
                     name: x.name,
                     version: x.version,
-                    useCommonSpace: x.useCommonSpace
+                    useCommonSpace: false,
+                    settings: x.settings
                 }));
         }
         finally {

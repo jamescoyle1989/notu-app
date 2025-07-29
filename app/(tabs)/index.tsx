@@ -61,12 +61,10 @@ export default function Index() {
     const [notu, setNotu] = useState<Notu>(null);
     const [renderTools, setRenderTools] = useState<NotuRenderTools>(null);
     const [error, setError] = useState('');
-    const [dbInfo, setDbInfo] = useState('');
     useEffect(() => {
         async function loadCacheData() {
             try {
                 const db = await SQLite.openDatabaseAsync('notu.db', { useNewConnection: true });
-                setDbInfo(`path: ${db.databasePath}`)
                 const notuCache = new NotuCache(
                     new NotuSQLiteCacheFetcher(
                         async () => Promise.resolve(new ExpoSQLiteConnection(db))
@@ -137,11 +135,12 @@ export default function Index() {
 
     return (
         <View style={s.view.background}>
-            <ScrollView>
-                <Text style={s.text.plain}>Date: {new Date().toLocaleTimeString()}</Text>
-                <Text style={s.text.plain}>Info: {dbInfo}</Text>
-                <Text style={s.text.plain}>Error: {error}</Text>
-            </ScrollView>
+            {!!error && (
+                <ScrollView>
+                    <Text style={s.text.plain}>Date: {new Date().toLocaleTimeString()}</Text>
+                    <Text style={s.text.plain}>Error: {error}</Text>
+                </ScrollView>
+            )}
 
             {isLoaded && (
                 <View>

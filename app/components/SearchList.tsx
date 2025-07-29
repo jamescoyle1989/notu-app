@@ -42,7 +42,8 @@ export default function SearchList({
                         notu={notuRenderTools.notu}
                         query={queryState}
                         onQueryChanged={s => setQueryState(s)}
-                        onFetched={arr => setNotes(arr)}/>
+                        onFetched={arr => setNotes(arr)}
+                        autoFetch={true}/>
 
             {!!actionsBar && actionsBar()}
 
