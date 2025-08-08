@@ -1,5 +1,5 @@
 import { Note, Notu, Space } from "notu";
-import React, { useCallback, useImperativeHandle, useState } from "react";
+import React, { useEffect, useImperativeHandle, useState } from "react";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import s from '../helpers/NotuStyles';
 
@@ -43,7 +43,7 @@ export const NoteSearch = React.forwardRef((
         refresh: () => onSearchSubmit()
     }));
 
-    useCallback(() => {
+    useEffect(() => {
         if (autoFetch)
             onSearchSubmit();
     }, []);
