@@ -1,4 +1,4 @@
-import { Note, NoteTag, NotuCache, Space, Tag, parseQuery } from 'notu';
+import { Note, NoteTag, NotuCache, ParsedQuery, Space, Tag, parseQuery } from 'notu';
 import { mapColorToInt, mapDateToNumber, mapNumberToDate } from './SQLMappings';
 import { ISQLiteConnection } from './SQLiteConnection';
 import { buildNotesQuery } from './SQLiteQueryBuilder';
@@ -120,12 +120,13 @@ export class NotuSQLiteClient {
         if (space instanceof Space)
             space = space.id;
 
-        query = this._prepareQuery(query, space);
+        const parsedQuery = parseQuery(query);
+        query = buildNotesQuery(parsedQuery, space, this._cache);
 
-        return await this._getNotesFromQuery(query);
+        return await this._getNotesFromQuery(query, parsedQuery);
     }
 
-    private async _getNotesFromQuery(query: string): Promise<Array<any>> {
+    private async _getNotesFromQuery(query: string, parsedQuery: ParsedQuery): Promise<Array<any>> {
         const connection = await this._connectionFactory();
         try {
             const notesMap = new Map<number, any>();
@@ -137,8 +138,16 @@ export class NotuSQLiteClient {
                     text: x.text,
                     spaceId: x.spaceId,
                     ownTag: null,
-                    tags: []
+                    tags: [],
+                    grouping: null
                 };
+                for (let i = 0; i < parsedQuery.groupings.length; i++) {
+                    const groupingVal = x[`grouping${i}`];
+                    if (!!groupingVal) {
+                        note.grouping = parsedQuery.groupings[i].name;
+                        break;
+                    }
+                }
                 notesMap.set(note.id, note);
                 return note;
             });

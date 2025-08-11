@@ -6,7 +6,10 @@ export function buildNotesQuery(
     spaceId: number,
     cache: NotuCache
 ): string {
-    let output = 'SELECT n.id, n.spaceId, n.text, n.date FROM Note n LEFT JOIN Tag t ON n.id = t.id';
+    let output = 'SELECT n.id, n.spaceId, n.text, n.date';
+    if (parsedQuery.groupings.length > 0)
+        output += `, ${buildNewNotesQueryPortion(parsedQuery, spaceId, cache, 'group')}`;
+    output += ' FROM Note n LEFT JOIN Tag t ON n.id = t.id';
 
     if (!!parsedQuery.where || !!spaceId) {
         let whereClauses: Array<string> = [];
@@ -44,6 +47,10 @@ function buildNewNotesQueryPortion(
     else if (portion == 'order') {
         output = parsedQuery.order;
         tagBuilder = buildTagOrderClause;
+    }
+    else if (portion == 'group') {
+        output = parsedQuery.groupings.map((x, index) => `${x.criteria} AS grouping${index}`).join(', ');
+        tagBuilder = buildTagGroupClause;
     }
     else
         throw Error('Invalid portion');
@@ -114,7 +121,28 @@ function buildTagOrderClause(parsedTag: ParsedTag, tag: Tag): string {
     if (searchDepth == 2)
         return `(SELECT ${buildTagDataExpression(parsedTag, 'nt1')} ` +
             `FROM NoteTag nt1 INNER JOIN NoteTag nt2 ON nt2.noteId = nt1.tagId ` +
-            `WHERE nt1.noteId = n.id AND nt2.tagId = ${tag.id}`
+            `WHERE nt1.noteId = n.id AND nt2.tagId = ${tag.id}`;
+}
+
+
+function buildTagGroupClause(parsedTag: ParsedTag, tag: Tag): string {
+    let conditions = [];
+    for (const searchDepth of parsedTag.searchDepths) {
+        if (searchDepth == 0)
+            conditions.push(`n.id = ${tag.id}`);
+        else if (searchDepth == 1)
+            conditions.push(`(SELECT ${buildTagDataExpression(parsedTag, 'nt')} ` +
+            `FROM NoteTag nt ` +
+            `WHERE nt.noteId = n.id AND nt.tagId = ${tag.id})`);
+        else if (searchDepth == 2)
+            conditions.push(`(SELECT ${buildTagDataExpression(parsedTag, 'nt1')} ` +
+            `FROM NoteTag nt1 INNER JOIN NoteTag nt2 ON nt2.noteId = nt1.tagId ` +
+            `WHERE nt1.noteId = n.id AND nt2.tagId = ${tag.id}`);
+    }
+    let output = conditions.join(' OR ');
+    if (conditions.length > 1)
+        output = `(${output})`;
+    return output;
 }
 
 

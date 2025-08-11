@@ -1,4 +1,4 @@
-import { NotuCache, ParsedQuery, ParsedTag, ParsedTagFilter, parseQuery } from 'notu';
+import { NotuCache, ParsedGrouping, ParsedQuery, ParsedTag, ParsedTagFilter, parseQuery } from 'notu';
 import { expect, test } from 'vitest';
 import { testCacheFetcher } from '../helpers/TestHelpers';
 import { buildNotesQuery } from './SQLiteQueryBuilder';
@@ -24,6 +24,35 @@ test('buildNotesQuery correctly processes query with order clause', async () => 
 
     expect(buildNotesQuery(query, 1, await newNotuCache()))
         .toBe('SELECT n.id, n.spaceId, n.text, n.date FROM Note n LEFT JOIN Tag t ON n.id = t.id WHERE n.spaceId = 1 ORDER BY date;');
+});
+
+test('buildNotesQuery correctly processes query with group clause', async () => {
+    const query = new ParsedQuery();
+    query.where = '{tag0}';
+    query.groupings = [new ParsedGrouping()];
+    query.groupings[0].criteria = '{tag1}';
+    query.groupings[0].name = 'Pinned';
+    query.tags.push((() => {
+        const tag = new ParsedTag();
+        tag.name = 'Tag 1';
+        tag.space = null;
+        tag.searchDepths = [0];
+        return tag;
+    })());
+    query.tags.push((() => {
+        const tag = new ParsedTag();
+        tag.name = 'Tag 1';
+        tag.space = null;
+        tag.searchDepths = [0];
+        return tag;
+    })());
+
+    expect(buildNotesQuery(query, 1, await newNotuCache()))
+        .toBe(
+            'SELECT n.id, n.spaceId, n.text, n.date, n.id = 1 AS grouping0 ' +
+            'FROM Note n LEFT JOIN Tag t ON n.id = t.id ' +
+            'WHERE n.spaceId = 1 AND (n.id = 1);'
+        );
 });
 
 test('buildNotesQuery correctly processes query with self tag filter', async () => {
