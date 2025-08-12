@@ -19,6 +19,7 @@
     "@rneui/base": "^4.0.0-rc.8",
     "@rneui/themed": "^4.0.0-rc.8",
     "chroma-js": "^3.1.2",
+    "dayjs": "^1.11.13",
     "expo": "53.0.20",
     "expo-blur": "~14.1.5",
     "expo-constants": "~17.1.6",

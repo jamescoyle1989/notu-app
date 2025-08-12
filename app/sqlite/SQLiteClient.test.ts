@@ -213,6 +213,54 @@ test('getNotes fetches notes in correct format', async () => {
     expect(notes[0].date.getTime()).toBe(11708573979000);
 });
 
+test('getNotes fetches notes with correct grouping information', async () => {
+    const connection = new MockConnection();
+    const client = new NotuSQLiteClient(
+        () => connection as any,
+        new NotuCache(testCacheFetcher() as any)
+    );
+    connection.nextGetAllOutput = [
+        {id: 5, spaceId: 1, text: 'Test test', date: 11708643600, tagId: null, grouping0: 0, grouping1: 11708643600},       //12th Jan 2341
+        {id: 6, spaceId: 1, text: 'Test test 2', date: 11708573979, tagId: null, grouping0: 0, grouping1: 11708573979},     //11th Jan 2341
+        {id: 7, spaceId: 1, text: 'Test test 3', date: 11708573979, tagId: null, grouping0: 1, grouping1: 11708573979}      //11th Jan 2341
+    ];
+    connection.onGetAll = () => connection.nextGetAllOutput = [];
+
+    const notes = await client.getNotes(`GROUP BY n.id AS 'Pinned', n.date AS 'Dated FORMAT(ASC YYYY-MMM-D)'`, space1);
+
+    expect(notes.length).toBe(3);
+    expect(notes[0].id).toBe(7);
+    expect(notes[0].grouping).toBe('Pinned');
+    expect(notes[1].id).toBe(6);
+    expect(notes[1].grouping).toBe('Dated @~!11708573979!~@2341-Jan-11')
+    expect(notes[2].id).toBe(5);
+    expect(notes[2].grouping).toBe('Dated @~!11708643600!~@2341-Jan-12');
+});
+
+test('getNotes handles a note not fitting into any defined groups', async () => {
+    const connection = new MockConnection();
+    const client = new NotuSQLiteClient(
+        () => connection as any,
+        new NotuCache(testCacheFetcher() as any)
+    );
+    connection.nextGetAllOutput = [
+        {id: 5, spaceId: 1, text: 'Test test', date: 11708643600, tagId: null, grouping0: 1, grouping1: 0},
+        {id: 6, spaceId: 1, text: 'Test test 2', date: 11708573979, tagId: null, grouping0: 0, grouping1: 1},
+        {id: 7, spaceId: 1, text: 'Test test 3', date: 11708573979, tagId: null, grouping0: 0, grouping1: 0}
+    ];
+    connection.onGetAll = () => connection.nextGetAllOutput = [];
+
+    const notes = await client.getNotes(`GROUP BY n.id AS 'Pinned', n.text AS 'Important'`, space1);
+
+    expect(notes.length).toBe(3);
+    expect(notes[0].id).toBe(5);
+    expect(notes[0].grouping).toBe('Pinned');
+    expect(notes[1].id).toBe(6);
+    expect(notes[1].grouping).toBe('Important')
+    expect(notes[2].id).toBe(7);
+    expect(notes[2].grouping).toBe('UNGROUPED');
+});
+
 test('saveNotes for new note sets noteId on tags', async () => {
     const connection = new MockConnection();
     const client = new NotuSQLiteClient(

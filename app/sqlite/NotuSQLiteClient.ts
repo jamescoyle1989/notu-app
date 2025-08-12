@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { Note, NoteTag, NotuCache, ParsedQuery, Space, Tag, parseQuery } from 'notu';
 import { mapColorToInt, mapDateToNumber, mapNumberToDate } from './SQLMappings';
 import { ISQLiteConnection } from './SQLiteConnection';
@@ -130,6 +131,9 @@ export class NotuSQLiteClient {
         const connection = await this._connectionFactory();
         try {
             const notesMap = new Map<number, any>();
+            const groupings: Array<Array<any>> = new Array(parsedQuery.groupings.length + 1);
+            for (let i = 0; i < groupings.length; i++)
+                groupings[i] = [];
             const notes = (await connection.getAll(query)).map(x => {
                 const note = {
                     state: 'CLEAN',
@@ -144,9 +148,14 @@ export class NotuSQLiteClient {
                 for (let i = 0; i < parsedQuery.groupings.length; i++) {
                     const groupingVal = x[`grouping${i}`];
                     if (!!groupingVal) {
-                        note.grouping = parsedQuery.groupings[i].name;
+                        note.grouping = this._formatGroupingName(parsedQuery.groupings[i].name, groupingVal);
+                        groupings[i].push(note);
                         break;
                     }
+                }
+                if (parsedQuery.groupings.length > 0 && !note.grouping) {
+                    note.grouping = 'UNGROUPED';
+                    groupings[groupings.length - 1].push(note);
                 }
                 notesMap.set(note.id, note);
                 return note;
@@ -165,6 +174,21 @@ export class NotuSQLiteClient {
                 });
             }
 
+            if (parsedQuery.groupings.length > 0) {
+                const output = [];
+                for (let i = 0; i < groupings.length; i++) {
+                    let grouping = groupings[i];
+                    if (i < parsedQuery.groupings.length) {
+                        const groupingNameTightUpper = parsedQuery.groupings[i].name.replaceAll(' ', '').toUpperCase();
+                        if (groupingNameTightUpper.includes('FORMAT(ASC'))
+                            grouping.sort((a, b) => a.grouping.localeCompare(b.grouping));
+                        else if (groupingNameTightUpper.includes('FORMAT(DESC'))
+                            grouping.sort((a, b) => b.grouping.localeCompare(a.grouping));
+                    }
+                    output.push(...grouping);
+                }
+                return output;
+            }
             return notes;
         }
         finally {
@@ -310,5 +334,32 @@ export class NotuSQLiteClient {
 
     private async _enforceForeignKeys(connection: ISQLiteConnection): Promise<void> {
         await connection.run('PRAGMA foreign_keys = ON');
+    }
+
+
+    private _formatGroupingName(groupingName: string, groupingValue: any): string {
+        let previousStartIndex = -1;
+        while (true) {
+            const formatStartIndex = groupingName.toUpperCase().indexOf('FORMAT(');
+            if (formatStartIndex < 0 || formatStartIndex <= previousStartIndex)
+                break;
+            const formatEndIndex = groupingName.indexOf(')', formatStartIndex);
+            if (formatEndIndex < 0)
+                throw new Error('Invalid format syntax in grouping info');
+            let formatExpression = groupingName.substring(formatStartIndex + 'FORMAT('.length, formatEndIndex).trim();
+            let newValue = '';
+            if (formatExpression.toUpperCase().startsWith('ASC')) {
+                newValue = `@~!${groupingValue}!~@`;
+                formatExpression = formatExpression.substring('ASC'.length).trim();
+            }
+            else if (formatExpression.toUpperCase().startsWith('DESC')) {
+                newValue = `@~!${groupingValue}!~@`;
+                formatExpression = formatExpression.substring('DESC'.length).trim();
+            }
+            newValue += dayjs(mapNumberToDate(groupingValue)).format(formatExpression);
+            groupingName = groupingName.slice(0, formatStartIndex) + newValue + groupingName.slice(formatEndIndex + 1);
+            previousStartIndex = formatStartIndex;
+        }
+        return groupingName;
     }
 }
