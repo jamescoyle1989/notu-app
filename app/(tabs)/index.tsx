@@ -2,6 +2,7 @@ import * as SQLite from 'expo-sqlite';
 import { Note, NoteTag, Notu, NotuCache, Space, Tag } from "notu";
 import { ReactNode, useEffect, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
+import GroupedNoteList from '../components/GroupedNoteList';
 import { NoteViewerAction } from "../components/NoteViewer";
 import SearchList from "../components/SearchList";
 import { getTextContrastColor } from "../helpers/ColorHelpers";
@@ -133,6 +134,20 @@ export default function Index() {
         loadCacheData();
     }, []);
 
+    const notes = [];
+    if (isLoaded) {
+        const note1 = new Note('Test 1').in(notu.getSpaceByName('Common'));
+        note1.id = 1;
+        note1.group = 'Group 1';
+        const note2 = new Note('Test 2').in(notu.getSpaceByName('Common'));
+        note2.id = 2;
+        note2.group = 'Group 1';
+        const note3 = new Note('Test 3').in(notu.getSpaceByName('Common'));
+        note3.id = 3;
+        note3.group = 'Group 2';
+        notes.push(note1, note2, note3);
+    }
+
     return (
         <View style={s.view.background}>
             {!!error && (
@@ -142,7 +157,7 @@ export default function Index() {
                 </ScrollView>
             )}
 
-            {isLoaded && (
+            {false && (
                 <View>
                     <SearchList query={`#Setup`}
                                 searchSpace={notu.getSpaceByName('Common')}
@@ -154,6 +169,17 @@ export default function Index() {
                                 actionsBar={() => (
                                     <Text style={s.text.plain}>Hello from actions bar</Text>
                                 )}/>
+                </View>
+            )}
+
+            {isLoaded && (
+                <View>
+                    <GroupedNoteList notes={notes}
+                                     notuRenderTools={renderTools}
+                                     actionsGenerator={n => [
+                                        new NoteViewerAction('Test Action 1', () => {}, false),
+                                        new NoteViewerAction('Test Action 2', () => {}, true)
+                                     ]}/>
                 </View>
             )}
         </View>

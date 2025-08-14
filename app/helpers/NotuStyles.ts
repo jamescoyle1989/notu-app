@@ -68,6 +68,14 @@ const text = StyleSheet.create({
 
     italic: {
         fontStyle: 'italic'
+    },
+
+    underline: {
+        textDecorationLine: 'underline'
+    },
+
+    big: {
+        fontSize: 18
     }
 });
 
