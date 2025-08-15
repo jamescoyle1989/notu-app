@@ -2,9 +2,8 @@ import * as SQLite from 'expo-sqlite';
 import { Note, NoteTag, Notu, NotuCache, Space, Tag } from "notu";
 import { ReactNode, useEffect, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
-import GroupedNoteList from '../components/GroupedNoteList';
+import GroupedSearchList from '../components/GroupedSearchList';
 import { NoteViewerAction } from "../components/NoteViewer";
-import SearchList from "../components/SearchList";
 import { getTextContrastColor } from "../helpers/ColorHelpers";
 import { NoteTagDataComponentFactory, NotuRenderTools, SpaceSettingsComponentFactory } from "../helpers/NotuRenderTools";
 import s from '../helpers/NotuStyles';
@@ -157,29 +156,18 @@ export default function Index() {
                 </ScrollView>
             )}
 
-            {false && (
-                <View>
-                    <SearchList query={`#Setup`}
-                                searchSpace={notu.getSpaceByName('Common')}
-                                notuRenderTools={renderTools}
-                                actionsGenerator={n => [
-                                    new NoteViewerAction('Test Action 1', () => {}, false),
-                                    new NoteViewerAction('Test Action 2', () => {}, true)
-                                ]}
-                                actionsBar={() => (
-                                    <Text style={s.text.plain}>Hello from actions bar</Text>
-                                )}/>
-                </View>
-            )}
-
             {isLoaded && (
                 <View>
-                    <GroupedNoteList notes={notes}
-                                     notuRenderTools={renderTools}
-                                     actionsGenerator={n => [
-                                        new NoteViewerAction('Test Action 1', () => {}, false),
-                                        new NoteViewerAction('Test Action 2', () => {}, true)
-                                     ]}/>
+                    <GroupedSearchList query={`#Setup`}
+                                       searchSpace={notu.getSpaceByName('Common')}
+                                       notuRenderTools={renderTools}
+                                       actionsGenerator={n => [
+                                            new NoteViewerAction('Test Action 1', () => {}, false),
+                                            new NoteViewerAction('Test Action 2', () => {}, true)
+                                       ]}
+                                       actionsBar={() => (
+                                            <Text style={s.text.plain}>Hello from actions bar</Text>
+                                       )}/>
                 </View>
             )}
         </View>

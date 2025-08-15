@@ -83,7 +83,8 @@ export const NoteSearch = React.forwardRef((
                         <Text style={s.text.plain}>{space.name}</Text>
                     </TouchableOpacity>
                 )}
-                <TextInput value={query} onChangeText={onSearchTextChange}
+                <View style={{flex:1}}>
+                    <TextInput value={query} onChangeText={onSearchTextChange}
                         style={[
                                 s.text.plain,
                                 s.border.main,
@@ -91,6 +92,8 @@ export const NoteSearch = React.forwardRef((
                                 !!space && s.border.joinedLeft,
                                 s.border.joinedRight
                         ]}/>
+                </View>
+                
                 {!!error && (
                     <TouchableOpacity disabled
                                     style={[
