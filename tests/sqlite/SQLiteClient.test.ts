@@ -1,8 +1,8 @@
 import { Note, NotuCache, Space } from 'notu';
 import { expect, test } from 'vitest';
-import { newNote, newSpace, newTag, testCacheFetcher } from '../helpers/TestHelpers';
-import { NotuSQLiteClient } from './NotuSQLiteClient';
-import { ISQLiteConnection, RunResult } from './SQLiteConnection';
+import { newNote, newSpace, newTag, testCacheFetcher } from '../../app/helpers/TestHelpers';
+import { NotuSQLiteClient } from '../../app/sqlite/NotuSQLiteClient';
+import { ISQLiteConnection, RunResult } from '../../app/sqlite/SQLiteConnection';
 
 
 const space1 = newSpace('Space 1', 1).clean();
