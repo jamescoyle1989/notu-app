@@ -1,7 +1,7 @@
 import { NotuCache, ParsedGrouping, ParsedQuery, ParsedTag, ParsedTagFilter, parseQuery } from 'notu';
 import { expect, test } from 'vitest';
 import { testCacheFetcher } from '../../app/helpers/TestHelpers';
-import { buildNotesQuery } from '../../app/sqlite/SQLiteQueryBuilder';
+import { buildNotesQuery, buildTagDataExpression } from '../../app/sqlite/SQLiteQueryBuilder';
 
 
 
@@ -53,6 +53,52 @@ test('buildNotesQuery correctly processes query with group clause', async () => 
             'SELECT n.id, n.spaceId, n.text, n.date, n.id = 1 AS grouping0 ' +
             'FROM Note n LEFT JOIN Tag t ON n.id = t.id ' +
             'WHERE n.spaceId = 1 AND (n.id = 1);'
+        );
+});
+
+test('buildNotesQuery correctly processes query with group by tag clause', async () => {
+    const query = new ParsedQuery();
+    query.groupings = [new ParsedGrouping()];
+    query.groupings[0].criteria = '{tag0}';
+    query.groupings[0].name = 'Test';
+    query.tags.push((() => {
+        const tag = new ParsedTag();
+        tag.name = 'Tag 1';
+        tag.space = null;
+        tag.searchDepths = [1];
+        return tag;
+    })());
+
+    expect(buildNotesQuery(query, 1, await newNotuCache()))
+        .toBe(
+            'SELECT n.id, n.spaceId, n.text, n.date, (SELECT 1 FROM NoteTag nt WHERE nt.noteId = n.id AND nt.tagId = 1) AS grouping0 ' +
+            'FROM Note n LEFT JOIN Tag t ON n.id = t.id ' +
+            'WHERE n.spaceId = 1;'
+        );
+});
+
+test('buildNotesQuery correctly processes query with group by tag data clause', async () => {
+    const query = new ParsedQuery();
+    query.groupings = [new ParsedGrouping()];
+    query.groupings[0].criteria = '{tag0}';
+    query.groupings[0].name = 'Test';
+    query.tags.push((() => {
+        const tag = new ParsedTag();
+        tag.name = 'Tag 1';
+        tag.space = null;
+        tag.searchDepths = [1];
+        tag.filter = new ParsedTagFilter();
+        tag.filter.pattern = '{exp0} < 5';
+        tag.filter.exps.push('height');
+        return tag;
+    })());
+    
+    expect(buildNotesQuery(query, 1, await newNotuCache()))
+        .toBe(
+            `SELECT n.id, n.spaceId, n.text, n.date, ` +
+                `(SELECT 1 FROM NoteTag nt WHERE nt.noteId = n.id AND nt.tagId = 1 AND (nt.data->>'height' < 5)) AS grouping0 ` +
+            'FROM Note n LEFT JOIN Tag t ON n.id = t.id ' +
+            'WHERE n.spaceId = 1;'
         );
 });
 
@@ -293,4 +339,32 @@ test('buildNotesQuery can generate search across all spaces', async () => {
                 'EXISTS(SELECT 1 FROM NoteTag nt WHERE nt.noteId = n.id AND nt.tagId = 2)' +
             ');'
         );
+});
+
+
+test('buildTagDataExpression correctly creates expression for 1 property deep data expression', () => {
+    const tag = new ParsedTag();
+    tag.filter = new ParsedTagFilter();
+    tag.filter.pattern = '{exp0} > 10';
+    tag.filter.exps.push('value');
+
+    expect(buildTagDataExpression(tag, 'nt'))
+        .toBe(`nt.data->>'value' > 10`);
+});
+
+test('buildTagDataExpression correctly creates expression for 2 property deep data expression', () => {
+    const tag = new ParsedTag();
+    tag.filter = new ParsedTagFilter();
+    tag.filter.pattern = '{exp0} > 10';
+    tag.filter.exps.push('info.value');
+
+    expect(buildTagDataExpression(tag, 'nt'))
+        .toBe(`nt.data->'info'->>'value' > 10`);
+});
+
+test('buildTagDataExpression returns empty string for tag with no filter set', () => {
+    const tag = new ParsedTag();
+    
+    expect(buildTagDataExpression(tag, 'nt1'))
+        .toBe('');
 });
