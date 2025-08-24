@@ -32,6 +32,7 @@ export class NotuSQLiteClient {
                     `CREATE TABLE Space (
                         id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
                         name TEXT NOT NULL,
+                        internalName TEXT NOT NULL,
                         version TEXT NOT NULL,
                         settings TEXT NULL
                     )`
@@ -55,6 +56,7 @@ export class NotuSQLiteClient {
                         name TEXT NOT NULL,
                         color INTEGER NULL,
                         availability INTEGER NOT NULL,
+                        isInternal INTEGER NOT NULL,
                         PRIMARY KEY (id),
                         FOREIGN KEY (id) REFERENCES Note(id) ON DELETE CASCADE
                     );`
@@ -89,15 +91,15 @@ export class NotuSQLiteClient {
         try {
             if (space.isNew) {
                 space.id = (await connection.run(
-                    'INSERT INTO Space (name, version, settings) VALUES (?, ?, ?);',
-                    space.name, space.version, JSON.stringify(space.settings)
+                    'INSERT INTO Space (name, internalName, version, settings) VALUES (?, ?, ?, ?);',
+                    space.name, space.internalName, space.version, JSON.stringify(space.settings)
                 )).lastInsertRowId as number;
                 space.clean();
             }
             else if (space.isDirty) {
                 await connection.run(
-                    'UPDATE Space SET name = ?, version = ?, settings = ? WHERE id = ?;',
-                    space.name, space.version, JSON.stringify(space.settings), space.id
+                    'UPDATE Space SET name = ?, internalName = ?, version = ?, settings = ? WHERE id = ?;',
+                    space.name, space.internalName, space.version, JSON.stringify(space.settings), space.id
                 );
                 space.clean();
             }
@@ -256,15 +258,15 @@ export class NotuSQLiteClient {
     private async _saveTag(tag: Tag, connection: ISQLiteConnection): Promise<void> {
         if (tag.isNew) {
             await connection.run(
-                'INSERT INTO Tag (id, name, color, availability) VALUES (?, ?, ?, ?);',
-                tag.id, tag.name, mapColorToInt(tag.color), tag.availability
+                'INSERT INTO Tag (id, name, color, availability, isInternal) VALUES (?, ?, ?, ?, ?);',
+                tag.id, tag.name, mapColorToInt(tag.color), tag.availability, tag.isInternal ? 1 : 0
             );
             tag.clean();
         }
         else if (tag.isDirty) {
             await connection.run(
-                'UPDATE Tag SET name = ?, color = ?, availability = ? WHERE id = ?;',
-                tag.name, mapColorToInt(tag.color), tag.availability, tag.id
+                'UPDATE Tag SET name = ?, color = ?, availability = ?, isInternal = ? WHERE id = ?;',
+                tag.name, mapColorToInt(tag.color), tag.availability, tag.isInternal ? 1 : 0, tag.id
             );
             tag.clean();
         }
