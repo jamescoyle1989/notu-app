@@ -103,22 +103,16 @@ export default function Index() {
                 let commonSpace = notuVal.getSpaceByName('Common');
                 if (!commonSpace) {
                     commonSpace = new Space('Common').v('1.0.0');
+                    commonSpace.internalName = 'decoyspace.notu.Common';
                     await notuVal.saveSpace(commonSpace);
-
-                    const setup = new Note('This contains all the expected tags for Common space to work correctly.')
-                        .in(commonSpace).setOwnTag('Setup');
-                    setup.ownTag.asPrivate();
-                    await notuVal.saveNotes([setup]);
 
                     const thought = new Note('This marks a note as being some thought that I\'ve had on a particular subject.')
                         .in(commonSpace).setOwnTag('Thought');
-                    thought.ownTag.asPublic();
-                    thought.addTag(setup.ownTag);
+                    thought.ownTag.asInternal().asPublic();
 
                     const info = new Note('This marks a note as being some info about a particular subject that may be useful later.')
                         .in(commonSpace).setOwnTag('Info');
-                    info.ownTag.asPublic();
-                    info.addTag(setup.ownTag);
+                    info.ownTag.asInternal().asPublic();
 
                     await notuVal.saveNotes([thought, info]);
                 }
@@ -133,20 +127,6 @@ export default function Index() {
         loadCacheData();
     }, []);
 
-    const notes = [];
-    if (isLoaded) {
-        const note1 = new Note('Test 1').in(notu.getSpaceByName('Common'));
-        note1.id = 1;
-        note1.group = 'Group 1';
-        const note2 = new Note('Test 2').in(notu.getSpaceByName('Common'));
-        note2.id = 2;
-        note2.group = 'Group 1';
-        const note3 = new Note('Test 3').in(notu.getSpaceByName('Common'));
-        note3.id = 3;
-        note3.group = 'Group 2';
-        notes.push(note1, note2, note3);
-    }
-
     return (
         <View style={s.view.background}>
             {!!error && (
@@ -158,7 +138,7 @@ export default function Index() {
 
             {isLoaded && (
                 <View>
-                    <GroupedSearchList query={`#Setup`}
+                    <GroupedSearchList query={`t.isInternal`}
                                        searchSpace={notu.getSpaceByName('Common')}
                                        notuRenderTools={renderTools}
                                        actionsGenerator={n => [

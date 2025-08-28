@@ -32,7 +32,7 @@ export class NotuSQLiteClient {
                     `CREATE TABLE Space (
                         id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
                         name TEXT NOT NULL,
-                        internalName TEXT NOT NULL,
+                        internalName TEXT NULL,
                         version TEXT NOT NULL,
                         settings TEXT NULL
                     )`
