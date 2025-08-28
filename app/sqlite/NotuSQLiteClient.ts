@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { Note, NoteTag, NotuCache, ParsedQuery, Space, Tag, parseQuery } from 'notu';
+import { Note, NoteTag, NotuCache, ParsedQuery, Space, SpaceLink, Tag, parseQuery } from 'notu';
 import { mapColorToInt, mapDateToNumber, mapNumberToDate } from './SQLMappings';
 import { ISQLiteConnection } from './SQLiteConnection';
 import { buildNotesQuery } from './SQLiteQueryBuilder';
@@ -35,6 +35,17 @@ export class NotuSQLiteClient {
                         internalName TEXT NOT NULL,
                         version TEXT NOT NULL,
                         settings TEXT NULL
+                    )`
+                );
+
+                await connection.run(
+                    `CREATE TABLE SpaceLink (
+                        fromSpaceId INTEGER NOT NULL,
+                        name TEXT NOT NULL,
+                        toSpaceId INTEGER NULL,
+                        PRIMARY KEY (fromSpaceId, name),
+                        FOREIGN KEY (fromSpaceId) REFERENCES Space(id) ON DELETE CASCADE,
+                        FOREIGN KEY (toSpaceId) REFERENCES Space(id) ON DELETE RESTRICT
                     )`
                 );
                 
@@ -110,11 +121,46 @@ export class NotuSQLiteClient {
                     space.id
                 );
             }
+            if (!space.isDeleted) {
+                await this._saveSpaceLinks(space.id, space.links, connection);
+                await this._deleteSpaceLinks(space.id, space.linksPendingDeletion, connection);
+            }
     
             return Promise.resolve(space.toJSON());
         }
         finally {
             await connection.close();
+        }
+    }
+
+
+    private async _saveSpaceLinks(spaceId: number, spaceLinks: Array<SpaceLink>, connection: ISQLiteConnection): Promise<void> {
+        const inserts = spaceLinks.filter(x => x.isNew);
+        const updates = spaceLinks.filter(x => x.isDirty);
+
+        if (inserts.length > 0) {
+            let command = 'INSERT INTO SpaceLink (fromSpaceId, name, toSpaceId) VALUES ' + inserts.map(x => '(?, ?, ?)').join(', ');
+            let args = [];
+            for (const insert of inserts) {
+                args.push(spaceId, insert.name, insert.toSpace?.id);
+                insert.clean();
+            }
+            await connection.run(command, ...args);
+        }
+        for (const update of updates) {
+            await connection.run(
+                'UPDATE SpaceLink SET toSpaceId = ? WHERE fromSpaceId = ? AND name = ?',
+                update.toSpace?.id, spaceId, update.name
+            );
+            update.clean();
+        }
+    }
+
+    private async _deleteSpaceLinks(spaceId: number, spaceLinksPendingDeletion: Array<SpaceLink>, connection: ISQLiteConnection): Promise<void> {
+        if (spaceLinksPendingDeletion.length > 0) {
+            let command = `DELETE FROM SpaceLink WHERE fromSpaceId = ? AND name IN (${spaceLinksPendingDeletion.map(x => `'${x.name}'`).join(', ')})`;
+            let args = [spaceId];
+            await connection.run(command, ...args);
         }
     }
 
@@ -234,6 +280,8 @@ export class NotuSQLiteClient {
                     note.clean();
                 }
                 else if (note.isDeleted) {
+                    if (!!note.ownTag && note.ownTag.isInternal)
+                        throw Error(`Cannot delete note which has an internal tag attached to it.`);
                     await connection.run(
                         'DELETE FROM Note WHERE id = ?;',
                         note.id

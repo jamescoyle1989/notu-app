@@ -14,7 +14,7 @@ export class NotuSQLiteCacheFetcher {
     async getSpacesData(): Promise<Array<any>> {
         const connection = await this._connectionFactory();
         try {
-            return (await connection
+            const spaces = (await connection
                 .getAll('SELECT id, name, internalName, version, settings FROM Space;'))
                 .map(x => ({
                     state: 'CLEAN',
@@ -23,8 +23,16 @@ export class NotuSQLiteCacheFetcher {
                     internalName: x.internalName,
                     version: x.version,
                     useCommonSpace: false,
-                    settings: x.settings
+                    settings: x.settings,
+                    links: []
                 }));
+            const spacesMap = new Map<number, any>();
+            for (const space of spaces)
+                spacesMap.set(space.id, space);
+            (await connection
+                .getAll('SELECT fromSpaceId, name, toSpaceId FROM SpaceLink'))
+                .map(x => spacesMap.get(x.fromSpaceId).links.push({name: x.name, toSpaceId: x.toSpaceId}));
+            return spaces;
         }
         finally {
             await connection.close();
@@ -44,7 +52,7 @@ export class NotuSQLiteCacheFetcher {
                     spaceId: x.spaceId,
                     color: mapIntToColor(x.color),
                     availability: x.availability,
-                    isInternal: x.isInternal,
+                    isInternal: !!x.isInternal,
                     links: []
                 }));
             const tagsMap = new Map<number, any>();
@@ -53,7 +61,7 @@ export class NotuSQLiteCacheFetcher {
             (await connection
                 .getAll('SELECT t.id AS fromId, nt.tagId AS toId FROM Tag t INNER JOIN NoteTag nt ON t.id = nt.noteId;'))
                 .map(x => tagsMap.get(x.fromId).links.push(x.toId));
-            return Promise.resolve(tags);
+            return tags;
         }
         finally {
             await connection.close();

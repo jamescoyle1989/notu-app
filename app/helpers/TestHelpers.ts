@@ -21,8 +21,8 @@ export function newTag(name?: string, id: number = null): Tag {
 
 export function testCacheFetcher(): NotuHttpCacheFetcher {
     const spacesData = [
-        { id: 1, state: 'CLEAN', name: 'Space 1', version: '1.0.0' },
-        { id: 2, state: 'CLEAN', name: 'Space 2', version: '1.0.0' }
+        { id: 1, state: 'CLEAN', name: 'Space 1', version: '1.0.0', links: [] },
+        { id: 2, state: 'CLEAN', name: 'Space 2', version: '1.0.0', links: [] }
     ];
     const tagsData = [
         { id: 1, state: 'CLEAN', name: 'Tag 1', spaceId: 1, color: '#FF0000', isPublic: true, links: [] },
