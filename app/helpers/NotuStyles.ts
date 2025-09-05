@@ -76,6 +76,11 @@ const text = StyleSheet.create({
 
     big: {
         fontSize: 18
+    },
+
+    link: {
+        color: '#00F',
+        textDecorationLine: 'underline'
     }
 });
 

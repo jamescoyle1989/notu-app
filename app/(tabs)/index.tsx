@@ -7,6 +7,7 @@ import { NoteViewerAction } from "../components/NoteViewer";
 import { getTextContrastColor } from "../helpers/ColorHelpers";
 import { NoteTagDataComponentFactory, NotuRenderTools, SpaceSettingsComponentFactory } from "../helpers/NotuRenderTools";
 import s from '../helpers/NotuStyles';
+import { NoteLinkProcessor } from '../notecomponents/NoteLink';
 import { NoteTextProcessor } from "../notecomponents/NoteText";
 import { NotuSQLiteCacheFetcher } from '../sqlite/NotuSQLiteCacheFetcher';
 import { NotuSQLiteClient } from '../sqlite/NotuSQLiteClient';
@@ -82,7 +83,8 @@ export default function Index() {
                 const renderToolsVal = new NotuRenderTools(
                     notuVal,
                     [
-                        new NoteTextProcessor()
+                        new NoteTextProcessor(),
+                        new NoteLinkProcessor()
                     ],
                     (tag: Tag, note: Note) => {
                         if (tag.name == 'Test tag')
@@ -115,6 +117,14 @@ export default function Index() {
                     info.ownTag.asInternal().asPublic();
 
                     await notuVal.saveNotes([thought, info]);
+                }
+                if (commonSpace.version == '1.0.0') {
+                    commonSpace.version = '1.1.0';
+                    await notuVal.saveSpace(commonSpace);
+
+                    const link = new Note('This is a <Link url="https://www.google.com">link</Link>')
+                        .in(commonSpace);
+                    await notuVal.saveNotes([link]);
                 }
 
                 setIsLoaded(true);
