@@ -2,7 +2,7 @@ import { Note, NoteTag, Notu, Space, splitNoteTextIntoComponents, Tag } from "no
 import { NoteComponent, NoteComponentProcessor } from "notu/dist/types/notecomponents/NoteComponent";
 import { ReactNode } from "react";
 import { NoteParagraph } from "../notecomponents/NoteParagraph";
-import { DefaultTextProcessor } from "../notecomponents/NoteText";
+import { NoteText } from "../notecomponents/NoteText";
 
 export class NotuRenderTools {
     private _notu: Notu;
@@ -29,7 +29,7 @@ export class NotuRenderTools {
             note,
             notu,
             noteComponentProcessors,
-            new DefaultTextProcessor(),
+            (text: string) => new NoteText(text),
             (components: Array<NoteComponent>) => new NoteParagraph(components)
         );
     }

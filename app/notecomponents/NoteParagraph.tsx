@@ -1,6 +1,7 @@
 import { NoteComponent } from 'notu/dist/types/notecomponents/NoteComponent';
 import React from 'react';
 import { Text } from "react-native";
+import s from '../helpers/NotuStyles';
 import { NoteText } from './NoteText';
 
 export class NoteParagraph {
@@ -23,7 +24,7 @@ export class NoteParagraph {
 
     render() {
         return (
-            <Text>
+            <Text style={s.text.plain}>
                 {this._children.map((x, index) => (
                     <Text key={index}>{(x as any).render()}</Text>
                 ))}
@@ -35,7 +36,7 @@ export class NoteParagraph {
         return this._children.map(x => x.getText()).join('');
     }
 
-    getTypeInfo(): string {
-        return 'NoteParagraph';
-    }
+    get typeInfo(): string { return 'NoteParagraph'; }
+
+    get displaysInline(): boolean { return false; }
 }
