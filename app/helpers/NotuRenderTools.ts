@@ -15,6 +15,9 @@ export class NotuRenderTools {
     private _noteTextSplitter: (note: Note) => Array<any>;
     get noteTextSplitter(): (note: Note) => Array<any> { return this._noteTextSplitter; }
 
+    private _noteComponentProcessors: Array<NoteComponentProcessor>;
+    get noteComponentProcessors() { return this._noteComponentProcessors; }
+
     constructor(
         notu: Notu,
         noteComponentProcessors: Array<NoteComponentProcessor>,
@@ -25,6 +28,7 @@ export class NotuRenderTools {
         this._noteTagDataComponentResolver = noteTagDataComponentResolver;
         this._spaceSettingsComponentResolver = spaceSettingsComponentResolver;
 
+        this._noteComponentProcessors = noteComponentProcessors;
         this._noteTextSplitter = (note: Note) => splitNoteTextIntoComponents(
             note,
             notu,

@@ -69,11 +69,6 @@ export default function NoteEditor({
         }
     }
 
-    function onTextChange(newValue: string): void {
-        note.text = newValue;
-        manualRefresh();
-    }
-
     function getTagsThatCanBeAdded(): Array<Tag> {
         return tags.filter(t => {
             if (t.isPrivate && t.space.id != note.space.id)
