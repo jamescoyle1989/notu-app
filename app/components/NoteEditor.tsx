@@ -1,11 +1,12 @@
 import { Note, NoteTag, Tag } from "notu";
 import { useRef, useState } from "react";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
 import { useManualRefresh } from "../helpers/Hooks";
 import { NotuRenderTools } from "../helpers/NotuRenderTools";
 import s from '../helpers/NotuStyles';
 import NoteTagBadge from "./NoteTagBadge";
+import NoteTextEditor from "./NoteTextEditor";
 import TagEditor from "./TagEditor";
 
 interface NoteEditorProps {
@@ -146,10 +147,8 @@ export default function NoteEditor({
 
             <Text style={[s.text.plain, s.text.bold]}>Text</Text>
 
-            <TextInput value={note.text}
-                       multiline={true}
-                       onChangeText={onTextChange}
-                       style={[s.border.main, s.text.plain]}/>
+            <NoteTextEditor notuRenderTools={notuRenderTools}
+                            note={note}/>
 
             {tagsDropdownData.length > 0 && (
                 <Text style={[s.text.plain, s.text.bold]}>Tags</Text>

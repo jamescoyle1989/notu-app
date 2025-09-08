@@ -3,6 +3,7 @@ import { Note, NoteTag, Notu, NotuCache, Space, Tag } from "notu";
 import { ReactNode, useEffect, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 import GroupedSearchList from '../components/GroupedSearchList';
+import NoteEditor from '../components/NoteEditor';
 import { NoteViewerAction } from "../components/NoteViewer";
 import { getTextContrastColor } from "../helpers/ColorHelpers";
 import { NoteTagDataComponentFactory, NotuRenderTools, SpaceSettingsComponentFactory } from "../helpers/NotuRenderTools";
@@ -135,6 +136,34 @@ export default function Index() {
         loadCacheData();
     }, []);
 
+    function renderGroupedSearchList() {
+        return (
+            <GroupedSearchList query={`t.isInternal`}
+                               searchSpace={notu.getSpaceByName('Common')}
+                               notuRenderTools={renderTools}
+                               actionsGenerator={n => [
+                                    new NoteViewerAction('Test Action 1', () => {}, false),
+                                    new NoteViewerAction('Test Action 2', () => {}, true)
+                               ]}
+                               actionsBar={() => (
+                                    <Text style={s.text.plain}>Hello from actions bar</Text>
+                               )}/>
+        );
+    }
+
+    function renderNoteEditor() {
+        const note = new Note('Test note').in(notu.getSpaceByName('Common'));
+
+        return (
+            <NoteEditor notuRenderTools={renderTools}
+                        note={note}
+                        tags={notu.getTags()}
+                        canSave={n => Promise.resolve(false)}
+                        onSave={n => {}}
+                        onCancel={n => {}}/>
+        )
+    }
+
     return (
         <View style={s.view.background}>
             {!!error && (
@@ -144,20 +173,7 @@ export default function Index() {
                 </ScrollView>
             )}
 
-            {isLoaded && (
-                <View>
-                    <GroupedSearchList query={`t.isInternal`}
-                                       searchSpace={notu.getSpaceByName('Common')}
-                                       notuRenderTools={renderTools}
-                                       actionsGenerator={n => [
-                                            new NoteViewerAction('Test Action 1', () => {}, false),
-                                            new NoteViewerAction('Test Action 2', () => {}, true)
-                                       ]}
-                                       actionsBar={() => (
-                                            <Text style={s.text.plain}>Hello from actions bar</Text>
-                                       )}/>
-                </View>
-            )}
+            {isLoaded && renderNoteEditor()}
         </View>
     );
 }
