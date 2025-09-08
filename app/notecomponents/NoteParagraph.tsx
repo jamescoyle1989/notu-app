@@ -29,7 +29,17 @@ export class NoteParagraph {
                     <Text key={index}>{(x as any).render()}</Text>
                 ))}
             </Text>
-        )
+        );
+    }
+
+    renderForEdit() {
+        return (
+            <Text style={[s.text.plain]}>
+                {this._children.map((x, index) => (
+                    <Text key={index}>{(x as any).renderForEdit()}</Text>
+                ))}
+            </Text>
+        );
     }
 
     getText(): string {

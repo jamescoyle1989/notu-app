@@ -1,5 +1,5 @@
 import { Note, NoteTag, Tag } from "notu";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
 import { useManualRefresh } from "../helpers/Hooks";
@@ -40,8 +40,9 @@ export default function NoteEditor({
 
     const [error, setError] = useState<string>(null);
     const [tagsDropdownFocused, setTagsDropdownFocused] = useState(false);
-    const textRef = useRef(null);
     const manualRefresh = useManualRefresh();
+
+    const [showTextComponentView, setShowTextComponentView] = useState(false);
 
     const noteDateStr = `${note.date.toDateString()} ${note.date.getHours().toString().padStart(2, '0')}:${note.date.getMinutes().toString().padStart(2, '0')}`;
 
@@ -140,10 +141,16 @@ export default function NoteEditor({
 
             <TagEditor note={note} tags={tags} mode={ownTagMode}/>
 
-            <Text style={[s.text.plain, s.text.bold]}>Text</Text>
+            <Text>
+                <Text style={[s.text.plain, s.text.bold]}>Text </Text>
+                <Text style={s.text.link} onPress={() => setShowTextComponentView(!showTextComponentView)}>
+                    {showTextComponentView ? 'Components View' : 'Raw View'}
+                </Text>
+            </Text>
 
             <NoteTextEditor notuRenderTools={notuRenderTools}
-                            note={note}/>
+                            note={note}
+                            mode={showTextComponentView ? 'Components' : 'Raw'}/>
 
             {tagsDropdownData.length > 0 && (
                 <Text style={[s.text.plain, s.text.bold]}>Tags</Text>

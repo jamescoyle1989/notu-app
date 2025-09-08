@@ -23,6 +23,10 @@ export class NoteText {
         )
     }
 
+    renderForEdit() {
+        return this.render();
+    }
+
     getText(): string {
         return this.originalText;
     }
