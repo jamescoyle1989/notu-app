@@ -1,5 +1,5 @@
 import { Overlay } from '@rneui/base';
-import { Note, NoteXmlElement } from 'notu';
+import { NmlElement, Note } from 'notu';
 import React, { useState } from 'react';
 import { Linking, Text, TextInput, View } from 'react-native';
 import { NoteComponentContainer } from '../components/NoteComponentContainer';
@@ -68,7 +68,7 @@ export class NoteLink {
     }
 
     getText(): string {
-        return `<|Link url="${this.url}"|>${this.content.map(x => x.getText()).join('')}<|/Link|>`
+        return `<Link url="${this.url}">${this.content.map(x => x.getText()).join('')}</Link>`
     }
 
     get typeInfo(): string { return 'NoteLink'; }
@@ -84,14 +84,14 @@ export class NoteLinkProcessor {
     get tagName(): string { return 'Link'; }
 
     newComponentText(textContent: string): string {
-        return `<|Link url=""|>${textContent}<|/Link|>`;
+        return `<Link url="">${textContent}</Link>`;
     }
 
     create(
-        data: NoteXmlElement,
+        data: NmlElement,
         note: Note,
         save: () => Promise<void>,
-        childComponentFactory: (childElement: NoteXmlElement) => any
+        childComponentFactory: (childElement: string | NmlElement) => any
     ): NoteLink {
         return new NoteLink(
             data.attributes?.url ?? '',

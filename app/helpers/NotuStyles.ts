@@ -19,6 +19,17 @@ const border = StyleSheet.create({
     }
 });
 
+const checkbox = StyleSheet.create({
+
+    inline: {
+        backgroundColor: 'transparent',
+        padding: 0,
+        marginRight: 0,
+        marginVertical: 0,
+        marginLeft: 20
+    }
+});
+
 const dropdown = StyleSheet.create({
 
     main: {
@@ -81,6 +92,10 @@ const text = StyleSheet.create({
     link: {
         color: '#00F',
         textDecorationLine: 'underline'
+    },
+
+    vcenter: {
+        alignSelf: 'center'
     }
 });
 
@@ -136,6 +151,7 @@ const view = StyleSheet.create({
 
 export default {
     border,
+    checkbox,
     dropdown,
     margin,
     text,
