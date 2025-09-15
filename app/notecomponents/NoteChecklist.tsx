@@ -69,7 +69,7 @@ export class NoteChecklist {
                     </View>
                 ))}
                 {this.showClearButton && (
-                    <TouchableOpacity style={[s.touch.button, s.touch.danger]}>
+                    <TouchableOpacity style={[s.touch.button, s.background.danger]}>
                         <Text style={[s.text.plain]}>Clear Completed Items</Text>
                     </TouchableOpacity>
                 )}
@@ -87,13 +87,13 @@ export class NoteChecklist {
         }
 
         return (
-            <View style={[s.touch.success]}>
-                <View style={[s.view.row]}>
-                    <Text style={[s.text.plain, s.text.bold, s.text.vcenter]}>Checklist</Text>
+            <View style={[s.background.success]}>
+                <View style={[s.container.row]}>
+                    <Text style={[s.text.plain, s.text.bold, s.child.vcenter]}>Checklist</Text>
                     <CheckBox checked={this.showClearButton}
                               containerStyle={[s.checkbox.inline]}
                               onPress={() => onShowClearChange()} />
-                    <Text style={[s.text.plain, s.text.vcenter]}>Show Clear Button</Text>
+                    <Text style={[s.text.plain, s.child.vcenter]}>Show Clear Button</Text>
                 </View>
                 {this.lines.map((line, index) => (
                     <Text key={`line${index}`} style={[s.text.plain]}>

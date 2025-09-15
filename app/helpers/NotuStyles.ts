@@ -1,5 +1,22 @@
 import { StyleSheet } from "react-native";
 
+
+const background = StyleSheet.create({
+
+    success: {
+        backgroundColor: '#8AC44B'
+    },
+
+    danger: {
+        backgroundColor: '#F04438'
+    },
+
+    inactive: {
+        backgroundColor: '#666'
+    }
+});
+
+
 const border = StyleSheet.create({
 
     main: {
@@ -19,6 +36,7 @@ const border = StyleSheet.create({
     }
 });
 
+
 const checkbox = StyleSheet.create({
 
     inline: {
@@ -29,6 +47,44 @@ const checkbox = StyleSheet.create({
         marginLeft: 20
     }
 });
+
+
+const child = StyleSheet.create({
+
+    autoSize: {
+        flexBasis: 'auto'
+    },
+
+    grow1: {
+        flexGrow: 1
+    },
+
+    grow2: {
+        flexGrow: 2
+    },
+
+    grow3: {
+        flexGrow: 3
+    },
+
+    vcenter: {
+        alignSelf: 'center'
+    }
+});
+
+
+const container = StyleSheet.create({
+
+    row: {
+        flexDirection: 'row'
+    },
+
+    background: {
+        backgroundColor: '#25292E',
+        flex: 1
+    }
+});
+
 
 const dropdown = StyleSheet.create({
 
@@ -50,6 +106,7 @@ const dropdown = StyleSheet.create({
     }
 });
 
+
 const margin = StyleSheet.create({
 
     h3: {
@@ -62,6 +119,7 @@ const margin = StyleSheet.create({
         marginBottom: 3
     }
 });
+
 
 const text = StyleSheet.create({
 
@@ -92,12 +150,9 @@ const text = StyleSheet.create({
     link: {
         color: '#00F',
         textDecorationLine: 'underline'
-    },
-
-    vcenter: {
-        alignSelf: 'center'
     }
 });
+
 
 const touch = StyleSheet.create({
     button: {
@@ -106,55 +161,18 @@ const touch = StyleSheet.create({
         backgroundColor: '#498BD1',
         padding: 7,
         borderRadius: 5
-    },
-
-    success: {
-        backgroundColor: '#8AC44B'
-    },
-
-    danger: {
-        backgroundColor: '#F04438'
-    },
-
-    inactive: {
-        backgroundColor: '#666'
     }
 });
 
-const view = StyleSheet.create({
-
-    row: {
-        flexDirection: 'row'
-    },
-
-    background: {
-        backgroundColor: '#25292E',
-        flex: 1
-    },
-
-    autoSize: {
-        flexBasis: 'auto'
-    },
-
-    grow1: {
-        flexGrow: 1
-    },
-
-    grow2: {
-        flexGrow: 2
-    },
-
-    grow3: {
-        flexGrow: 3
-    }
-});
 
 export default {
+    background,
     border,
     checkbox,
+    child,
+    container,
     dropdown,
     margin,
     text,
-    touch,
-    view
+    touch
 };

@@ -61,7 +61,7 @@ export default function TagEditor({
 
         return [
             <TouchableOpacity key={1}
-                              style={[s.touch.button, s.view.autoSize, s.border.joinedLeft, s.border.joinedRight]}
+                              style={[s.touch.button, s.child.autoSize, s.border.joinedLeft, s.border.joinedRight]}
                               onPress={toggleAvailability}>
                 <Text style={s.text.plain}>{availabilityText}</Text>
             </TouchableOpacity>,
@@ -69,7 +69,7 @@ export default function TagEditor({
             <TouchableOpacity key={2}
                               style={[
                                     s.touch.button,
-                                    s.view.autoSize,
+                                    s.child.autoSize,
                                     s.border.joinedLeft,
                                     s.border.joinedRight
                               ]}
@@ -78,7 +78,7 @@ export default function TagEditor({
             </TouchableOpacity>,
 
             <TouchableOpacity key={3}
-                              style={[s.touch.button, s.view.autoSize, s.border.joinedLeft]}
+                              style={[s.touch.button, s.child.autoSize, s.border.joinedLeft]}
                               onPress={() => setShowExistingTagColors(true)}>
                 <Image source={require('../../assets/images/down.png')}
                        style={{tintColor: 'white', height: 20, width: 20}}/>
@@ -88,7 +88,7 @@ export default function TagEditor({
                    onRequestClose={() => setShowColorPicker(false)}
                    visible={showColorPicker}
                    animationType="slide">
-                <View style={[s.view.background]}>
+                <View style={[s.container.background]}>
                     <ColorPicker value={note.ownTag.color ?? '#AABBCC'}
                                  sliderThickness={20}
                                  thumbSize={24}
@@ -132,13 +132,13 @@ export default function TagEditor({
         <View>
             <Text style={[s.text.plain, s.text.bold]}>Own Tag</Text>
             
-            <View style={s.view.row}>
+            <View style={s.container.row}>
                 <TextInput value={note.ownTag?.name ?? ''}
                            onChangeText={onNameChange}
                            style={[
                                 s.text.plain,
                                 s.border.main,
-                                s.view.grow1,
+                                s.child.grow1,
                                 showNoteOptions && s.border.joinedRight,
                                 showNoteOptions && {
                                     backgroundColor,

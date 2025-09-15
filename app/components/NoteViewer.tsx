@@ -96,11 +96,11 @@ export const NoteViewer = ({
                     <View style={{
                         flexDirection: 'row'
                     }}>
-                        <TouchableOpacity style={[s.touch.button, s.touch.success]}
+                        <TouchableOpacity style={[s.touch.button, s.background.success]}
                                           onPress={() => onActionConfirmed(action)}>
                             <Text style={s.text.plain}>Confirm</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={[s.touch.button, s.touch.danger]}
+                        <TouchableOpacity style={[s.touch.button, s.background.danger]}
                                           onPress={() => onActionCancelled(action)}>
                             <Text style={s.text.plain}>Cancel</Text>
                         </TouchableOpacity>
@@ -121,7 +121,7 @@ export const NoteViewer = ({
                     {actions.map((x, index) => renderAction(x, index))}
                 </Overlay>
 
-                <View style={s.view.row}>
+                <View style={s.container.row}>
                     {note.tags.map(nt => (
                         <NoteTagBadge key={nt.tag.id}
                                     noteTag={nt} note={note}

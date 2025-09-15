@@ -40,7 +40,7 @@ export class NoteLink {
 
         return (
             <Text>
-                <Text style={[s.touch.danger, s.text.plain]}>
+                <Text style={[s.background.danger, s.text.plain]}>
                     <Text style={[s.text.bold, s.text.link]} onPress={() => setShowLinkEditor(true)}>Link: </Text>
                     {this.content.map((x, index) => (
                         <NoteComponentContainer key={index} component={x} editMode={true}/>

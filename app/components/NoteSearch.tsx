@@ -71,14 +71,14 @@ export const NoteSearch = React.forwardRef((
 
     return (
         <View>
-            <View style={[s.view.row]}>
+            <View style={[s.container.row]}>
                 {!!space && (
                     <TouchableOpacity disabled
                                     style={[
                                         s.touch.button,
-                                        s.view.autoSize,
+                                        s.child.autoSize,
                                         s.border.joinedRight,
-                                        s.touch.inactive
+                                        s.background.inactive
                                     ]}>
                         <Text style={s.text.plain}>{space.name}</Text>
                     </TouchableOpacity>
@@ -88,7 +88,7 @@ export const NoteSearch = React.forwardRef((
                         style={[
                                 s.text.plain,
                                 s.border.main,
-                                s.view.grow1,
+                                s.child.grow1,
                                 !!space && s.border.joinedLeft,
                                 s.border.joinedRight
                         ]}/>
@@ -98,8 +98,8 @@ export const NoteSearch = React.forwardRef((
                     <TouchableOpacity disabled
                                     style={[
                                         s.touch.button,
-                                        s.touch.danger,
-                                        s.view.autoSize,
+                                        s.background.danger,
+                                        s.child.autoSize,
                                         s.border.joinedLeft
                                     ]}>
                         <Text style={[s.text.plain]}>Error!</Text>
@@ -107,7 +107,7 @@ export const NoteSearch = React.forwardRef((
                 )}
                 {!error && (
                     <TouchableOpacity onPress={onSearchSubmit}
-                                    style={[s.touch.button, s.view.autoSize, s.border.joinedLeft]}>
+                                    style={[s.touch.button, s.child.autoSize, s.border.joinedLeft]}>
                         <Text style={[s.text.plain]}>Search</Text>
                     </TouchableOpacity>
                 )}

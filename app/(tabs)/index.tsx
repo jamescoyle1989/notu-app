@@ -167,7 +167,7 @@ export default function Index() {
     }
 
     return (
-        <View style={s.view.background}>
+        <View style={s.container.background}>
             {!!error && (
                 <ScrollView>
                     <Text style={s.text.plain}>Date: {new Date().toLocaleTimeString()}</Text>

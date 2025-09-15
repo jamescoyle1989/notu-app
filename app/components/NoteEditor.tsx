@@ -174,7 +174,7 @@ export default function NoteEditor({
             )}
 
             {note.tags.length > 0 && (
-                <View style={s.view.row}>
+                <View style={s.container.row}>
                     {note.tags.map(nt => (
                         <NoteTagBadge key={nt.tag.id}
                                       noteTag={nt}
