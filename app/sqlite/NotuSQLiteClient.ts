@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { Note, NoteTag, NotuCache, ParsedQuery, Space, SpaceLink, Tag, parseQuery } from 'notu';
+import { Note, NoteTag, NotuCache, Page, ParsedQuery, Space, SpaceLink, Tag, parseQuery } from 'notu';
 import { mapColorToInt, mapDateToNumber, mapNumberToDate } from './SQLMappings';
 import { ISQLiteConnection } from './SQLiteConnection';
 import { buildNotesQuery } from './SQLiteQueryBuilder';
@@ -86,6 +86,20 @@ export class NotuSQLiteClient {
                 );
                 await connection.run(`CREATE INDEX NoteTag_noteId ON NoteTag(noteId);`);
                 await connection.run(`CREATE INDEX NoteTag_tagId ON NoteTag(tagId);`);
+
+                await connection.run(
+                    `CREATE TABLE Page (
+                        id INTEGER NOT NULL,
+                        name TEXT NOT NULL,
+                        order INTEGER NOT NULL,
+                        group TEXT NULL,
+                        spaceId INTEGER NULL,
+                        query TEXT NULL,
+                        PRIMARY KEY (id),
+                        FOREIGN KEY (spaceId) REFERENCES Space(id) ON DELETE CASCADE
+                    )`
+                )
+                await connection.run(`CREATE INDEX Page_name ON Page(name);`);
             }
         }
         finally {
@@ -372,6 +386,84 @@ export class NotuSQLiteClient {
             }
         }
         throw Error(`Unrecognised custom job '${name}'`);
+    }
+
+
+    async getPages(): Promise<Array<any>> {
+        const connection = await this._connectionFactory();
+        try {
+            const pages = (await connection.getAll(`SELECT p.* FROM Page p ORDER BY p.order`)).map(x => {
+                const page = {
+                    state: 'CLEAN',
+                    id: x.id,
+                    name: x.name,
+                    order: x.order,
+                    group: x.group,
+                    spaceId: x.spaceId,
+                    query: x.query
+                }
+                return page;
+            });
+            return pages;
+        }
+        finally {
+            await connection.close();
+        }
+    }
+
+
+    async getPage(id: number): Promise<any> {
+        const connection = await this._connectionFactory();
+        try {
+            const pageData = (await connection.getFirst(`SELECT * FROM Page WHERE id = ${id}`));
+            const page = {
+                state: 'CLEAN',
+                id: pageData.id,
+                name: pageData.name,
+                order: pageData.order,
+                group: pageData.group,
+                spaceId: pageData.spaceId,
+                query: pageData.query
+            };
+            return page;
+        }
+        finally {
+            await connection.close();
+        }
+    }
+
+
+    async savePage(page: Page): Promise<any> {
+        if (page.isClean)
+            return Promise.resolve();
+
+        const connection = await this._connectionFactory();
+        try {
+            if (page.isNew) {
+                page.id = (await connection.run(
+                    'INSERT INTO Page (name, order, group, spaceId, query) VALUES (?, ?, ?, ?, ?);',
+                    page.name, page.order, page.group, page.space?.id, page.query
+                )).lastInsertRowId as number;
+                page.clean();
+            }
+            else if (page.isDirty) {
+                await connection.run(
+                    'UPDATE Page SET name = ?, order = ?, group = ?, spaceId = ?, query = ? WHERE id = ?;',
+                    page.name, page.order, page.group, page.space?.id, page.query, page.id
+                );
+                page.clean();
+            }
+            else if (page.isDeleted) {
+                await this._enforceForeignKeys(connection);
+                await connection.run(
+                    'DELETE FROM Page WHERE id = ?',
+                    page.id
+                );
+            }
+        }
+        finally {
+            await connection.close();
+        }
     }
 
 
