@@ -98,8 +98,8 @@ export class NotuSQLiteClient {
                         PRIMARY KEY (id),
                         FOREIGN KEY (spaceId) REFERENCES Space(id) ON DELETE CASCADE
                     )`
-                )
-                await connection.run(`CREATE INDEX Page_name ON Page(name);`);
+                );
+                await connection.run(`CREATE UNIQUE INDEX Page_name ON Page(name);`);
             }
         }
         finally {
