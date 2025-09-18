@@ -1,7 +1,7 @@
 import { NotuCache, ParsedGrouping, ParsedQuery, ParsedTag, ParsedTagFilter, parseQuery } from 'notu';
 import { expect, test } from 'vitest';
-import { testCacheFetcher } from '../../app/helpers/TestHelpers';
-import { buildNotesQuery, buildTagDataExpression } from '../../app/sqlite/SQLiteQueryBuilder';
+import { testCacheFetcher } from '../../helpers/TestHelpers';
+import { buildNotesQuery, buildTagDataExpression } from '../../sqlite/SQLiteQueryBuilder';
 
 
 

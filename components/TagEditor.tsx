@@ -80,7 +80,7 @@ export default function TagEditor({
             <TouchableOpacity key={3}
                               style={[s.touch.button, s.child.autoSize, s.border.joinedLeft]}
                               onPress={() => setShowExistingTagColors(true)}>
-                <Image source={require('../../assets/images/down.png')}
+                <Image source={require('../assets/images/down.png')}
                        style={{tintColor: 'white', height: 20, width: 20}}/>
             </TouchableOpacity>,
 
