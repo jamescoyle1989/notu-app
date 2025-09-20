@@ -1,5 +1,6 @@
 import { NoteChecklistProcessor } from '@/notecomponents/NoteChecklist';
 import { NoteLinkProcessor } from '@/notecomponents/NoteLink';
+import { CommonSpaceSetup } from '@/spaces/common/CommonSpaceSetup';
 import { NotuSQLiteCacheFetcher } from '@/sqlite/NotuSQLiteCacheFetcher';
 import { NotuSQLiteClient } from '@/sqlite/NotuSQLiteClient';
 import { ExpoSQLiteConnection } from '@/sqlite/SQLiteConnection';
@@ -106,6 +107,7 @@ export async function setupNotu(): Promise<NotuRenderTools> {
     var result = await loadNotu();
     await result.notu.setup();
     await result.notu.cache.populate();
+    await CommonSpaceSetup.setup(result.notu);
     return result;
 }
 
