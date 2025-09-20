@@ -88,15 +88,15 @@ export class NotuSQLiteClient {
                 await connection.run(`CREATE INDEX NoteTag_tagId ON NoteTag(tagId);`);
 
                 await connection.run(
-                    `CREATE TABLE Page (
-                        id INTEGER NOT NULL,
-                        name TEXT NOT NULL,
-                        order INTEGER NOT NULL,
-                        group TEXT NULL,
-                        spaceId INTEGER NULL,
-                        query TEXT NULL,
-                        PRIMARY KEY (id),
-                        FOREIGN KEY (spaceId) REFERENCES Space(id) ON DELETE CASCADE
+                    `CREATE TABLE [Page] (
+                        [id] INTEGER NOT NULL,
+                        [name] TEXT NOT NULL,
+                        [order] INTEGER NOT NULL,
+                        [group] TEXT NULL,
+                        [spaceId] INTEGER NULL,
+                        [query] TEXT NULL,
+                        PRIMARY KEY ([id]),
+                        FOREIGN KEY ([spaceId]) REFERENCES [Space]([id]) ON DELETE CASCADE
                     )`
                 );
                 await connection.run(`CREATE UNIQUE INDEX Page_name ON Page(name);`);
@@ -392,7 +392,7 @@ export class NotuSQLiteClient {
     async getPages(): Promise<Array<any>> {
         const connection = await this._connectionFactory();
         try {
-            const pages = (await connection.getAll(`SELECT p.* FROM Page p ORDER BY p.order`)).map(x => {
+            const pages = (await connection.getAll(`SELECT p.* FROM Page p ORDER BY p.[order]`)).map(x => {
                 const page = {
                     state: 'CLEAN',
                     id: x.id,
@@ -441,14 +441,14 @@ export class NotuSQLiteClient {
         try {
             if (page.isNew) {
                 page.id = (await connection.run(
-                    'INSERT INTO Page (name, order, group, spaceId, query) VALUES (?, ?, ?, ?, ?);',
+                    'INSERT INTO [Page] ([name], [order], [group], [spaceId], [query]) VALUES (?, ?, ?, ?, ?);',
                     page.name, page.order, page.group, page.space?.id, page.query
                 )).lastInsertRowId as number;
                 page.clean();
             }
             else if (page.isDirty) {
                 await connection.run(
-                    'UPDATE Page SET name = ?, order = ?, group = ?, spaceId = ?, query = ? WHERE id = ?;',
+                    'UPDATE [Page] SET [name] = ?, [order] = ?, [group] = ?, [spaceId] = ?, [query] = ? WHERE [id] = ?;',
                     page.name, page.order, page.group, page.space?.id, page.query, page.id
                 );
                 page.clean();
@@ -456,10 +456,11 @@ export class NotuSQLiteClient {
             else if (page.isDeleted) {
                 await this._enforceForeignKeys(connection);
                 await connection.run(
-                    'DELETE FROM Page WHERE id = ?',
+                    'DELETE FROM [Page] WHERE [id] = ?',
                     page.id
                 );
             }
+            return Promise.resolve(page.toJSON());
         }
         finally {
             await connection.close();
