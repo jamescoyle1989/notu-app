@@ -1,3 +1,4 @@
+import { NoteAction } from '@/helpers/NoteAction';
 import { Overlay } from '@rneui/base';
 import { Note } from "notu";
 import { useMemo, useState } from "react";
@@ -8,32 +9,9 @@ import { NoteComponentContainer } from './NoteComponentContainer';
 import NoteTagBadge from './NoteTagBadge';
 
 
-export class NoteViewerAction {
-    private _name: string;
-    get name(): string { return this._name; }
-
-    private _action: (note: Note) => void;
-    get action(): (note: Note) => void { return this._action; }
-
-    private _requiresConfirmation: boolean;
-    get requiresConfirmation(): boolean { return this._requiresConfirmation; }
-
-    public constructor(
-        name: string,
-        action: (note: Note) => void,
-        requiresConfirmation: boolean = false
-    ) {
-        this._name = name;
-        this._action = action;
-        this._requiresConfirmation = requiresConfirmation;
-    }
-}
-
-
 interface NoteViewerProps {
     note: Note,
     notuRenderTools: NotuRenderTools,
-    actions: Array<NoteViewerAction>,
     showDate?: boolean
 }
 
@@ -41,42 +19,42 @@ interface NoteViewerProps {
 export const NoteViewer = ({
     note,
     notuRenderTools,
-    actions,
     showDate = true
 }: NoteViewerProps) => {
 
     const textComponents = useMemo(() => notuRenderTools.noteTextSplitter(note), [note, note.text]);
-    const [showActions, setShowActions] = useState(false);
-    const [actionBeingConfirmed, setActionBeingConfirmed] = useState<NoteViewerAction>();
+    const [actions, setActions] = useState<Array<NoteAction>>(null);
+    const [actionBeingConfirmed, setActionBeingConfirmed] = useState<NoteAction>();
 
     function showNoteActions() {
-        if ((actions?.length ?? 0) == 0)
+        const actionsList = notuRenderTools.buildNoteActionsMenu(note);
+        if (actionsList.length == 0)
             return;
-        setShowActions(true);
+        setActions(actionsList);
     }
 
-    function onActionPress(action: NoteViewerAction) {
+    function onActionPress(action: NoteAction) {
         if (action.requiresConfirmation)
             setActionBeingConfirmed(action);
         else
             onActionConfirmed(action);
     }
 
-    function onActionConfirmed(action: NoteViewerAction) {
+    function onActionConfirmed(action: NoteAction) {
         action.action(note);
         hideOverlay();
     }
 
-    function onActionCancelled(action: NoteViewerAction) {
+    function onActionCancelled(action: NoteAction) {
         setActionBeingConfirmed(undefined);
     }
 
     function hideOverlay() {
-        setShowActions(false);
+        setActions(null);
         setActionBeingConfirmed(undefined);
     }
 
-    function renderAction(action: NoteViewerAction, index: number) {
+    function renderAction(action: NoteAction, index: number) {
         if (actionBeingConfirmed !== action) {
             return (
                 <TouchableOpacity key={index}
@@ -116,7 +94,7 @@ export const NoteViewer = ({
             <View>
                 {textComponents.map((x, index) => (<NoteComponentContainer key={index} component={x}/>))}
 
-                <Overlay isVisible={showActions} onBackdropPress={() => hideOverlay()}>
+                <Overlay isVisible={actions != null} onBackdropPress={() => hideOverlay()}>
                     <Text style={s.text.plain}>Available Actions</Text>
                     {actions.map((x, index) => renderAction(x, index))}
                 </Overlay>

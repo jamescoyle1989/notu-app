@@ -5,7 +5,7 @@ export class CommonSpaceSetup {
     static get thought(): string { return 'Thought'; }
     static get info(): string { return 'Info'; }
 
-    static async setup(notu: Notu) {
+    static async setup(notu: Notu): Promise<void> {
         let commonSpace = notu.getSpaceByInternalName(this.internalName);
         if (!commonSpace) {
             commonSpace = new Space('Common').v('1.0.0');
@@ -19,9 +19,9 @@ export class CommonSpaceSetup {
             const info = new Note('This marks a note as being some info about a particular subject that may be useful later.')
                 .in(commonSpace).setOwnTag(this.info);
             info.ownTag.asInternal().asPublic();
-
+            
             await notu.saveNotes([thought, info]);
-                        
+            
             const page1 = new Page();
             page1.name = 'Page 1';
             page1.order = 1;
@@ -29,7 +29,7 @@ export class CommonSpaceSetup {
             page1.space = commonSpace;
             page1.query = `t.isInternal`;
             await notu.savePage(page1);
-                        
+            
             const page2 = new Page();
             page2.name = 'Page 2';
             page2.order = 2;
@@ -37,7 +37,7 @@ export class CommonSpaceSetup {
             page2.space = commonSpace;
             page2.query = `#Info`;
             await notu.savePage(page2);
-                        
+            
             const page3 = new Page();
             page3.name = 'Page 3';
             page3.order = 3;

@@ -3,24 +3,18 @@ import { JSX, useMemo } from "react";
 import { SectionList, Text, View } from "react-native";
 import { NotuRenderTools } from "../helpers/NotuRenderTools";
 import s from '../helpers/NotuStyles';
-import { NoteViewer, NoteViewerAction } from "./NoteViewer";
+import { NoteViewer } from "./NoteViewer";
 
 interface GroupedNoteListProps {
     notes: Array<Note>,
     notuRenderTools: NotuRenderTools,
-    actionsGenerator: (note: Note) => Array<NoteViewerAction>,
-    noteViewer?: (
-        note: Note,
-        actions: Array<NoteViewerAction>,
-        noteTextSplitter: (note: Note) => Array<any>
-    ) => JSX.Element
+    noteViewer?: (note: Note) => JSX.Element
 }
 
 
 export default function GroupedNoteList({
     notes,
     notuRenderTools,
-    actionsGenerator,
     noteViewer
 }: GroupedNoteListProps) {
 
@@ -41,11 +35,10 @@ export default function GroupedNoteList({
         if (!noteViewer) {
             return (
                 <NoteViewer note={note}
-                            notuRenderTools={notuRenderTools}
-                            actions={actionsGenerator(note)}/>
+                            notuRenderTools={notuRenderTools}/>
             )
         }
-        return noteViewer(note, actionsGenerator(note), notuRenderTools.noteTextSplitter);
+        return noteViewer(note);
     }
 
     return (

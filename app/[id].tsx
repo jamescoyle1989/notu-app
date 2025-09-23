@@ -1,5 +1,4 @@
 import GroupedSearchList from "@/components/GroupedSearchList";
-import { NoteViewerAction } from "@/components/NoteViewer";
 import { getNotu } from "@/helpers/NotuSetup";
 import { Stack, useLocalSearchParams, usePathname } from "expo-router";
 import { Page } from "notu";
@@ -36,10 +35,6 @@ export default function CustomPage() {
             <GroupedSearchList query={page.query}
                                searchSpace={page.space}
                                notuRenderTools={renderTools}
-                               actionsGenerator={n => [
-                                new NoteViewerAction('Test Action 1', () => {}, false),
-                                new NoteViewerAction('Test Action 2', () => {}, true)
-                               ]}
                                actionsBar={() => (
                                 <Text style={s.text.plain}>Hello from actions bar</Text>
                                )} />

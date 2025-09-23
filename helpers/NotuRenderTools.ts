@@ -1,8 +1,10 @@
+import { LogicalSpace } from "@/spaces/LogicalSpace";
 import { Note, NoteTag, Notu, Space, splitNoteTextIntoComponents, Tag } from "notu";
 import { NoteComponent, NoteComponentProcessor } from "notu/dist/types/notecomponents/NoteComponent";
 import { ReactNode } from "react";
 import { NoteParagraph } from "../notecomponents/NoteParagraph";
 import { NoteText } from "../notecomponents/NoteText";
+import { NoteAction, NoteActionsMenuBuilder } from "./NoteAction";
 
 export class NotuRenderTools {
     private _notu: Notu;
@@ -18,15 +20,20 @@ export class NotuRenderTools {
     private _noteComponentProcessors: Array<NoteComponentProcessor>;
     get noteComponentProcessors() { return this._noteComponentProcessors; }
 
+    private _logicalSpaces: Array<LogicalSpace>;
+    get logicalSpaces() { return this._logicalSpaces; }
+
     constructor(
         notu: Notu,
         noteComponentProcessors: Array<NoteComponentProcessor>,
         noteTagDataComponentResolver: (tag: Tag, note: Note) => NoteTagDataComponentFactory | null,
-        spaceSettingsComponentResolver: (space: Space) => SpaceSettingsComponentFactory | null
+        spaceSettingsComponentResolver: (space: Space) => SpaceSettingsComponentFactory | null,
+        logicalSpaces: Array<LogicalSpace>
     ) {
         this._notu = notu;
         this._noteTagDataComponentResolver = noteTagDataComponentResolver;
         this._spaceSettingsComponentResolver = spaceSettingsComponentResolver;
+        this._logicalSpaces = logicalSpaces;
 
         this._noteComponentProcessors = noteComponentProcessors;
         this._noteTextSplitter = (note: Note) => splitNoteTextIntoComponents(
@@ -44,6 +51,13 @@ export class NotuRenderTools {
 
     getSettingsComponentFactoryForSpace(space: Space): SpaceSettingsComponentFactory | null {
         return this._spaceSettingsComponentResolver(space);
+    }
+
+    buildNoteActionsMenu(note: Note): Array<NoteAction> {
+        const builder = new NoteActionsMenuBuilder();
+        for (const space of this.logicalSpaces)
+            space.buildNoteActionsMenu(note, builder, this.notu);
+        return builder.actions;
     }
 }
 

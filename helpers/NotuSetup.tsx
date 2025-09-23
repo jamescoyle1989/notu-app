@@ -1,5 +1,6 @@
 import { NoteChecklistProcessor } from '@/notecomponents/NoteChecklist';
 import { NoteLinkProcessor } from '@/notecomponents/NoteLink';
+import { CommonSpace } from '@/spaces/common/CommonSpace';
 import { CommonSpaceSetup } from '@/spaces/common/CommonSpaceSetup';
 import { NotuSQLiteCacheFetcher } from '@/sqlite/NotuSQLiteCacheFetcher';
 import { NotuSQLiteClient } from '@/sqlite/NotuSQLiteClient';
@@ -93,7 +94,10 @@ export async function loadNotu(): Promise<NotuRenderTools> {
             if (space.name == 'Common')
                 return new CommonSpaceSettingsComponentFactory();
             return null;
-        }
+        },
+        [
+            new CommonSpace(notuVal)
+        ]
     );
     _renderTools = renderToolsVal;
     return renderToolsVal;
