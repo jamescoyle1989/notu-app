@@ -10,10 +10,6 @@ export class NotuRenderTools {
     private _notu: Notu;
     get notu(): Notu { return this._notu; }
 
-    private _noteTagDataComponentResolver: (tag: Tag, note: Note) => NoteTagDataComponentFactory | null;
-
-    private _spaceSettingsComponentResolver: (space: Space) => SpaceSettingsComponentFactory | null;
-
     private _noteTextSplitter: (note: Note) => Array<any>;
     get noteTextSplitter(): (note: Note) => Array<any> { return this._noteTextSplitter; }
 
@@ -26,13 +22,9 @@ export class NotuRenderTools {
     constructor(
         notu: Notu,
         noteComponentProcessors: Array<NoteComponentProcessor>,
-        noteTagDataComponentResolver: (tag: Tag, note: Note) => NoteTagDataComponentFactory | null,
-        spaceSettingsComponentResolver: (space: Space) => SpaceSettingsComponentFactory | null,
         logicalSpaces: Array<LogicalSpace>
     ) {
         this._notu = notu;
-        this._noteTagDataComponentResolver = noteTagDataComponentResolver;
-        this._spaceSettingsComponentResolver = spaceSettingsComponentResolver;
         this._logicalSpaces = logicalSpaces;
 
         this._noteComponentProcessors = noteComponentProcessors;
@@ -46,11 +38,19 @@ export class NotuRenderTools {
     }
 
     getComponentFactoryForNoteTag(tag: Tag, note: Note): NoteTagDataComponentFactory | null {
-        return this._noteTagDataComponentResolver(tag, note);
+        for (const space of this.logicalSpaces) {
+            const factory = space.resolveNoteTagDataComponentFactory(tag, note);
+            if (!!factory)
+                return factory;
+        }
+        return null;
     }
 
     getSettingsComponentFactoryForSpace(space: Space): SpaceSettingsComponentFactory | null {
-        return this._spaceSettingsComponentResolver(space);
+        const logicalSpace = this.logicalSpaces.find(x => x.space.name == space.name);
+        if (!!logicalSpace)
+            return logicalSpace.getSpaceSettingsComponentFactory();
+        return null;
     }
 
     buildNoteActionsMenu(note: Note): Array<NoteAction> {

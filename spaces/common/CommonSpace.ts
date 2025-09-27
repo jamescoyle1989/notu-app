@@ -1,4 +1,5 @@
 import { NoteAction, NoteActionsMenuBuilder, RefreshAction, ShowEditorAction } from "@/helpers/NoteAction";
+import { NoteTagDataComponentFactory, SpaceSettingsComponentFactory } from "@/helpers/NotuRenderTools";
 import { Note, Notu, Space, Tag } from "notu";
 import { LogicalSpace } from "../LogicalSpace";
 import { CommonSpaceSetup } from "./CommonSpaceSetup";
@@ -25,10 +26,12 @@ export class CommonSpace implements LogicalSpace {
         this._info = notu.getTagByName(CommonSpaceSetup.info, this._space);
     }
 
+
     async setup(notu: Notu): Promise<void> {
         await CommonSpaceSetup.setup(notu);
         this._load(notu);
     }
+
 
     buildNoteActionsMenu(note: Note, menuBuilder: NoteActionsMenuBuilder, notu: Notu) {
         menuBuilder.addToTopOfStart(
@@ -45,5 +48,15 @@ export class CommonSpace implements LogicalSpace {
                 true
             )
         );
+    }
+
+
+    resolveNoteTagDataComponentFactory(tag: Tag, note: Note): NoteTagDataComponentFactory | null {
+        return null;
+    }
+
+
+    getSpaceSettingsComponentFactory(): SpaceSettingsComponentFactory | null {
+        return null;
     }
 }
