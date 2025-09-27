@@ -1,4 +1,4 @@
-import { setupNotu } from '@/helpers/NotuSetup';
+import { getNotu } from '@/helpers/NotuSetup';
 import { Note } from "notu";
 import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
@@ -13,7 +13,7 @@ export default function Index() {
 
     useEffect(() => {
         async function load() {
-            setRenderTools(await setupNotu());
+            setRenderTools(await getNotu());
         }
         load();
     }, []);

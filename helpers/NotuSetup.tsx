@@ -1,7 +1,6 @@
 import { NoteChecklistProcessor } from '@/notecomponents/NoteChecklist';
 import { NoteLinkProcessor } from '@/notecomponents/NoteLink';
 import { CommonSpace } from '@/spaces/common/CommonSpace';
-import { CommonSpaceSetup } from '@/spaces/common/CommonSpaceSetup';
 import { NotuSQLiteCacheFetcher } from '@/sqlite/NotuSQLiteCacheFetcher';
 import { NotuSQLiteClient } from '@/sqlite/NotuSQLiteClient';
 import { ExpoSQLiteConnection } from '@/sqlite/SQLiteConnection';
@@ -59,10 +58,10 @@ class TestNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
 let _renderTools: NotuRenderTools = null;
 
 
-export async function loadNotu(): Promise<NotuRenderTools> {
+export async function setupNotu(): Promise<NotuRenderTools> {
     if (_renderTools != null)
         return _renderTools;
-    
+
     const db = await SQLite.openDatabaseAsync('notu.db', { useNewConnection: true });
 
     const notuCache = new NotuCache(
@@ -78,6 +77,9 @@ export async function loadNotu(): Promise<NotuRenderTools> {
         ),
         notuCache
     );
+
+    await notuVal.setup();
+    await notuVal.cache.populate();
 
     const renderToolsVal = new NotuRenderTools(
         notuVal,
@@ -99,20 +101,10 @@ export async function loadNotu(): Promise<NotuRenderTools> {
             new CommonSpace(notuVal)
         ]
     );
+    for (const space of renderToolsVal.logicalSpaces)
+        await space.setup(notuVal);
     _renderTools = renderToolsVal;
-    return renderToolsVal;
-}
-
-
-export async function setupNotu(): Promise<NotuRenderTools> {
-    if (_renderTools != null)
-        return _renderTools;
-
-    var result = await loadNotu();
-    await result.notu.setup();
-    await result.notu.cache.populate();
-    await CommonSpaceSetup.setup(result.notu);
-    return result;
+    return _renderTools;
 }
 
 

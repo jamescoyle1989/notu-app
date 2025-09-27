@@ -47,25 +47,11 @@ export default function TagEditor({
         note.ownTag.color = tag.color;
         setShowExistingTagColors(false);
     }
-
-    function toggleAvailability(): void {
-        note.ownTag.availability = (note.ownTag.availability + 1) % 3;
-        manualRefresh();
-    }
     
     //This is all the stuff that gets rendered if the note actually has its own tag
     function renderOwnTagOptions() {
-        const availabilityText = note.ownTag.availability == 0
-            ? 'Private'
-            : (note.ownTag.availability == 1 ? 'Common' : 'Public');
 
         return [
-            <TouchableOpacity key={1}
-                              style={[s.touch.button, s.child.autoSize, s.border.joinedLeft, s.border.joinedRight]}
-                              onPress={toggleAvailability}>
-                <Text style={s.text.plain}>{availabilityText}</Text>
-            </TouchableOpacity>,
-
             <TouchableOpacity key={2}
                               style={[
                                     s.touch.button,

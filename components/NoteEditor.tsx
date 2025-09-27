@@ -72,10 +72,6 @@ export default function NoteEditor({
 
     function getTagsThatCanBeAdded(): Array<Tag> {
         return tags.filter(t => {
-            if (t.isPrivate && t.space.id != note.space.id)
-                return false;
-            if (t.isCommon && note.space.name != 'Common' && note.space.id != t.space.id)
-                return false;
             if (note.tags.find(nt => nt.tag.id == t.id))
                 return false;
             return true;

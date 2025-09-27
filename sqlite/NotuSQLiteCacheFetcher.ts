@@ -44,14 +44,13 @@ export class NotuSQLiteCacheFetcher {
         const connection = await this._connectionFactory();
         try {
             const tags = (await connection
-                .getAll('SELECT n.id, t.name, n.spaceId, t.color, t.availability, t.isInternal FROM Note n INNER JOIN Tag t ON n.id = t.id;'))
+                .getAll('SELECT n.id, t.name, n.spaceId, t.color, t.isInternal FROM Note n INNER JOIN Tag t ON n.id = t.id;'))
                 .map(x => ({
                     state: 'CLEAN',
                     id: x.id,
                     name: x.name,
                     spaceId: x.spaceId,
                     color: mapIntToColor(x.color),
-                    availability: x.availability,
                     isInternal: !!x.isInternal,
                     links: []
                 }));

@@ -96,7 +96,7 @@ export const NoteViewer = ({
 
                 <Overlay isVisible={actions != null} onBackdropPress={() => hideOverlay()}>
                     <Text style={s.text.plain}>Available Actions</Text>
-                    {actions.map((x, index) => renderAction(x, index))}
+                    {(actions ?? []).map((x, index) => renderAction(x, index))}
                 </Overlay>
 
                 <View style={s.container.row}>

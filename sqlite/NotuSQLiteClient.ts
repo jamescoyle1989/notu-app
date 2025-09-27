@@ -66,7 +66,6 @@ export class NotuSQLiteClient {
                         id INTEGER NOT NULL,
                         name TEXT NOT NULL,
                         color INTEGER NULL,
-                        availability INTEGER NOT NULL,
                         isInternal INTEGER NOT NULL,
                         PRIMARY KEY (id),
                         FOREIGN KEY (id) REFERENCES Note(id) ON DELETE CASCADE
@@ -320,15 +319,15 @@ export class NotuSQLiteClient {
     private async _saveTag(tag: Tag, connection: ISQLiteConnection): Promise<void> {
         if (tag.isNew) {
             await connection.run(
-                'INSERT INTO Tag (id, name, color, availability, isInternal) VALUES (?, ?, ?, ?, ?);',
-                tag.id, tag.name, mapColorToInt(tag.color), tag.availability, tag.isInternal ? 1 : 0
+                'INSERT INTO Tag (id, name, color, isInternal) VALUES (?, ?, ?, ?);',
+                tag.id, tag.name, mapColorToInt(tag.color), tag.isInternal ? 1 : 0
             );
             tag.clean();
         }
         else if (tag.isDirty) {
             await connection.run(
-                'UPDATE Tag SET name = ?, color = ?, availability = ?, isInternal = ? WHERE id = ?;',
-                tag.name, mapColorToInt(tag.color), tag.availability, tag.isInternal ? 1 : 0, tag.id
+                'UPDATE Tag SET name = ?, color = ?, isInternal = ? WHERE id = ?;',
+                tag.name, mapColorToInt(tag.color), tag.isInternal ? 1 : 0, tag.id
             );
             tag.clean();
         }

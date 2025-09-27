@@ -25,10 +25,6 @@ export default function TagBadge({
         ? tag.getUniqueName(notuRenderTools.notu.cache) 
         : tag.getQualifiedName(contextSpace.id);
 
-    const availabilityText = tag.availability == 0
-        ? 'Private'
-        : (tag.availability == 1 ? 'Common' : 'Public');
-
     const backgroundColor = tag.color ?? '#AABBCC';
     const textColor = getTextContrastColor(backgroundColor);
     
@@ -41,10 +37,7 @@ export default function TagBadge({
                 flexDirection: 'row',
                 alignItems: 'center'
             }}>
-            <Text style={{ color: textColor }}>
-                {tagDisplayName}
-                <Text style={{ fontWeight: '200' }}>&nbsp;({availabilityText})</Text>
-            </Text>
+            <Text style={{ color: textColor }}>{tagDisplayName}</Text>
             {!!onDelete && (
                 <TouchableOpacity>
                     <Ionicons name='remove-circle-outline' size={18} color={textColor} />

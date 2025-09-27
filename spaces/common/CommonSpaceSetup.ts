@@ -14,11 +14,11 @@ export class CommonSpaceSetup {
 
             const thought = new Note('This marks a note as being some thought that I\'ve had on a particular subject.')
                 .in(commonSpace).setOwnTag(this.thought);
-            thought.ownTag.asInternal().asPublic();
+            thought.ownTag.asInternal();
 
             const info = new Note('This marks a note as being some info about a particular subject that may be useful later.')
                 .in(commonSpace).setOwnTag(this.info);
-            info.ownTag.asInternal().asPublic();
+            info.ownTag.asInternal();
             
             await notu.saveNotes([thought, info]);
             
