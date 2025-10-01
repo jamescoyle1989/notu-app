@@ -2,9 +2,9 @@ import { getNotu } from '@/helpers/NotuSetup';
 import { Note } from "notu";
 import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
-import NoteEditor from '../components/NoteEditor';
-import { NotuRenderTools } from "../helpers/NotuRenderTools";
-import s from '../helpers/NotuStyles';
+import NoteEditor from '../../components/NoteEditor';
+import { NotuRenderTools } from "../../helpers/NotuRenderTools";
+import s from '../../helpers/NotuStyles';
 
 
 export default function Index() {

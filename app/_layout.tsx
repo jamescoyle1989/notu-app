@@ -1,10 +1,11 @@
 import { setupNotu } from "@/helpers/NotuSetup";
-import { DrawerContentComponentProps, DrawerContentScrollView, DrawerItem, DrawerItemList } from "@react-navigation/drawer";
+import { DrawerContentComponentProps, DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import { Href, useRouter } from "expo-router";
 import { Drawer } from "expo-router/drawer";
 import { Page } from "notu";
 import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import s from '../helpers/NotuStyles';
 
 
@@ -48,15 +49,18 @@ export default function RootLayout() {
         );
     }
 
+    function navigateToPage(href: string) {
+        router.replace(href as Href);
+    }
+
     function customDrawerContent(props: DrawerContentComponentProps) {
         return (
             <DrawerContentScrollView {...props}>
-                <DrawerItemList {...props} />
                 {customPages.map(page => {
                     return (
                         <DrawerItem key={page.id}
                                     label={page.name}
-                                    onPress={() => router.push(`/${page.id}` as Href)} />
+                                    onPress={() => navigateToPage(`/${page.id}`)} />
                     )
                 })}
             </DrawerContentScrollView>
@@ -65,25 +69,12 @@ export default function RootLayout() {
 
     
     return (
-        <Drawer drawerContent={customDrawerContent}>
-            <Drawer.Screen name="index"
-                           options={{
-                            drawerLabel: 'Home',
-                            title: 'Home'
-                           }} />
-
-            <Drawer.Screen name="about"
-                           options={{
-                            drawerLabel: 'About',
-                            title: 'About'
-                           }} />
-
-            <Drawer.Screen name="[id]"
-                           options={{
-                            drawerItemStyle: {
-                                display: 'none'
-                            }
-                           }} />
-        </Drawer>
+        <GestureHandlerRootView style={{flex: 1}}>
+            <Drawer drawerContent={customDrawerContent}
+                    screenOptions={{
+                        headerShown: false
+                    }}>
+            </Drawer>
+        </GestureHandlerRootView>
     )
 }
