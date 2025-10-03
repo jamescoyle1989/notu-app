@@ -1,4 +1,4 @@
-import { NoteAction } from '@/helpers/NoteAction';
+import { NoteAction, UIAction } from '@/helpers/NoteAction';
 import { Overlay } from '@rneui/base';
 import { Note } from "notu";
 import { useMemo, useState } from "react";
@@ -12,14 +12,15 @@ import NoteTagBadge from './NoteTagBadge';
 interface NoteViewerProps {
     note: Note,
     notuRenderTools: NotuRenderTools,
-    showDate?: boolean
+    onUIAction: (action: UIAction) => void
 }
 
 
 export const NoteViewer = ({
     note,
     notuRenderTools,
-    showDate = true
+    onUIAction
+
 }: NoteViewerProps) => {
 
     const textComponents = useMemo(() => notuRenderTools.noteTextSplitter(note), [note, note.text]);
@@ -40,9 +41,11 @@ export const NoteViewer = ({
             onActionConfirmed(action);
     }
 
-    function onActionConfirmed(action: NoteAction) {
-        action.action(note);
+    async function onActionConfirmed(action: NoteAction) {
+        const uiAction = await action.action(note);
+        onUIAction(uiAction);
         hideOverlay();
+
     }
 
     function onActionCancelled(action: NoteAction) {

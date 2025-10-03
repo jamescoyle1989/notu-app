@@ -1,3 +1,4 @@
+import { UIAction } from "@/helpers/NoteAction";
 import { Note, Space } from "notu";
 import React, { JSX, useRef, useState } from "react";
 import { View } from "react-native";
@@ -11,6 +12,7 @@ interface SearchListProps {
     /** The space which we're fetching notes from, if null then we're searching across all spaces */
     searchSpace?: Space,
     notuRenderTools: NotuRenderTools,
+    onUIAction: (action: UIAction) => void,
     actionsBar?: () => JSX.Element,
     noteViewer?: (note: Note) => JSX.Element
 }
@@ -20,6 +22,7 @@ export default function SearchList({
     query,
     searchSpace = null,
     notuRenderTools,
+    onUIAction,
     actionsBar = null,
     noteViewer = null
 }: SearchListProps) {
@@ -42,6 +45,7 @@ export default function SearchList({
 
             <NoteList notes={notes}
                       notuRenderTools={notuRenderTools}
+                      onUIAction={onUIAction}
                       noteViewer={noteViewer}/>
         </View>
     )

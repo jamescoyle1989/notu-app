@@ -78,20 +78,22 @@ export class CommonSpace implements LogicalSpace {
 
 
     buildNoteActionsMenu(note: Note, menuBuilder: NoteActionsMenuBuilder, notu: Notu) {
-        menuBuilder.addToTopOfStart(
-            new NoteAction('Edit',
-                () => Promise.resolve(new ShowEditorAction(note))
-            )
-        );
-        menuBuilder.addToBottomOfEnd(
-            new NoteAction('Delete',
-                async () => {
-                    await notu.saveNotes([note.delete()]);
-                    return new RefreshAction();
-                },
-                true
-            )
-        );
+        if (note.ownTag?.isInternal != true) {
+            menuBuilder.addToTopOfStart(
+                new NoteAction('Edit',
+                    () => Promise.resolve(new ShowEditorAction(note))
+                )
+            );
+            menuBuilder.addToBottomOfEnd(
+                new NoteAction('Delete',
+                    async () => {
+                        await notu.saveNotes([note.delete()]);
+                        return new RefreshAction();
+                    },
+                    true
+                )
+            );
+        }
     }
 
 

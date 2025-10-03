@@ -94,7 +94,7 @@ export class NoteActionsMenuBuilder {
     }
 
     private _removeActionsByName(name: string) {
-        for (let i = this._actions.length; i >= 0; i--) {
+        for (let i = this._actions.length - 1; i >= 0; i--) {
             if (this._actions[i].name == name) {
                 this._actions.splice(i, 1);
                 if (i < this._endStartIndex)

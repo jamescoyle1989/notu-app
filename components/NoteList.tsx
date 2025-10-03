@@ -1,3 +1,4 @@
+import { UIAction } from "@/helpers/NoteAction";
 import { Note } from "notu";
 import { JSX } from "react";
 import { FlatList, View } from "react-native";
@@ -7,6 +8,7 @@ import { NoteViewer } from "./NoteViewer";
 interface NoteListProps {
     notes: Array<Note>,
     notuRenderTools: NotuRenderTools,
+    onUIAction: (action: UIAction) => void,
     noteViewer?: (note: Note) => JSX.Element
 }
 
@@ -14,6 +16,7 @@ interface NoteListProps {
 export default function NoteList({
     notes,
     notuRenderTools,
+    onUIAction,
     noteViewer
 }: NoteListProps) {
 
@@ -21,7 +24,8 @@ export default function NoteList({
         if (!noteViewer) {
             return (
                 <NoteViewer note={note}
-                            notuRenderTools={notuRenderTools}/>
+                            notuRenderTools={notuRenderTools}
+                            onUIAction={onUIAction}/>
             )
         }
         return noteViewer(note);

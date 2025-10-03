@@ -1,48 +1,27 @@
-import { getNotu } from '@/helpers/NotuSetup';
-import { Note } from "notu";
-import { useEffect, useState } from "react";
-import { Text, View } from "react-native";
-import NoteEditor from '../../components/NoteEditor';
-import { NotuRenderTools } from "../../helpers/NotuRenderTools";
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { DrawerActions } from '@react-navigation/native';
+import { Stack, useNavigation } from 'expo-router';
+import { Text, View } from 'react-native';
 import s from '../../helpers/NotuStyles';
 
-
-export default function Index() {
-    
-    const [renderTools, setRenderTools] = useState<NotuRenderTools>(null);
-
-    useEffect(() => {
-        async function load() {
-            setRenderTools(await getNotu());
-        }
-        load();
-    }, []);
-
-    if (renderTools == null) {
-        return (
-            <View style={s.container.background}>
-                <Text>Loading Index...</Text>
-            </View>
-        );
-    }
-    const notu = renderTools.notu;
-
-    function renderNoteEditor() {
-        const note = new Note('Test note').in(notu.getSpaceByName('Common'));
-
-        return (
-            <NoteEditor notuRenderTools={renderTools}
-                        note={note}
-                        tags={notu.getTags()}
-                        canSave={n => Promise.resolve(false)}
-                        onSave={n => {}}
-                        onCancel={n => {}}/>
-        )
-    }
+export default function AboutScreen() {
+    const nav = useNavigation();
 
     return (
         <View style={s.container.background}>
-            {renderNoteEditor()}
+            <Stack.Screen options={{
+                title: 'Home',
+                headerLeft: () => {
+                    return (
+                        <Ionicons name="menu"
+                                  size={24}
+                                  onPress={() => {
+                                    nav.dispatch(DrawerActions.openDrawer());
+                                  }} />
+                    )
+                }
+            }} />
+            <Text style={s.text.plain}>Hello! Welcome to Notu</Text>
         </View>
-    )
+    );
 }

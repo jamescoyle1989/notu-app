@@ -1,30 +1,40 @@
+import { UIAction } from "@/helpers/NoteAction";
 import { Note, Space } from "notu";
-import { JSX, useRef, useState } from "react";
+import React, { JSX, useImperativeHandle, useRef, useState } from "react";
 import { View } from "react-native";
 import { NotuRenderTools } from "../helpers/NotuRenderTools";
 import GroupedNoteList from "./GroupedNoteList";
-import { NoteSearch } from "./NoteSearch";
+import { NoteSearch, NoteSearchCommands } from "./NoteSearch";
 
 interface GroupedSearchListProps {
     query?: string,
     searchSpace?: Space,
     notuRenderTools: NotuRenderTools,
+    onUIAction: (action: UIAction) => void,
     actionsBar?: () => JSX.Element,
     noteViewer?: (note: Note) => JSX.Element
 }
 
 
-export default function GroupedSearchList({
-    query,
-    searchSpace = null,
-    notuRenderTools,
-    actionsBar = null,
-    noteViewer = null
-}: GroupedSearchListProps) {
+export const GroupedSearchList = React.forwardRef((
+    {
+        query,
+        searchSpace = null,
+        notuRenderTools,
+        onUIAction,
+        actionsBar = null,
+        noteViewer = null
+    }: GroupedSearchListProps,
+    ref: React.ForwardedRef<NoteSearchCommands>
+) => {
     
     const [notes, setNotes] = useState<Array<Note>>([]);
     const [queryState, setQueryState] = useState(query);
     const searchRef = useRef(null);
+
+    useImperativeHandle(ref, () => ({
+        refresh: () => searchRef.current.refresh()
+    }));
 
     return (
         <View>
@@ -40,7 +50,8 @@ export default function GroupedSearchList({
 
             <GroupedNoteList notes={notes}
                              notuRenderTools={notuRenderTools}
+                             onUIAction={onUIAction}
                              noteViewer={noteViewer}/>
         </View>
     )
-};
+});

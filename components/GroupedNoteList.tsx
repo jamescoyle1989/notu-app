@@ -1,3 +1,4 @@
+import { UIAction } from "@/helpers/NoteAction";
 import { Note } from "notu";
 import { JSX, useMemo } from "react";
 import { SectionList, Text, View } from "react-native";
@@ -8,6 +9,7 @@ import { NoteViewer } from "./NoteViewer";
 interface GroupedNoteListProps {
     notes: Array<Note>,
     notuRenderTools: NotuRenderTools,
+    onUIAction: (action: UIAction) => void,
     noteViewer?: (note: Note) => JSX.Element
 }
 
@@ -15,6 +17,7 @@ interface GroupedNoteListProps {
 export default function GroupedNoteList({
     notes,
     notuRenderTools,
+    onUIAction,
     noteViewer
 }: GroupedNoteListProps) {
 
@@ -35,7 +38,8 @@ export default function GroupedNoteList({
         if (!noteViewer) {
             return (
                 <NoteViewer note={note}
-                            notuRenderTools={notuRenderTools}/>
+                            notuRenderTools={notuRenderTools}
+                            onUIAction={onUIAction}/>
             )
         }
         return noteViewer(note);
