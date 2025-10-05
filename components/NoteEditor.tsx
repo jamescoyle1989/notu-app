@@ -19,9 +19,7 @@ interface NoteEditorProps {
     /** Called when canSave has indicated that the NoteEditor should proceed with the save, and the save has gone through successfully */
     onSave: (note: Note) => void,
     /** Called when the cancel button is clicked */
-    onCancel: (note: Note) => void,
-    /** Default mode is Optional, which allows the user to choose if they want to give a note its own tag. Required prevents saving unless the note has a tag, and forbidden prevents the setting of its own tag */
-    ownTagMode?: ('Optional' | 'Required' | 'Forbidden')
+    onCancel: (note: Note) => void
 }
 
 
@@ -31,8 +29,7 @@ export default function NoteEditor({
     tags,
     canSave = null,
     onSave,
-    onCancel,
-    ownTagMode = 'Optional'
+    onCancel
 }: NoteEditorProps) {
 
     if (!note.space)
@@ -135,7 +132,7 @@ export default function NoteEditor({
 
             <Text style={[s.text.plain, s.text.italic]}>{noteDateStr}</Text>
 
-            <TagEditor note={note} tags={tags} mode={ownTagMode}/>
+            <TagEditor note={note} tags={tags}/>
 
             <Text>
                 <Text style={[s.text.plain, s.text.bold]}>Text </Text>

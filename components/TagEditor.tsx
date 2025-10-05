@@ -11,21 +11,15 @@ import s from '../helpers/NotuStyles';
 interface TagEditorProps {
     note: Note,
     /** The collection of tags that the note editor has access to */
-    tags: Array<Tag>,
-    /** Default mode is Optional, which allows the user to choose if they want to give a note its own tag. Required prevents saving unless the note has a tag, and forbidden prevents the setting of its own tag */
-    mode?: ('Optional' | 'Required' | 'Forbidden')
+    tags: Array<Tag>
 }
 
 
 export default function TagEditor({
     note,
-    tags,
-    mode
+    tags
 }: TagEditorProps) {
 
-    if (mode == 'Forbidden')
-        return;
-    
     const manualRefresh = useManualRefresh();
     const [showColorPicker, setShowColorPicker] = useState<boolean>(false);
     const [showExistingTagColors, setShowExistingTagColors] = useState<boolean>(false);
