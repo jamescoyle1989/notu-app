@@ -12,21 +12,15 @@ import TagEditor from "./TagEditor";
 interface NoteEditorProps {
     notuRenderTools: NotuRenderTools,
     note: Note,
-    /** Called when the confirm button is clicked. A false return value will prevent saving, so will a thrown error, which will also display on the note editor */
-    canSave?: (note: Note) => Promise<boolean>,
-    /** Called when canSave has indicated that the NoteEditor should proceed with the save, and the save has gone through successfully */
-    onSave: (note: Note) => void,
-    /** Called when the cancel button is clicked */
-    onCancel: (note: Note) => void
+    /** Called when the save has gone through successfully */
+    onSave: (note: Note) => void
 }
 
 
 export default function NoteEditor({
     notuRenderTools,
     note,
-    canSave = null,
-    onSave,
-    onCancel
+    onSave
 }: NoteEditorProps) {
 
     if (!note.space)
@@ -53,11 +47,8 @@ export default function NoteEditor({
                     }
                 }
             }
-            const canSaveResult = await canSave(note);
-            if (!!canSaveResult) {
-                await notuRenderTools.notu.saveNotes([note]);
-                try { onSave(note); } catch (err) { }
-            }
+            await notuRenderTools.notu.saveNotes([note]);
+            try { onSave(note); } catch (err) { }
             setError(null);
         }
         catch (err) {
