@@ -12,8 +12,6 @@ import TagEditor from "./TagEditor";
 interface NoteEditorProps {
     notuRenderTools: NotuRenderTools,
     note: Note,
-    /** The collection of tags that the note editor has access to */
-    tags: Array<Tag>,
     /** Called when the confirm button is clicked. A false return value will prevent saving, so will a thrown error, which will also display on the note editor */
     canSave?: (note: Note) => Promise<boolean>,
     /** Called when canSave has indicated that the NoteEditor should proceed with the save, and the save has gone through successfully */
@@ -26,7 +24,6 @@ interface NoteEditorProps {
 export default function NoteEditor({
     notuRenderTools,
     note,
-    tags,
     canSave = null,
     onSave,
     onCancel
@@ -35,6 +32,7 @@ export default function NoteEditor({
     if (!note.space)
         return (<Text style={s.text.plain}>Note must define the space that it belongs to</Text>);
 
+    const notu = notuRenderTools.notu;
     const [error, setError] = useState<string>(null);
     const [tagsDropdownFocused, setTagsDropdownFocused] = useState(false);
     const manualRefresh = useManualRefresh();
@@ -68,7 +66,7 @@ export default function NoteEditor({
     }
 
     function getTagsThatCanBeAdded(): Array<Tag> {
-        return tags.filter(t => {
+        return notu.getTags().filter(t => {
             if (note.tags.find(nt => nt.tag.id == t.id))
                 return false;
             return true;
@@ -132,7 +130,7 @@ export default function NoteEditor({
 
             <Text style={[s.text.plain, s.text.italic]}>{noteDateStr}</Text>
 
-            <TagEditor note={note} tags={tags}/>
+            <TagEditor note={note} tags={notu.getTags()}/>
 
             <Text>
                 <Text style={[s.text.plain, s.text.bold]}>Text </Text>

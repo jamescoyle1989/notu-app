@@ -21,7 +21,6 @@ export default function Index() {
         <View style={s.container.background}>
             <NoteEditor notuRenderTools={renderTools}
                         note={_noteBeingEdited}
-                        tags={notu.getTags()}
                         canSave={n => Promise.resolve(true)}
                         onSave={n => router.back()}
                         onCancel={n => router.back()}/>
