@@ -230,6 +230,8 @@ export class NotuSQLiteClient {
                         tagId: x.tagId,
                         data: x.data
                     };
+                    if (!!nt.data)
+                        nt.data = JSON.parse(nt.data);
                     const note = notesMap.get(x.noteId);
                     note.tags.push(nt);
                 });

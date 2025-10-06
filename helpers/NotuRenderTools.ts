@@ -74,6 +74,14 @@ export interface NoteTagDataComponentFactory {
 }
 
 
+export interface NoteTagDataComponentProps {
+    noteTag: NoteTag,
+    note?: Note,
+    notu?: Notu,
+    refreshCallback?: () => void
+}
+
+
 export interface SpaceSettingsComponentFactory {
 
     getEditorComponent(space: Space, notu: Notu): ReactNode;
