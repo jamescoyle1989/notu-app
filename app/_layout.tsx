@@ -1,12 +1,15 @@
 import { setupNotu } from "@/helpers/NotuSetup";
 import { DrawerContentComponentProps, DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
+import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Href, useRouter } from "expo-router";
 import { Drawer } from "expo-router/drawer";
 import { Page } from "notu";
 import { useEffect, useState } from "react";
-import { Text, View } from "react-native";
+import { Text, useColorScheme, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { TamaguiProvider } from 'tamagui';
 import s from '../helpers/NotuStyles';
+import { tamaguiConfig } from '../tamagui.config';
 
 
 export default function RootLayout() {
@@ -15,6 +18,7 @@ export default function RootLayout() {
     const [customPages, setCustomPages] = useState<Array<Page>>(null);
     const [error, setError] = useState(null);
     const router = useRouter();
+    const colorScheme = useColorScheme();
 
     useEffect(() => {
         async function loadCustomPages() {
@@ -56,6 +60,7 @@ export default function RootLayout() {
     function customDrawerContent(props: DrawerContentComponentProps) {
         return (
             <DrawerContentScrollView {...props}>
+                <DrawerItem label="Home" onPress={() => navigateToPage(`/`)} />
                 {customPages.map(page => {
                     return (
                         <DrawerItem key={page.id}
@@ -69,12 +74,16 @@ export default function RootLayout() {
 
     
     return (
-        <GestureHandlerRootView style={{flex: 1}}>
-            <Drawer drawerContent={customDrawerContent}
-                    screenOptions={{
-                        headerShown: false
-                    }}>
-            </Drawer>
-        </GestureHandlerRootView>
+        <TamaguiProvider config={tamaguiConfig} defaultTheme={colorScheme!}>
+            <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+                <GestureHandlerRootView style={{flex: 1}}>
+                    <Drawer drawerContent={customDrawerContent}
+                            screenOptions={{
+                                headerShown: false
+                            }}>
+                    </Drawer>
+                </GestureHandlerRootView>
+            </ThemeProvider>
+        </TamaguiProvider>
     )
 }
