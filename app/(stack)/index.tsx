@@ -1,3 +1,4 @@
+import { NotuDatePicker } from '@/components/NotuDatePicker';
 import { NotuSelect } from '@/components/NotuSelect';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { DrawerActions } from '@react-navigation/native';
@@ -9,6 +10,7 @@ import s from '../../helpers/NotuStyles';
 export default function AboutScreen() {
     const nav = useNavigation();
     const [val, setVal] = useState('E');
+    const [date, setDate] = useState(new Date());
 
     return (
         <View style={s.container.background}>
@@ -29,6 +31,9 @@ export default function AboutScreen() {
             <NotuSelect options={[{name: 'A', value: 'Howdy'}, {name: 'B', value: 'Hello'}, {name: 'C', value: 'Bonsoir'}]}
                         value={val}
                         onValueChange={setVal} />
+
+            <NotuDatePicker value={date}
+                            onChange={setDate} />
         </View>
     );
 }
