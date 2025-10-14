@@ -1,4 +1,4 @@
-import { NotuDatePicker } from '@/components/NotuDatePicker';
+import { NotuDateTimePicker } from '@/components/NotuDateTimePicker';
 import { NotuSelect } from '@/components/NotuSelect';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { DrawerActions } from '@react-navigation/native';
@@ -32,8 +32,9 @@ export default function AboutScreen() {
                         value={val}
                         onValueChange={setVal} />
 
-            <NotuDatePicker value={date}
-                            onChange={setDate} />
+            <View style={s.container.row}>
+                <NotuDateTimePicker value={date} onChange={setDate} />
+            </View>
         </View>
     );
 }

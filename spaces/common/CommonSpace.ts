@@ -4,6 +4,7 @@ import { Note, Notu, Space, Tag } from "notu";
 import { LogicalSpace } from "../LogicalSpace";
 import { CommonSpaceSetup } from "./CommonSpaceSetup";
 import DurationNoteTagDataComponentFactory from "./DurationNoteTagDataComponent";
+import FinishedNoteTagDataComponentFactory from "./FinishedNoteTagDataComponent";
 
 export class CommonSpace implements LogicalSpace {
 
@@ -101,6 +102,8 @@ export class CommonSpace implements LogicalSpace {
     resolveNoteTagDataComponentFactory(tag: Tag, note: Note): NoteTagDataComponentFactory | null {
         if (tag.name == CommonSpaceSetup.duration)
             return new DurationNoteTagDataComponentFactory();
+        if (tag.name == CommonSpaceSetup.finished)
+            return new FinishedNoteTagDataComponentFactory();
         return null;
     }
 
