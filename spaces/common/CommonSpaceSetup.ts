@@ -14,6 +14,7 @@ export class CommonSpaceSetup {
     static get memory(): string { return 'Memory'; }
     static get pinned(): string { return 'Pinned'; }
     static get scheduled(): string { return 'Scheduled'; }
+    static get started(): string { return 'Started'; }
     static get thought(): string { return 'Thought'; }
 
     static async setup(notu: Notu): Promise<void> {
@@ -71,6 +72,10 @@ export class CommonSpaceSetup {
                 .in(commonSpace).setOwnTag(this.scheduled);
             scheduled.ownTag.asInternal();
 
+            const started = new Note(`When added to a note, this tag stores date data to show when the note was started.`)
+                .in(commonSpace).setOwnTag(this.started);
+            started.ownTag.asInternal();
+
             const thought = new Note(`Adding this tag to a note marks that the note contains thoughts previously had on a particular subject.`)
                 .in(commonSpace).setOwnTag(this.thought);
             thought.ownTag.asInternal();
@@ -88,6 +93,7 @@ export class CommonSpaceSetup {
                 memory,
                 pinned,
                 scheduled,
+                started,
                 thought
             ]);
             

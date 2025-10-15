@@ -2,9 +2,11 @@ import { NoteAction, NoteActionsMenuBuilder, RefreshAction, ShowEditorAction } f
 import { NoteTagDataComponentFactory, SpaceSettingsComponentFactory } from "@/helpers/NotuRenderTools";
 import { Note, Notu, Space, Tag } from "notu";
 import { LogicalSpace } from "../LogicalSpace";
+import CancelledNoteTagDataComponentFactory from "./CancelledNoteTagDataComponent";
 import { CommonSpaceSetup } from "./CommonSpaceSetup";
 import DurationNoteTagDataComponentFactory from "./DurationNoteTagDataComponent";
 import FinishedNoteTagDataComponentFactory from "./FinishedNoteTagDataComponent";
+import StartedNoteTagDataComponentFactory from "./StartedNoteTagDataComponent";
 
 export class CommonSpace implements LogicalSpace {
 
@@ -47,6 +49,9 @@ export class CommonSpace implements LogicalSpace {
     private _scheduled: Tag;
     get scheduled(): Tag { return this._scheduled; }
 
+    private _started: Tag;
+    get started(): Tag { return this._started; }
+
     private _thought: Tag;
     get thought(): Tag { return this._thought; }
 
@@ -69,6 +74,7 @@ export class CommonSpace implements LogicalSpace {
         this._memory = notu.getTagByName(CommonSpaceSetup.memory, this._space);
         this._pinned = notu.getTagByName(CommonSpaceSetup.pinned, this._space);
         this._scheduled = notu.getTagByName(CommonSpaceSetup.scheduled, this._space);
+        this._started = notu.getTagByName(CommonSpaceSetup.started, this._space);
         this._thought = notu.getTagByName(CommonSpaceSetup.thought, this._space);
     }
 
@@ -100,10 +106,14 @@ export class CommonSpace implements LogicalSpace {
 
 
     resolveNoteTagDataComponentFactory(tag: Tag, note: Note): NoteTagDataComponentFactory | null {
+        if (tag.name == CommonSpaceSetup.cancelled)
+            return new CancelledNoteTagDataComponentFactory();
         if (tag.name == CommonSpaceSetup.duration)
             return new DurationNoteTagDataComponentFactory();
         if (tag.name == CommonSpaceSetup.finished)
             return new FinishedNoteTagDataComponentFactory();
+        if (tag.name == CommonSpaceSetup.started)
+            return new StartedNoteTagDataComponentFactory();
         return null;
     }
 
