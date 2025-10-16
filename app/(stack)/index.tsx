@@ -1,5 +1,5 @@
-import { NotuDateTimePicker } from '@/components/NotuDateTimePicker';
 import { NotuSelect } from '@/components/NotuSelect';
+import { TimespanPicker } from '@/components/TimeSpanPicker';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { DrawerActions } from '@react-navigation/native';
 import { Stack, useNavigation } from 'expo-router';
@@ -10,7 +10,7 @@ import s from '../../helpers/NotuStyles';
 export default function AboutScreen() {
     const nav = useNavigation();
     const [val, setVal] = useState('E');
-    const [date, setDate] = useState(new Date());
+    const [ms, setMs] = useState(99600000);
 
     return (
         <View style={s.container.background}>
@@ -32,9 +32,9 @@ export default function AboutScreen() {
                         value={val}
                         onValueChange={setVal} />
 
-            <View style={s.container.row}>
-                <NotuDateTimePicker value={date} onChange={setDate} />
-            </View>
+            <TimespanPicker milliseconds={ms} onChange={setMs} />
+
+            <Text style={s.text.plain}>MS: {ms}</Text>
         </View>
     );
 }
