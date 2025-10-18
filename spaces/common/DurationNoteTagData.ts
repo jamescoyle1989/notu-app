@@ -32,26 +32,4 @@ export class DurationData {
             this._nt.dirty();
         this._nt.data.ms = value;
     }
-
-    get totalSeconds(): number { return Math.round(this.ms / 1000); }
-
-    get seconds(): number { return this.totalSeconds - (this.totalMinutes * 60); }
-
-    get totalMinutes(): number { return Math.floor(this.totalSeconds / 60); }
-
-    get minutes(): number { return this.totalMinutes - (this.totalHours * 60);  }
-
-    get totalHours(): number { return Math.floor(this.totalMinutes / 60); }
-
-    get hours(): number { return this.totalHours - (this.totalDays * 24); }
-
-    get totalDays(): number { return Math.floor(this.totalHours / 24); }
-
-    set(days: number = 0, hours: number = 0, minutes: number = 0, seconds: number = 0, ms: number = 0) {
-        const totalHours = (days * 24) + hours;
-        const totalMinutes = (totalHours * 60) + minutes;
-        const totalSeconds = (totalMinutes * 60) + seconds;
-        const totalMs = (totalSeconds * 1000) + ms;
-        this.ms = totalMs;
-    }
 }

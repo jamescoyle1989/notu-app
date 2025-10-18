@@ -6,6 +6,7 @@ import CancelledNoteTagDataComponentFactory from "./CancelledNoteTagDataComponen
 import { CommonSpaceSetup } from "./CommonSpaceSetup";
 import DurationNoteTagDataComponentFactory from "./DurationNoteTagDataComponent";
 import FinishedNoteTagDataComponentFactory from "./FinishedNoteTagDataComponent";
+import ScheduledNoteTagDataComponentFactory from "./ScheduledNoteTagDataComponent";
 import StartedNoteTagDataComponentFactory from "./StartedNoteTagDataComponent";
 
 export class CommonSpace implements LogicalSpace {
@@ -114,6 +115,8 @@ export class CommonSpace implements LogicalSpace {
             return new FinishedNoteTagDataComponentFactory();
         if (tag.name == CommonSpaceSetup.started)
             return new StartedNoteTagDataComponentFactory();
+        if (tag.name == CommonSpaceSetup.scheduled)
+            return new ScheduledNoteTagDataComponentFactory();
         return null;
     }
 
