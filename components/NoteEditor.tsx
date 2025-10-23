@@ -1,13 +1,14 @@
 import { Note, NoteTag, Tag } from "notu";
 import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
-import { Dropdown } from 'react-native-element-dropdown';
+import { Button, Dialog } from "tamagui";
 import { useManualRefresh } from "../helpers/Hooks";
 import { NotuRenderTools } from "../helpers/NotuRenderTools";
 import s from '../helpers/NotuStyles';
 import NoteTagBadge from "./NoteTagBadge";
 import NoteTextEditor from "./NoteTextEditor";
 import TagEditor from "./TagEditor";
+import TagFinder from "./TagFinder";
 
 interface NoteEditorProps {
     notuRenderTools: NotuRenderTools,
@@ -28,7 +29,7 @@ export default function NoteEditor({
 
     const notu = notuRenderTools.notu;
     const [error, setError] = useState<string>(null);
-    const [tagsDropdownFocused, setTagsDropdownFocused] = useState(false);
+    const [showTagSelector, setShowTagSelector] = useState(false);
     const manualRefresh = useManualRefresh();
 
     const [showTextComponentView, setShowTextComponentView] = useState(false);
@@ -56,29 +57,9 @@ export default function NoteEditor({
         }
     }
 
-    function getTagsThatCanBeAdded(): Array<Tag> {
-        return notu.getTags().filter(t => {
-            if (note.tags.find(nt => nt.tag.id == t.id))
-                return false;
-            return true;
-        });
-    }
-
-    function getTagsDropdownData(): Array<{label: string, value: number}> {
-        return getTagsThatCanBeAdded().map(t => ({
-            label: t.getQualifiedName(note.space.id),
-            value: t.id
-        }));
-    }
-
-    function addTagIdToNote(tagId: number): void {
-        const tag = getTagsThatCanBeAdded().find(t => t.id == tagId);
-        if (!tag) {
-            setError('Unable to add tag, something went wrong');
-            return;
-        }
+    function onTagSelected(tag: Tag): void {
         note.addTag(tag);
-        manualRefresh();
+        setShowTagSelector(false);
     }
 
     function removeTagFromNote(noteTag: NoteTag): void {
@@ -111,8 +92,6 @@ export default function NoteEditor({
         );
     }
 
-    const tagsDropdownData = getTagsDropdownData();
-
     return (
         <View>
             {!!error && (<Text style={[s.text.danger, s.text.bold]}>{error}</Text>)}
@@ -134,26 +113,21 @@ export default function NoteEditor({
                             note={note}
                             mode={showTextComponentView ? 'Components' : 'Raw'}/>
 
-            {tagsDropdownData.length > 0 && (
-                <Text style={[s.text.plain, s.text.bold]}>Tags</Text>
-            )}
-
-            {tagsDropdownData.length > 0 && (
-                <Dropdown style={[s.dropdown.main, s.border.main, tagsDropdownFocused && s.dropdown.focused]}
-                          placeholderStyle={s.dropdown.placeholder}
-                          selectedTextStyle={s.dropdown.selected}
-                          data={tagsDropdownData}
-                          maxHeight={300}
-                          labelField='label'
-                          valueField='value'
-                          value={null}
-                          onFocus={() => setTagsDropdownFocused(true)}
-                          onBlur={() => setTagsDropdownFocused(false)}
-                          onChange={item => {
-                              addTagIdToNote(item.value);
-                              setTagsDropdownFocused(false);
-                          }}/>
-            )}
+            <Button onPress={() => setShowTagSelector(true)}>Add Tag</Button>
+            <Dialog modal open={showTagSelector}>
+                <Dialog.Portal>
+                    <Dialog.Overlay key="noteeditortagselectoroverlay" />
+                    <Dialog.FocusScope>
+                        <Dialog.Content bordered elevate
+                                        width="80%"
+                                        key="noteeditortagselectorcontent">
+                            <TagFinder notuRenderTools={notuRenderTools}
+                                       onTagSelected={onTagSelected}
+                                       tagsToAvoid={note.tags.map(x => x.tag)} />
+                        </Dialog.Content>
+                    </Dialog.FocusScope>
+                </Dialog.Portal>
+            </Dialog>
 
             {note.tags.length > 0 && (
                 <View style={s.container.row}>
