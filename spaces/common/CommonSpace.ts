@@ -2,6 +2,7 @@ import { NoteAction, NoteActionsMenuBuilder, RefreshAction, ShowEditorAction } f
 import { NoteTagDataComponentFactory, SpaceSettingsComponentFactory } from "@/helpers/NotuRenderTools";
 import { Note, Notu, Space, Tag } from "notu";
 import { LogicalSpace } from "../LogicalSpace";
+import AddressNoteTagDataComponentFactory from "./AddressNoteTagDataComponent";
 import CancelledNoteTagDataComponentFactory from "./CancelledNoteTagDataComponent";
 import { CommonSpaceSetup } from "./CommonSpaceSetup";
 import DurationNoteTagDataComponentFactory from "./DurationNoteTagDataComponent";
@@ -107,6 +108,8 @@ export class CommonSpace implements LogicalSpace {
 
 
     resolveNoteTagDataComponentFactory(tag: Tag, note: Note): NoteTagDataComponentFactory | null {
+        if (tag.name == CommonSpaceSetup.address)
+            return new AddressNoteTagDataComponentFactory();
         if (tag.name == CommonSpaceSetup.cancelled)
             return new CancelledNoteTagDataComponentFactory();
         if (tag.name == CommonSpaceSetup.duration)

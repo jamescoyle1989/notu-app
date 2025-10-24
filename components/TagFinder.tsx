@@ -107,8 +107,8 @@ export default function TagFinder({
                                 <Accordion.Content>
                                     <YGroup>
                                         {grouping.children.map(tag => (
-                                            <YGroup.Item>
-                                                <Button key={tag.id} onPress={() => onTagSelected(tag)}>
+                                            <YGroup.Item key={tag.id}>
+                                                <Button onPress={() => onTagSelected(tag)}>
                                                     {tag.name}
                                                 </Button>
                                             </YGroup.Item>
