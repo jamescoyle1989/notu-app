@@ -1,5 +1,6 @@
 import { NoteChecklistProcessor } from '@/notecomponents/NoteChecklist';
 import { NoteLinkProcessor } from '@/notecomponents/NoteLink';
+import { NoteRandomProcessor } from '@/notecomponents/NoteRandom';
 import { CommonSpace } from '@/spaces/common/CommonSpace';
 import { NotuSQLiteCacheFetcher } from '@/sqlite/NotuSQLiteCacheFetcher';
 import { NotuSQLiteClient } from '@/sqlite/NotuSQLiteClient';
@@ -39,7 +40,8 @@ export async function setupNotu(): Promise<NotuRenderTools> {
         notuVal,
         [
             new NoteLinkProcessor(),
-            new NoteChecklistProcessor()
+            new NoteChecklistProcessor(),
+            new NoteRandomProcessor()
         ],
         [
             new CommonSpace(notuVal)

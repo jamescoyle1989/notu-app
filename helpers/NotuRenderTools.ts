@@ -10,8 +10,8 @@ export class NotuRenderTools {
     private _notu: Notu;
     get notu(): Notu { return this._notu; }
 
-    private _noteTextSplitter: (note: Note) => Array<any>;
-    get noteTextSplitter(): (note: Note) => Array<any> { return this._noteTextSplitter; }
+    private _noteTextSplitter: (note: Note, forEdit?: boolean) => Array<any>;
+    get noteTextSplitter(): (note: Note, forEdit?: boolean) => Array<any> { return this._noteTextSplitter; }
 
     private _noteComponentProcessors: Array<NoteComponentProcessor>;
     get noteComponentProcessors() { return this._noteComponentProcessors; }
@@ -28,9 +28,10 @@ export class NotuRenderTools {
         this._logicalSpaces = logicalSpaces;
 
         this._noteComponentProcessors = noteComponentProcessors;
-        this._noteTextSplitter = (note: Note) => splitNoteTextIntoComponents(
+        this._noteTextSplitter = (note: Note, forEdit: boolean = false) => splitNoteTextIntoComponents(
             note,
             notu,
+            forEdit,
             noteComponentProcessors,
             (text: string) => new NoteText(text),
             (components: Array<NoteComponent>) => new NoteParagraph(components)

@@ -1,14 +1,13 @@
-import { NoteComponent } from 'notu/dist/types/notecomponents/NoteComponent';
 import React from 'react';
 import { Text } from "react-native";
 import s from '../helpers/NotuStyles';
 import { NoteText } from './NoteText';
 
 export class NoteParagraph {
-    private _children: Array<NoteComponent>;
-    get children(): Array<NoteComponent> { return this._children; }
+    private _children: Array<any>;
+    get children(): Array<any> { return this._children; }
 
-    constructor(children: Array<NoteComponent>) {
+    constructor(children: Array<any>) {
         this._children = children;
         if (children.length == 0)
             return;
@@ -49,4 +48,14 @@ export class NoteParagraph {
     get typeInfo(): string { return 'NoteParagraph'; }
 
     get displaysInline(): boolean { return false; }
+
+    get displaysInlineForEdit(): boolean { return false; }
+
+    getThisPlusAllChildComponents(): Array<any> {
+        const output = [this];
+        for (const child of this.children) {
+            output.push(...child.getThisPlusAllChildComponents());
+        }
+        return output;
+    }
 }

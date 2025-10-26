@@ -103,7 +103,7 @@ export class NoteChecklist {
                     </Text>
                 ))}
             </View>
-        )
+        );
     }
 
     getText(): string {
@@ -113,6 +113,18 @@ export class NoteChecklist {
     get typeInfo(): string { return 'NoteChecklist'; }
 
     get displaysInline(): boolean { return false; }
+
+    get displaysInlineForEdit(): boolean { return false; }
+
+    getThisPlusAllChildComponents(): Array<any> {
+        const output = [this];
+        for (const line of this.lines) {
+            for (const cnt of line.content) {
+                output.push(...cnt.getThisPlusAllChildComponents());
+            }
+        }
+        return output;
+    }
 }
 
 

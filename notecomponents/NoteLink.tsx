@@ -74,6 +74,16 @@ export class NoteLink {
     get typeInfo(): string { return 'NoteLink'; }
 
     get displaysInline(): boolean { return true; }
+
+    get displaysInlineForEdit(): boolean { return true; }
+
+    getThisPlusAllChildComponents(): Array<any> {
+        const output = [this];
+        for (const cnt of this.content) {
+            output.push(...cnt.getThisPlusAllChildComponents());
+        }
+        return output;
+    }
 }
 
 

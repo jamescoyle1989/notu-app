@@ -29,7 +29,7 @@ export default function NoteTextEditor({
 
     useEffect(() => {
         if (mode == 'Components' && textComponents == null)
-            setTextComponents(notuRenderTools.noteTextSplitter(note));
+            setTextComponents(notuRenderTools.noteTextSplitter(note, true));
         else if (mode == 'Raw' && textComponents != null) {
             note.text = textComponents.map(x => x.getText()).join('');
             setTextComponents(null);

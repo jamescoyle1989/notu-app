@@ -34,4 +34,10 @@ export class NoteText {
     get typeInfo(): string { return 'NoteText'; }
 
     get displaysInline(): boolean { return true; }
+
+    get displaysInlineForEdit(): boolean { return true; }
+
+    getThisPlusAllChildComponents(): Array<any> {
+        return [this];
+    }
 }
