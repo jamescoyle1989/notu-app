@@ -1,6 +1,7 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { NotuText } from '@/helpers/NotuStyles2';
+import { X } from '@tamagui/lucide-icons';
 import { Space, Tag } from 'notu';
-import { Text, TouchableOpacity, View } from "react-native";
+import { View } from 'tamagui';
 import { getTextContrastColor } from '../helpers/ColorHelpers';
 import { NotuRenderTools } from '../helpers/NotuRenderTools';
 
@@ -37,11 +38,9 @@ export default function TagBadge({
                 flexDirection: 'row',
                 alignItems: 'center'
             }}>
-            <Text style={{ color: textColor }}>{tagDisplayName}</Text>
+            <NotuText color={textColor}>{tagDisplayName}</NotuText>
             {!!onDelete && (
-                <TouchableOpacity>
-                    <Ionicons name='remove-circle-outline' size={18} color={textColor} />
-                </TouchableOpacity>
+                <X size={17} color="red" onPress={() => onDelete()} />
             )}
         </View>
     );

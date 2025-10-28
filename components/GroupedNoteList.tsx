@@ -1,9 +1,10 @@
 import { UIAction } from "@/helpers/NoteAction";
+import { NotuText } from "@/helpers/NotuStyles2";
 import { Note } from "notu";
 import { JSX, useMemo } from "react";
-import { SectionList, Text, View } from "react-native";
+import { SectionList } from "react-native";
+import { View } from "tamagui";
 import { NotuRenderTools } from "../helpers/NotuRenderTools";
-import s from '../helpers/NotuStyles';
 import { NoteViewer } from "./NoteViewer";
 
 interface GroupedNoteListProps {
@@ -53,7 +54,7 @@ export default function GroupedNoteList({
                         </View>
                      )}
                      renderSectionHeader={({section}) => (
-                        <Text style={[s.text.plain, s.text.bold, s.text.underline, s.text.big]}>{section.title}</Text>
+                        <NotuText big bold underline>{section.title}</NotuText>
                      )}
                      keyExtractor={item => `${item.id}`}/>
     );

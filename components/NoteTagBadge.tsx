@@ -1,7 +1,8 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { NotuText } from '@/helpers/NotuStyles2';
+import { X } from '@tamagui/lucide-icons';
 import { Note, NoteTag, Space } from 'notu';
 import { ReactNode } from 'react';
-import { Text, TouchableOpacity, View } from "react-native";
+import { View } from 'tamagui';
 import { getTextContrastColor } from '../helpers/ColorHelpers';
 import { NotuRenderTools } from '../helpers/NotuRenderTools';
 
@@ -40,21 +41,19 @@ export default function NoteTagBadge({
     
     return (
         <View style={{
-                backgroundColor: backgroundColor,
-                paddingHorizontal: 5,
-                borderRadius: 50,
-                borderWidth: 1,
-                flexDirection: 'row',
-                alignItems: 'center'
-            }}>
-            <Text style={{ color: textColor }}>
+              backgroundColor: backgroundColor,
+              paddingHorizontal: 5,
+              borderRadius: 50,
+              borderWidth: 1,
+              flexDirection: 'row',
+              alignItems: 'center'
+        }}>
+            <NotuText color={textColor}>
                 {tagDisplayName}
-            </Text>
+            </NotuText>
             {renderNoteTagData()}
             {!!onDelete && (
-                <TouchableOpacity onPress={() => onDelete()}>
-                    <Ionicons name='remove-circle-outline' size={18} color={textColor} />
-                </TouchableOpacity>
+                <X size={17} color="red" onPress={() => onDelete()} />
             )}
         </View>
     );

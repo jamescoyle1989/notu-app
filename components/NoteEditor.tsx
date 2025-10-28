@@ -1,10 +1,9 @@
+import { NotuText } from "@/helpers/NotuStyles2";
 import { Note, NoteTag, Tag } from "notu";
 import { useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
-import { Button, Dialog } from "tamagui";
+import { Button, Dialog, View, XStack } from "tamagui";
 import { useManualRefresh } from "../helpers/Hooks";
 import { NotuRenderTools } from "../helpers/NotuRenderTools";
-import s from '../helpers/NotuStyles';
 import NoteTagBadge from "./NoteTagBadge";
 import NoteTextEditor from "./NoteTextEditor";
 import TagEditor from "./TagEditor";
@@ -25,7 +24,7 @@ export default function NoteEditor({
 }: NoteEditorProps) {
 
     if (!note.space)
-        return (<Text style={s.text.plain}>Note must define the space that it belongs to</Text>);
+        return (<NotuText danger>Note must define the space that it belongs to</NotuText>);
 
     const notu = notuRenderTools.notu;
     const [error, setError] = useState<string>(null);
@@ -86,7 +85,7 @@ export default function NoteEditor({
 
         return (
             <View key={noteTag.tag.id}>
-                <Text style={[s.text.plain, s.text.bold]}>{noteTag.tag.getQualifiedName(note.space.id)}</Text>
+                <NotuText bold>{noteTag.tag.getQualifiedName(note.space.id)}</NotuText>
                 {editorComponent}
             </View>
         );
@@ -94,20 +93,20 @@ export default function NoteEditor({
 
     return (
         <View>
-            {!!error && (<Text style={[s.text.danger, s.text.bold]}>{error}</Text>)}
+            {!!error && (<NotuText bold danger>{error}</NotuText>)}
 
-            <Text style={[s.text.plain, s.text.bold]}>{note.space.name}</Text>
+            <NotuText bold>{note.space.name}</NotuText>
 
-            <Text style={[s.text.plain, s.text.italic]}>{noteDateStr}</Text>
+            <NotuText italic>{noteDateStr}</NotuText>
 
             <TagEditor note={note} tags={notu.getTags()}/>
 
-            <Text>
-                <Text style={[s.text.plain, s.text.bold]}>Text </Text>
-                <Text style={s.text.link} onPress={() => setShowTextComponentView(!showTextComponentView)}>
+            <XStack>
+                <NotuText bold>Text </NotuText>
+                <NotuText pressable onPress={() => setShowTextComponentView(!showTextComponentView)}>
                     {showTextComponentView ? 'Components View' : 'Raw View'}
-                </Text>
-            </Text>
+                </NotuText>
+            </XStack>
 
             <NoteTextEditor notuRenderTools={notuRenderTools}
                             note={note}
@@ -130,7 +129,7 @@ export default function NoteEditor({
             </Dialog>
 
             {note.tags.length > 0 && (
-                <View style={s.container.row}>
+                <XStack flexWrap="wrap">
                     {note.tags.map(nt => (
                         <NoteTagBadge key={nt.tag.id}
                                       noteTag={nt}
@@ -139,14 +138,12 @@ export default function NoteEditor({
                                       contextSpace={note.space}
                                       onDelete={() => removeTagFromNote(nt)}/>
                     ))}
-                </View>
+                </XStack>
             )}
 
             {note.tags.map(nt => renderNoteTagData(nt))}
-
-            <TouchableOpacity style={s.touch.button} onPress={submitNote}>
-                <Text style={s.text.plain}>Submit</Text>
-            </TouchableOpacity>
+            
+            <Button onPress={submitNote}>Submit</Button>
         </View>
     )
 }

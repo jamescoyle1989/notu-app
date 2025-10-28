@@ -1,8 +1,8 @@
+import { NotuButton } from '@/helpers/NotuStyles2';
 import { dateToText, timeToText } from '@/helpers/RenderHelpers';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { useState } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
-import s from '../helpers/NotuStyles';
+import { XStack } from 'tamagui';
 
 interface NotuDateTimePickerProps {
     value: Date,
@@ -33,19 +33,17 @@ export const NotuDateTimePicker = ({
     }
 
     return (
-        <View style={s.container.row}>
+        <XStack>
             {!hideDate && (
-                <TouchableOpacity style={[s.touch.button, !hideTime && s.border.joinedRight]}
-                                  onPress={() => setShowCalendar(true)}>
-                    <Text style={s.text.plain}>{dateToText(value)}</Text>
-                </TouchableOpacity>
+                <NotuButton joinedRight={!hideTime} onPress={() => setShowCalendar(true)}>
+                    {dateToText(value)}
+                </NotuButton>
             )}
             
             {!hideTime && (
-                <TouchableOpacity style={[s.touch.button, !hideDate && s.border.joinedLeft]}
-                                  onPress={() => setShowClock(true)}>
-                    <Text style={s.text.plain}>{timeToText(value)}</Text>
-                </TouchableOpacity>
+                <NotuButton joinedLeft={!hideDate} onPress={() => setShowClock(true)}>
+                    {timeToText(value)}
+                </NotuButton>
             )}
 
             {showCalendar && (
@@ -61,6 +59,6 @@ export const NotuDateTimePicker = ({
                                 mode='time'
                                 onChange={handleTimeChange} />
             )}
-        </View>
+        </XStack>
     );
 }

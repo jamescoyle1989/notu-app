@@ -1,6 +1,6 @@
 import { NotuSelect } from '@/components/NotuSelect';
-import Ionicons from '@expo/vector-icons/Ionicons';
 import { DrawerActions } from '@react-navigation/native';
+import { Menu } from '@tamagui/lucide-icons';
 import { Stack, useNavigation } from 'expo-router';
 import { useState } from 'react';
 import { Text, View } from 'react-native';
@@ -16,11 +16,9 @@ export default function AboutScreen() {
                 title: 'Home',
                 headerLeft: () => {
                     return (
-                        <Ionicons name="menu"
-                                  size={24}
-                                  onPress={() => {
-                                    nav.dispatch(DrawerActions.openDrawer());
-                                  }} />
+                        <Menu onPress={() => {
+                            nav.dispatch(DrawerActions.openDrawer());
+                        }}/>
                     )
                 }
             }} />

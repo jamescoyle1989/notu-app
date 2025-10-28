@@ -1,6 +1,7 @@
+import { NotuButton, NotuInput, NotuText } from "@/helpers/NotuStyles2";
 import { useEffect, useRef, useState } from "react";
-import { NativeSyntheticEvent, Text, TextInput, TextInputSelectionChangeEventData, View } from "react-native";
-import s from '../helpers/NotuStyles';
+import { NativeSyntheticEvent, TextInputSelectionChangeEventData } from "react-native";
+import { Input, XStack } from "tamagui";
 
 interface TimespanPickerProps {
     milliseconds: number,
@@ -25,8 +26,8 @@ export const TimespanPicker = ({
     const [hoursMinsText, setHoursMinsText] = useState(`${remainingHours.toString().padStart(2, '0')}:${remainingMinutes.toString().padStart(2, '0')}`);
     const [editingHours, setEditingHours] = useState(false);
     const [editingMinutes, setEditingMinutes] = useState(false);
-    const daysTextRef = useRef<TextInput>(null);
-    const hoursMinsTextRef = useRef<TextInput>(null);
+    const daysTextRef = useRef<Input>(null);
+    const hoursMinsTextRef = useRef<Input>(null);
 
     useEffect(() => {
         if (editingMinutes) {
@@ -135,23 +136,25 @@ export const TimespanPicker = ({
     }
 
     return (
-        <View style={[s.container.row, s.border.main]}>
-            <TextInput ref={daysTextRef}
+        <XStack>
+            <NotuInput ref={daysTextRef}
+                       joinedRight
                        keyboardType="numeric"
-                       style={[s.text.plain, s.child.vcenter]}
                        value={totalDays.toString()}
                        onChangeText={onDaysTextChange}
                        onFocus={onDaysTextFocus} />
             
-            <Text style={[s.text.plain, s.child.vcenter]}>day{totalDays == 1 ? '' : 's'}</Text>
+            <NotuButton joinedLeft joinedRight>
+                <NotuText>day{totalDays == 1 ? '' : 's'}</NotuText>
+            </NotuButton>
 
-            <TextInput ref={hoursMinsTextRef}
+            <NotuInput ref={hoursMinsTextRef}
+                       joinedLeft
                        keyboardType="numeric"
                        value={hoursMinsText}
-                       style={[s.text.plain, s.child.vcenter]}
                        contextMenuHidden={true}
                        onSelectionChange={onHoursMinsSelectionChange}
                        onChangeText={onHoursMinsTextChange} />
-        </View>
+        </XStack>
     )
 }

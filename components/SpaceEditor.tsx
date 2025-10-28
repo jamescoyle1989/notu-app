@@ -1,8 +1,8 @@
+import { NotuButton, NotuText } from "@/helpers/NotuStyles2";
 import { Space } from "notu";
 import { useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { YStack } from "tamagui";
 import { NotuRenderTools } from "../helpers/NotuRenderTools";
-import s from '../helpers/NotuStyles';
 
 interface SpaceEditorProps {
     notuRenderTools: NotuRenderTools,
@@ -36,16 +36,14 @@ export default function SpaceEditor({
     }
 
     return (
-        <View>
-            {!!error && (<Text style={[s.text.danger, s.text.bold]}>{error}</Text>)}
+        <YStack>
+            {!!error && (<NotuText bold danger>{error}</NotuText>)}
 
-            <Text style={[s.text.plain, s.text.bold]}>{space.name}</Text>
+            <NotuText bold>{space.name}</NotuText>
 
             {!!componentFactory && componentFactory.getEditorComponent(space, notuRenderTools.notu)}
             
-            <TouchableOpacity style={s.touch.button} onPress={saveSpace}>
-                <Text style={s.text.plain}>Submit</Text>
-            </TouchableOpacity>
-        </View>
+            <NotuButton onPress={saveSpace}>Submit</NotuButton>
+        </YStack>
     )
 }

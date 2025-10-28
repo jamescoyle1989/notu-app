@@ -1,7 +1,7 @@
 import { UIAction } from "@/helpers/NoteAction";
 import { Note, Space } from "notu";
 import React, { JSX, useRef, useState } from "react";
-import { View } from "react-native";
+import { YStack } from "tamagui";
 import { NotuRenderTools } from "../helpers/NotuRenderTools";
 import NoteList from "./NoteList";
 import { NoteSearch } from "./NoteSearch";
@@ -32,7 +32,7 @@ export default function SearchList({
     const searchRef = useRef(null);
 
     return (
-        <View>
+        <YStack>
             <NoteSearch ref={searchRef}
                         space={searchSpace}
                         notu={notuRenderTools.notu}
@@ -47,6 +47,6 @@ export default function SearchList({
                       notuRenderTools={notuRenderTools}
                       onUIAction={onUIAction}
                       noteViewer={noteViewer}/>
-        </View>
+        </YStack>
     )
 };

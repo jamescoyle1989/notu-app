@@ -4,14 +4,16 @@ import { Adapt, ScrollView, Select, Sheet } from 'tamagui';
 interface NotuSelectProps {
     options: Array<{name: string, value: any}>,
     value: any,
-    onValueChange: (value: any) => void
+    onValueChange: (value: any) => void,
+    placeholderText?: string
 }
 
 
 export const NotuSelect = ({
     options,
     value,
-    onValueChange
+    onValueChange,
+    placeholderText = "Choose..."
 }: NotuSelectProps) => {
 
     let selectedName = null;
@@ -28,7 +30,7 @@ export const NotuSelect = ({
     return (
         <Select value={selectedName} onValueChange={handleValueChange} disablePreventBodyScroll>
             <Select.Trigger>
-                <Select.Value placeholder="Choose..." />
+                <Select.Value placeholder={placeholderText} />
             </Select.Trigger>
 
             <Adapt when="maxMd" platform="touch">

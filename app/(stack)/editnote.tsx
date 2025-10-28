@@ -1,9 +1,8 @@
 import { getNotu } from '@/helpers/NotuSetup';
 import { useRouter } from 'expo-router';
 import { Note } from "notu";
-import { View } from "react-native";
+import { View } from 'tamagui';
 import NoteEditor from '../../components/NoteEditor';
-import s from '../../helpers/NotuStyles';
 
 
 let _noteBeingEdited: Note;
@@ -18,7 +17,7 @@ export default function Index() {
     const router = useRouter();
 
     return (
-        <View style={s.container.background}>
+        <View flex={1}>
             <NoteEditor notuRenderTools={renderTools}
                         note={_noteBeingEdited}
                         onSave={n => router.back()}/>

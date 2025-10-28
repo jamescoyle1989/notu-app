@@ -1,7 +1,7 @@
 import { UIAction } from "@/helpers/NoteAction";
 import { Note, Space } from "notu";
 import React, { JSX, useImperativeHandle, useRef, useState } from "react";
-import { View } from "react-native";
+import { YStack } from "tamagui";
 import { NotuRenderTools } from "../helpers/NotuRenderTools";
 import GroupedNoteList from "./GroupedNoteList";
 import { NoteSearch, NoteSearchCommands } from "./NoteSearch";
@@ -37,7 +37,7 @@ export const GroupedSearchList = React.forwardRef((
     }));
 
     return (
-        <View>
+        <YStack>
             <NoteSearch ref={searchRef}
                         space={searchSpace}
                         notu={notuRenderTools.notu}
@@ -52,6 +52,6 @@ export const GroupedSearchList = React.forwardRef((
                              notuRenderTools={notuRenderTools}
                              onUIAction={onUIAction}
                              noteViewer={noteViewer}/>
-        </View>
+        </YStack>
     )
 });

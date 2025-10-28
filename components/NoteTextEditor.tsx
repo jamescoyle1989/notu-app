@@ -1,11 +1,12 @@
 import { Note } from "notu";
+import { NoteComponentProcessor } from "notu/dist/types/notecomponents/NoteComponent";
 import { useEffect, useState } from "react";
-import { TextInput, View } from "react-native";
-import { Dropdown } from "react-native-element-dropdown";
+import { Input, View } from "tamagui";
 import { useManualRefresh } from "../helpers/Hooks";
 import { NotuRenderTools } from "../helpers/NotuRenderTools";
 import s from '../helpers/NotuStyles';
 import { NoteComponentContainer } from "./NoteComponentContainer";
+import { NotuSelect } from "./NotuSelect";
 
 interface NoteTextEditorProps {
     notuRenderTools: NotuRenderTools,
@@ -23,7 +24,6 @@ export default function NoteTextEditor({
 }: NoteTextEditorProps) {
     
     const manualRefresh = useManualRefresh();
-    const [componentsDropdownFocused, setComponentsDropdownFocused] = useState(false);
     const [selectedTextRange, setSelectedTextRange] = useState({start: note.text.length, end: note.text.length});
     const [textComponents, setTextComponents] = useState<any[]>(null);
 
@@ -43,15 +43,14 @@ export default function NoteTextEditor({
         manualRefresh();
     }
 
-    function getComponentsDropdownData(): Array<{label: string, value: number}> {
-        return notuRenderTools.noteComponentProcessors.map((x, index) => ({
-            label: x.displayName,
-            value: index
+    function getComponentsDropdownData(): Array<{name: string, value: NoteComponentProcessor}> {
+        return notuRenderTools.noteComponentProcessors.map(x => ({
+            name: x.displayName,
+            value: x
         }));
     }
 
-    function addComponentToNoteText(processorIndex: number): void {
-        const processor = notuRenderTools.noteComponentProcessors[processorIndex];
+    function addComponentToNoteText(processor: NoteComponentProcessor): void {
         note.text = note.text.substring(0, selectedTextRange.start)
                   + processor.newComponentText(note.text.substring(selectedTextRange.start, selectedTextRange.end))
                   + note.text.substring(selectedTextRange.end);
@@ -62,30 +61,20 @@ export default function NoteTextEditor({
         const componentsDropdownData = getComponentsDropdownData();
         return (
             <View>
-                <TextInput value={note.text}
-                           multiline={true}
-                           onChangeText={handleTextChange}
-                           onSelectionChange={e => {
-                                const selection = e.nativeEvent.selection;
-                                setSelectedTextRange({start: selection.start, end: selection.end});
-                           }}
-                           style={[s.border.main, s.text.plain]}/>
+                <Input value={note.text}
+                       multiline={true}
+                       onChangeText={handleTextChange}
+                       onSelectionChange={e => {
+                            const selection = e.nativeEvent.selection;
+                            setSelectedTextRange({start: selection.start, end: selection.end});
+                       }}
+                       style={[s.border.main]}/>
             
                 {componentsDropdownData.length > 0 && (
-                    <Dropdown style={[s.dropdown.main, s.border.main, componentsDropdownFocused && s.dropdown.focused]}
-                              placeholderStyle={s.dropdown.placeholder}
-                              selectedTextStyle={s.dropdown.selected}
-                              data={componentsDropdownData}
-                              maxHeight={300}
-                              labelField='label'
-                              valueField='value'
-                              value={null}
-                              onFocus={() => setComponentsDropdownFocused(true)}
-                              onBlur={() => setComponentsDropdownFocused(false)}
-                              onChange={item => {
-                                addComponentToNoteText(item.value);
-                                setComponentsDropdownFocused(false);
-                              }}/>
+                    <NotuSelect options={componentsDropdownData}
+                                value={null}
+                                placeholderText="Add Text Component..."
+                                onValueChange={value => addComponentToNoteText(value)} />
                 )}
             </View>
         );

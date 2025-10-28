@@ -1,13 +1,12 @@
 import { GroupedSearchList } from "@/components/GroupedSearchList";
 import { ShowEditorAction, UIAction } from "@/helpers/NoteAction";
 import { getNotu } from "@/helpers/NotuSetup";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import { DrawerActions } from "@react-navigation/native";
+import { Menu } from '@tamagui/lucide-icons';
 import { Stack, useLocalSearchParams, useNavigation, usePathname, useRouter } from "expo-router";
 import { Note, Page } from "notu";
 import { useEffect, useRef, useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
-import s from '../../helpers/NotuStyles';
+import { Button, Text, View } from "tamagui";
 import { setNoteBeingEdited } from "./editnote";
 
 export default function CustomPage() {
@@ -32,8 +31,8 @@ export default function CustomPage() {
 
     if (!page) {
         return (
-            <View style={s.container.background}>
-                <Text style={s.text.plain}>Loading...</Text>
+            <View flex={1}>
+                <Text>Loading...</Text>
             </View>
         )
     }
@@ -57,16 +56,14 @@ export default function CustomPage() {
     }
 
     return (
-        <View style={s.container.background}>
+        <View flex={1}>
             <Stack.Screen options={{
                 title: page.name,
                 headerLeft: () => {
                     return (
-                        <Ionicons name="menu"
-                                  size={24}
-                                  onPress={() => {
-                                    nav.dispatch(DrawerActions.openDrawer());
-                                  }} />
+                        <Menu onPress={() => {
+                            nav.dispatch(DrawerActions.openDrawer());
+                        }}/>
                     )
                 }
             }} />
@@ -76,10 +73,7 @@ export default function CustomPage() {
                                notuRenderTools={renderTools}
                                onUIAction={onUIAction}
                                actionsBar={() => (
-                                <TouchableOpacity style={s.touch.button}
-                                                  onPress={addNote}>
-                                    <Text style={s.text.plain}>Add Note</Text>
-                                </TouchableOpacity>
+                                <Button onPress={addNote}>Add Note</Button>
                                )} />
         </View>
     )

@@ -1,7 +1,8 @@
 import { UIAction } from "@/helpers/NoteAction";
 import { Note } from "notu";
 import { JSX } from "react";
-import { FlatList, View } from "react-native";
+import { FlatList } from "react-native";
+import { View } from "tamagui";
 import { NotuRenderTools } from "../helpers/NotuRenderTools";
 import { NoteViewer } from "./NoteViewer";
 

@@ -1,7 +1,7 @@
+import { NotuButton, NotuText } from "@/helpers/NotuStyles2";
 import { Note, Notu, Space } from "notu";
 import React, { useEffect, useImperativeHandle, useState } from "react";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
-import s from '../helpers/NotuStyles';
+import { Input, View, XStack, YStack } from "tamagui";
 
 interface NoteSearchProps {
     /** The space which we're fetching notes from, if null then we're searching across all spaces */
@@ -70,51 +70,36 @@ export const NoteSearch = React.forwardRef((
     }
 
     return (
-        <View>
-            <View style={[s.container.row]}>
+        <YStack>
+            <XStack>
                 {!!space && (
-                    <TouchableOpacity disabled
-                                    style={[
-                                        s.touch.button,
-                                        s.child.autoSize,
-                                        s.border.joinedRight,
-                                        s.background.inactive
-                                    ]}>
-                        <Text style={s.text.plain}>{space.name}</Text>
-                    </TouchableOpacity>
+                    <NotuButton joinedRight
+                                flexBasis="auto">
+                        {space.name}
+                    </NotuButton>
                 )}
-                <View style={{flex:1}}>
-                    <TextInput value={query} onChangeText={onSearchTextChange}
-                        style={[
-                                s.text.plain,
-                                s.border.main,
-                                s.child.grow1,
-                                !!space && s.border.joinedLeft,
-                                s.border.joinedRight
-                        ]}/>
+                <View flex={1}>
+                    <Input value={query} onChangeText={onSearchTextChange}
+                           borderWidth={1}
+                           borderTopLeftRadius={0}
+                           borderTopRightRadius={0}
+                           borderBottomLeftRadius={0}
+                           borderBottomRightRadius={0} />
                 </View>
                 
                 {!!error && (
-                    <TouchableOpacity disabled
-                                    style={[
-                                        s.touch.button,
-                                        s.background.danger,
-                                        s.child.autoSize,
-                                        s.border.joinedLeft
-                                    ]}>
-                        <Text style={[s.text.plain]}>Error!</Text>
-                    </TouchableOpacity>
+                    <NotuButton joinedLeft danger flexBasis="auto">Error!</NotuButton>
                 )}
                 {!error && (
-                    <TouchableOpacity onPress={onSearchSubmit}
-                                    style={[s.touch.button, s.child.autoSize, s.border.joinedLeft]}>
-                        <Text style={[s.text.plain]}>Search</Text>
-                    </TouchableOpacity>
+                    <NotuButton onPress={onSearchSubmit}
+                                joinedLeft flexBasis="auto">
+                        Search
+                    </NotuButton>
                 )}
-            </View>
+            </XStack>
             {!!error && (
-                <Text style={[s.text.danger]}>{error}</Text>
+                <NotuText danger>{error}</NotuText>
             )}
-        </View>
+        </YStack>
     )
 });
