@@ -1,4 +1,4 @@
-import { NotuButton, NotuText } from "@/helpers/NotuStyles2";
+import { NotuButton, NotuText } from "@/helpers/NotuStyles";
 import { Note, Notu, Space } from "notu";
 import React, { useEffect, useImperativeHandle, useState } from "react";
 import { Input, View, XStack, YStack } from "tamagui";

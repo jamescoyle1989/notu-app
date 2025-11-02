@@ -1,6 +1,5 @@
+import { NotuText } from '@/helpers/NotuStyles';
 import React from 'react';
-import { Text } from "react-native";
-import s from '../helpers/NotuStyles';
 import { NoteText } from './NoteText';
 
 export class NoteParagraph {
@@ -23,21 +22,21 @@ export class NoteParagraph {
 
     render() {
         return (
-            <Text style={s.text.plain}>
+            <NotuText>
                 {this._children.map((x, index) => (
-                    <Text key={index}>{(x as any).render()}</Text>
+                    <NotuText key={index}>{(x as any).render()}</NotuText>
                 ))}
-            </Text>
+            </NotuText>
         );
     }
 
     renderForEdit() {
         return (
-            <Text style={[s.text.plain]}>
+            <NotuText>
                 {this._children.map((x, index) => (
-                    <Text key={index}>{(x as any).renderForEdit()}</Text>
+                    <NotuText key={index}>{(x as any).renderForEdit()}</NotuText>
                 ))}
-            </Text>
+            </NotuText>
         );
     }
 

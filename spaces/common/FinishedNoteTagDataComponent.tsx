@@ -1,10 +1,10 @@
 import { NotuDateTimePicker } from "@/components/NotuDateTimePicker";
 import { NoteTagDataComponentFactory, NoteTagDataComponentProps } from "@/helpers/NotuRenderTools";
+import { NotuText } from "@/helpers/NotuStyles";
 import { datetimeToText } from "@/helpers/RenderHelpers";
 import { Note, NoteTag, Notu } from "notu";
 import { ReactNode } from "react";
-import { Text, View } from "react-native";
-import s from '../../helpers/NotuStyles';
+import { View } from "tamagui";
 import { FinishedData } from "./FinishedNoteTagData";
 
 export default class FinishedNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
@@ -26,8 +26,8 @@ export default class FinishedNoteTagDataComponentFactory implements NoteTagDataC
 function BadgeComponent({ noteTag }: NoteTagDataComponentProps) {
     const data = new FinishedData(noteTag);
     return (
-        <View style={s.margin.h3}>
-            <Text style={s.text.plain}>{datetimeToText(data.date)}</Text>
+        <View>
+            <NotuText>{datetimeToText(data.date)}</NotuText>
         </View>
     );
 }
@@ -43,7 +43,7 @@ function EditorComponent({ noteTag, refreshCallback }: NoteTagDataComponentProps
 
     return (
         <View>
-            <Text style={s.text.plain}>Date:</Text>
+            <NotuText>Date:</NotuText>
             <NotuDateTimePicker value={data.date} onChange={onDateChange} />
         </View>
     );

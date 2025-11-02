@@ -1,11 +1,12 @@
-import { Overlay } from "@rneui/base";
+import { NotuButton, NotuInput, NotuText } from "@/helpers/NotuStyles";
+import { ChevronDown } from '@tamagui/lucide-icons';
 import { Note, Tag } from "notu";
 import { useState } from "react";
-import { Image, Modal, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Modal } from "react-native";
 import ColorPicker, { ColorFormatsObject, HueCircular, Panel1 } from 'reanimated-color-picker';
+import { Dialog, View, XStack, YStack } from "tamagui";
 import { getTextContrastColor } from "../helpers/ColorHelpers";
 import { useManualRefresh } from "../helpers/Hooks";
-import s from '../helpers/NotuStyles';
 
 
 interface TagEditorProps {
@@ -46,29 +47,19 @@ export default function TagEditor({
     function renderOwnTagOptions() {
 
         return [
-            <TouchableOpacity key={2}
-                              style={[
-                                    s.touch.button,
-                                    s.child.autoSize,
-                                    s.border.joinedLeft,
-                                    s.border.joinedRight
-                              ]}
-                              onPress={() => setShowColorPicker(true)}>
-                <Text style={s.text.plain}>Color</Text>
-            </TouchableOpacity>,
-
-            <TouchableOpacity key={3}
-                              style={[s.touch.button, s.child.autoSize, s.border.joinedLeft]}
-                              onPress={() => setShowExistingTagColors(true)}>
-                <Image source={require('../assets/images/down.png')}
-                       style={{tintColor: 'white', height: 20, width: 20}}/>
-            </TouchableOpacity>,
+            <NotuButton key={2} joinedLeft joinedRight onPress={() => setShowColorPicker(true)}>
+                Color
+            </NotuButton>,
+            
+            <NotuButton key={3} joinedLeft onPress={() => setShowExistingTagColors(true)}>
+                <ChevronDown />
+            </NotuButton>,
 
             <Modal key={4}
                    onRequestClose={() => setShowColorPicker(false)}
                    visible={showColorPicker}
                    animationType="slide">
-                <View style={[s.container.background]}>
+                <YStack backgroundColor="$background" flex={1}>
                     <ColorPicker value={note.ownTag.color ?? '#AABBCC'}
                                  sliderThickness={20}
                                  thumbSize={24}
@@ -79,28 +70,35 @@ export default function TagEditor({
                             <Panel1 style={{borderRadius: 16, width: '70%', height: '70%', alignSelf: 'center'}} />
                         </HueCircular>
                     </ColorPicker>
-                    <TouchableOpacity style={s.touch.button}
-                                      onPress={() => setShowColorPicker(false)}>
-                        <Text style={s.text.plain}>Confirm</Text>
-                    </TouchableOpacity>
-                </View>
+                    <NotuButton onPress={() => setShowColorPicker(false)}>
+                        Confirm
+                    </NotuButton>
+                </YStack>
             </Modal>,
-                    
-            <Overlay key={5}
-                     isVisible={showExistingTagColors}
-                     onBackdropPress={() => setShowExistingTagColors(false)}>
-                {tags.map((tag, index) => {
-                    const backgroundColor = tag.color ?? '#AABBCC';
-                    const textColor = getTextContrastColor(backgroundColor);
-                    return (
-                        <TouchableOpacity key={index}
-                                          style={{backgroundColor, padding: 7}}
-                                          onPress={() => onCopyTagColor(tag)}>
-                            <Text style={{color: textColor}}>{tag.name}</Text>
-                        </TouchableOpacity>
-                    )
-                })}
-            </Overlay>
+
+            <Dialog key={5} modal open={showExistingTagColors}>
+                <Dialog.Portal>
+                    <Dialog.Overlay key="tageditorexistingcolorsoverlay"
+                                    onPress={() => setShowExistingTagColors(false)} />
+                    <Dialog.FocusScope>
+                        <Dialog.Content bordered elevate
+                                        width="80%"
+                                        key="tageditorexistingcolorscontent">
+                            {tags.map((tag, index) => {
+                                const backgroundColor = tag.color ?? '#AABBCC';
+                                const textColor = getTextContrastColor(backgroundColor);
+                                return (
+                                    <NotuButton key={index}
+                                                style={{backgroundColor, color: textColor}}
+                                                onPress={() => onCopyTagColor(tag)}>
+                                        {tag.name}
+                                    </NotuButton> 
+                                )
+                            })}
+                        </Dialog.Content>
+                    </Dialog.FocusScope>
+                </Dialog.Portal>
+            </Dialog>
         ]
     }
 
@@ -110,24 +108,18 @@ export default function TagEditor({
     
     return (
         <View>
-            <Text style={[s.text.plain, s.text.bold]}>Own Tag</Text>
+            <NotuText bold>Own Tag</NotuText>
             
-            <View style={s.container.row}>
-                <TextInput value={note.ownTag?.name ?? ''}
+            <XStack>
+                <NotuInput value={note.ownTag?.name ?? ''}
                            onChangeText={onNameChange}
-                           style={[
-                                s.text.plain,
-                                s.border.main,
-                                s.child.grow1,
-                                showNoteOptions && s.border.joinedRight,
-                                showNoteOptions && {
-                                    backgroundColor,
-                                    color: textColor
-                                }
-                            ]}/>
+                           flex={1}
+                           joinedRight={showNoteOptions}
+                           backgroundColor={backgroundColor}
+                           color={textColor} />
 
                 {showNoteOptions && renderOwnTagOptions()}
-            </View>
+            </XStack>
         </View>
     );
 }

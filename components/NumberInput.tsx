@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
-import { StyleProp, TextInput, TextStyle } from "react-native";
+import { StyleProp, TextStyle } from "react-native";
+import { Input } from "tamagui";
 
 interface NumberInputProps {
     value: number,
@@ -15,7 +16,7 @@ interface NumberInputProps {
 export const NumberInput = ({
     value,
     onChange,
-    style = [],
+    style = {},
     allowNull = false,
     onFocus,
     onBlur
@@ -79,11 +80,11 @@ export const NumberInput = ({
     }
 
     return (
-        <TextInput keyboardType="numeric"
-                   value={dirtyText}
-                   style={style}
-                   onChangeText={onValueChange}
-                   onFocus={() => { if (!!onFocus) onFocus() }}
-                   onBlur={() => { if (!!onBlur) onBlur() }} />
+        <Input keyboardType="numeric"
+               value={dirtyText}
+               style={style}
+               onChangeText={onValueChange}
+               onFocus={() => { if (!!onFocus) onFocus() }}
+               onBlur={() => { if (!!onBlur) onBlur() }} />
     );
 }

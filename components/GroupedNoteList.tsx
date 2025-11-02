@@ -1,5 +1,5 @@
 import { UIAction } from "@/helpers/NoteAction";
-import { NotuText } from "@/helpers/NotuStyles2";
+import { NotuText } from "@/helpers/NotuStyles";
 import { Note } from "notu";
 import { JSX, useMemo } from "react";
 import { SectionList } from "react-native";

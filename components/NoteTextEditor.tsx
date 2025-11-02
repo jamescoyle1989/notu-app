@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { Input, View } from "tamagui";
 import { useManualRefresh } from "../helpers/Hooks";
 import { NotuRenderTools } from "../helpers/NotuRenderTools";
-import s from '../helpers/NotuStyles';
 import { NoteComponentContainer } from "./NoteComponentContainer";
 import { NotuSelect } from "./NotuSelect";
 
@@ -67,8 +66,7 @@ export default function NoteTextEditor({
                        onSelectionChange={e => {
                             const selection = e.nativeEvent.selection;
                             setSelectedTextRange({start: selection.start, end: selection.end});
-                       }}
-                       style={[s.border.main]}/>
+                       }}/>
             
                 {componentsDropdownData.length > 0 && (
                     <NotuSelect options={componentsDropdownData}

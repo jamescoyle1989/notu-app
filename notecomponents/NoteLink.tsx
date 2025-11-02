@@ -1,10 +1,10 @@
-import { Overlay } from '@rneui/base';
+import { NotuInput, NotuText } from '@/helpers/NotuStyles';
 import { NmlElement, Note } from 'notu';
 import React, { useState } from 'react';
-import { Linking, Text, TextInput, View } from 'react-native';
+import { Linking } from 'react-native';
+import { Dialog, View } from 'tamagui';
 import { NoteComponentContainer } from '../components/NoteComponentContainer';
 import { useManualRefresh } from '../helpers/Hooks';
-import s from '../helpers/NotuStyles';
 
 export class NoteLink {
     private _url: string;
@@ -20,11 +20,11 @@ export class NoteLink {
 
     render() {
         return (
-            <Text style={[s.text.link]} onPress={() => this.openURL()}>
+            <NotuText pressable onPress={() => this.openURL()}>
                 {this.content.map((x, index) => (
                     <NoteComponentContainer key={index} component={x}/>
                 ))}
-            </Text>
+            </NotuText>
         );
     }
 
@@ -36,27 +36,35 @@ export class NoteLink {
         function handleTextChange(newValue: string): void {
             myself._url = newValue;
             manualRefresh();
+            console.log({myself});
         }
 
         return (
-            <Text>
-                <Text style={[s.background.danger, s.text.plain]}>
-                    <Text style={[s.text.bold, s.text.link]} onPress={() => setShowLinkEditor(true)}>Link: </Text>
+            <NotuText>
+                <NotuText danger>
+                    <NotuText bold pressable onPress={() => setShowLinkEditor(true)}>Link: </NotuText>
                     {this.content.map((x, index) => (
                         <NoteComponentContainer key={index} component={x} editMode={true}/>
                     ))}
-                </Text>
+                </NotuText>
 
                 <View>
-                    <Overlay isVisible={showLinkEditor}
-                             onBackdropPress={() => setShowLinkEditor(false)}>
-                        <Text style={[s.text.plain]}>URL</Text>
-                        <TextInput value={this.url}
-                                   onChangeText={handleTextChange}
-                                   style={[s.border.main, s.text.plain]}/>
-                    </Overlay>
+                    <Dialog modal open={showLinkEditor}>
+                        <Dialog.Portal>
+                            <Dialog.Overlay key="notelinkeditoroverlay" onPress={() => setShowLinkEditor(false)} />
+                            <Dialog.FocusScope>
+                                <Dialog.Content bordered elevate
+                                                width="80%"
+                                                key="notelinkeditorcontent">
+                                    <NotuText>URL</NotuText>
+                                    <NotuInput value={this.url}
+                                               onChangeText={handleTextChange} />
+                                </Dialog.Content>
+                            </Dialog.FocusScope>
+                        </Dialog.Portal>
+                    </Dialog>
                 </View>
-            </Text>
+            </NotuText>
         );
     }
 

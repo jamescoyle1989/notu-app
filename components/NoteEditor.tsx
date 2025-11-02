@@ -1,4 +1,4 @@
-import { NotuText } from "@/helpers/NotuStyles2";
+import { NotuText } from "@/helpers/NotuStyles";
 import { Note, NoteTag, Tag } from "notu";
 import { useState } from "react";
 import { Button, Dialog, View, XStack } from "tamagui";

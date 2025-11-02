@@ -1,4 +1,4 @@
-import { NotuButton, NotuInput, NotuText } from "@/helpers/NotuStyles2";
+import { NotuButton, NotuInput, NotuText } from "@/helpers/NotuStyles";
 import { useEffect, useRef, useState } from "react";
 import { NativeSyntheticEvent, TextInputSelectionChangeEventData } from "react-native";
 import { Input, XStack } from "tamagui";

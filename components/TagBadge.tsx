@@ -1,4 +1,4 @@
-import { NotuText } from '@/helpers/NotuStyles2';
+import { NotuText } from '@/helpers/NotuStyles';
 import { X } from '@tamagui/lucide-icons';
 import { Space, Tag } from 'notu';
 import { View } from 'tamagui';

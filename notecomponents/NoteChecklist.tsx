@@ -1,9 +1,9 @@
-import { CheckBox } from "@rneui/themed";
+import { NotuButton, NotuText } from "@/helpers/NotuStyles";
+import { Check } from "@tamagui/lucide-icons";
 import { NmlElement, Note } from "notu";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Checkbox, XStack, YStack } from "tamagui";
 import { NoteComponentContainer } from "../components/NoteComponentContainer";
 import { useManualRefresh } from "../helpers/Hooks";
-import s from '../helpers/NotuStyles';
 
 
 class NoteChecklistLine {
@@ -47,33 +47,38 @@ export class NoteChecklist {
 
     render() {
         const manualRefresh = useManualRefresh();
+        const myself = this;
 
         function onCheckboxChange(line: NoteChecklistLine) {
             line.done = !line.done;
-            this.save();
+            myself._save();
             manualRefresh();
         }
 
         return (
-            <View>
+            <YStack>
                 {this.lines.map((line, index) => (
-                    <View key={index}>
-                        <CheckBox checked={line.done}
-                                  containerStyle={[s.checkbox.inline]}
-                                  onPress={() => onCheckboxChange(line)} />
-                        <Text style={[s.text.link]}>
+                    <XStack key={index} marginBlock={2}>
+                        <Checkbox checked={line.done}
+                                  onCheckedChange={() => onCheckboxChange(line)}
+                                  marginLeft={10} marginRight={5}>
+                            <Checkbox.Indicator>
+                                <Check />
+                            </Checkbox.Indicator>
+                        </Checkbox>
+                        <NotuText>
                             {line.content.map((x, index) => (
-                                <NoteComponentContainer key={index} component={x}/>
+                                <NoteComponentContainer key={index} component={x} />
                             ))}
-                        </Text>
-                    </View>
+                        </NotuText>
+                    </XStack>
                 ))}
                 {this.showClearButton && (
-                    <TouchableOpacity style={[s.touch.button, s.background.danger]}>
-                        <Text style={[s.text.plain]}>Clear Completed Items</Text>
-                    </TouchableOpacity>
+                    <NotuButton danger>
+                        Clear Completed Items
+                    </NotuButton>
                 )}
-            </View>
+            </YStack>
         );
     }
 
@@ -87,22 +92,25 @@ export class NoteChecklist {
         }
 
         return (
-            <View style={[s.background.success]}>
-                <View style={[s.container.row]}>
-                    <Text style={[s.text.plain, s.text.bold, s.child.vcenter]}>Checklist</Text>
-                    <CheckBox checked={this.showClearButton}
-                              containerStyle={[s.checkbox.inline]}
-                              onPress={() => onShowClearChange()} />
-                    <Text style={[s.text.plain, s.child.vcenter]}>Show Clear Button</Text>
-                </View>
+            <YStack backgroundColor="#00FF00">
+                <XStack>
+                    <NotuText bold>Checklist</NotuText>
+                    <Checkbox checked={this.showClearButton}
+                              onCheckedChange={() => onShowClearChange()}>
+                        <Checkbox.Indicator>
+                            <Check />
+                        </Checkbox.Indicator>
+                    </Checkbox>
+                    <NotuText>Show Clear Button</NotuText>
+                </XStack>
                 {this.lines.map((line, index) => (
-                    <Text key={`line${index}`} style={[s.text.plain]}>
+                    <NotuText key={`line${index}`}>
                         {line.content.map((x, index) => (
                             <NoteComponentContainer key={`x${index}`} component={x} editMode={true} />
                         ))}
-                    </Text>
+                    </NotuText>
                 ))}
-            </View>
+            </YStack>
         );
     }
 

@@ -1,4 +1,4 @@
-import { NotuButton } from '@/helpers/NotuStyles2';
+import { NotuButton } from '@/helpers/NotuStyles';
 import { dateToText, timeToText } from '@/helpers/RenderHelpers';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { useState } from 'react';

@@ -1,5 +1,5 @@
+import { NotuText } from '@/helpers/NotuStyles';
 import React from 'react';
-import { Text } from "react-native";
 
 export class NoteText {
     private _displayText: string;
@@ -19,7 +19,7 @@ export class NoteText {
             return;
 
         return (
-            <Text>{this.displayText}</Text>
+            <NotuText>{this.displayText}</NotuText>
         )
     }
 

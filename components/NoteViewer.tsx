@@ -1,10 +1,10 @@
 import { NoteAction, UIAction } from '@/helpers/NoteAction';
-import { Overlay } from '@rneui/base';
+import { NotuButton, NotuText } from '@/helpers/NotuStyles';
 import { Note } from "notu";
 import { useMemo, useState } from "react";
-import { Text, TouchableHighlight, TouchableOpacity, View } from "react-native";
+import { TouchableHighlight } from "react-native";
+import { Dialog, XStack, YStack } from 'tamagui';
 import { NotuRenderTools } from '../helpers/NotuRenderTools';
-import s from '../helpers/NotuStyles';
 import { NoteComponentContainer } from './NoteComponentContainer';
 import NoteTagBadge from './NoteTagBadge';
 
@@ -60,33 +60,28 @@ export const NoteViewer = ({
     function renderAction(action: NoteAction, index: number) {
         if (actionBeingConfirmed !== action) {
             return (
-                <TouchableOpacity key={index}
-                                  style={[s.touch.button, s.margin.v3]}
-                                  onPress={() => onActionPress(action)}>
-                    <Text style={s.text.plain}>{action.name}</Text>
-                </TouchableOpacity>
+                <NotuButton key={index}
+                            onPress={() => onActionPress(action)}>
+                    {action.name}
+                </NotuButton>
+
             );
         }
         else {
             return (
-                <View key={index}>
-                    <TouchableOpacity style={[s.touch.button, s.margin.v3]}
-                                      onPress={() => {}}>
-                        <Text style={s.text.plain}>{action.name}</Text>
-                    </TouchableOpacity>
-                    <View style={{
-                        flexDirection: 'row'
-                    }}>
-                        <TouchableOpacity style={[s.touch.button, s.background.success]}
-                                          onPress={() => onActionConfirmed(action)}>
-                            <Text style={s.text.plain}>Confirm</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={[s.touch.button, s.background.danger]}
-                                          onPress={() => onActionCancelled(action)}>
-                            <Text style={s.text.plain}>Cancel</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
+                <YStack key={index}>
+                    <NotuButton onPress={() => {}}>
+                        {action.name}
+                    </NotuButton>
+                    <XStack>
+                        <NotuButton success onPress={() => onActionConfirmed(action)}>
+                            Confirm
+                        </NotuButton>
+                        <NotuButton danger onPress={() => onActionCancelled(action)}>
+                            Cancel
+                        </NotuButton>
+                    </XStack>
+                </YStack>
             );
         }
     }
@@ -94,15 +89,24 @@ export const NoteViewer = ({
     return (
         <TouchableHighlight onLongPress={showNoteActions}>
             
-            <View>
+            <YStack>
                 {textComponents.map((x, index) => (<NoteComponentContainer key={index} component={x}/>))}
 
-                <Overlay isVisible={actions != null} onBackdropPress={() => hideOverlay()}>
-                    <Text style={s.text.plain}>Available Actions</Text>
-                    {(actions ?? []).map((x, index) => renderAction(x, index))}
-                </Overlay>
+                <Dialog modal open={actions != null}>
+                    <Dialog.Portal>
+                        <Dialog.Overlay key="notevieweractionsoverlay" onPress={() => hideOverlay()} />
+                        <Dialog.FocusScope>
+                            <Dialog.Content bordered elevate
+                                            width="80%"
+                                            key="notevieweractionscontent">
+                                <NotuText bold underline>Available Actions</NotuText>
+                                {(actions ?? []).map((x, index) => renderAction(x, index))}
+                            </Dialog.Content>
+                        </Dialog.FocusScope>
+                    </Dialog.Portal>
+                </Dialog>
 
-                <View style={s.container.row}>
+                <XStack>
                     {note.tags.map(nt => (
                         <NoteTagBadge key={nt.tag.id}
                                     noteTag={nt} note={note}
@@ -110,8 +114,8 @@ export const NoteViewer = ({
                                     contextSpace={note.space}
                                     useUniqueName={true}/>
                     ))}
-                </View>
-            </View>
+                </XStack>
+            </YStack>
         </TouchableHighlight>
     )
 };
