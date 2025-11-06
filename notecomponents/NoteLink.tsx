@@ -14,7 +14,7 @@ export class NoteLink {
     get content(): Array<any> { return this._content; }
 
     constructor(url: string, content: Array<any>) {
-        this._url = url;
+        this._url = url.replaceAll('\\"', '"');
         this._content = content;
     }
 
@@ -36,7 +36,6 @@ export class NoteLink {
         function handleTextChange(newValue: string): void {
             myself._url = newValue;
             manualRefresh();
-            console.log({myself});
         }
 
         return (
@@ -76,7 +75,7 @@ export class NoteLink {
     }
 
     getText(): string {
-        return `<Link url="${this.url}">${this.content.map(x => x.getText()).join('')}</Link>`
+        return `<Link url="${this.url.replaceAll('"', '\\"')}">${this.content.map(x => x.getText()).join('')}</Link>`
     }
 
     get typeInfo(): string { return 'NoteLink'; }
