@@ -1,5 +1,6 @@
 import { setupNotu } from "@/helpers/NotuSetup";
 import { NotuText } from "@/helpers/NotuStyles";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DrawerContentComponentProps, DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Href, useRouter } from "expo-router";
@@ -18,13 +19,25 @@ export default function RootLayout() {
     const [customPages, setCustomPages] = useState<Array<Page>>(null);
     const [error, setError] = useState(null);
     const router = useRouter();
-    const colorScheme = useColorScheme();
+
+    const defaultColorScheme = useColorScheme().toString();
+    const [colorScheme, setColorScheme] = useState(defaultColorScheme);
+
+    function switchColorScheme() {
+        const schemes = ['light', 'dark'];
+        const newScheme = schemes[(schemes.indexOf(colorScheme) + 1) % 2];
+        setColorScheme(newScheme);
+        AsyncStorage.setItem('color-scheme', newScheme);
+    }
 
     useEffect(() => {
-        async function loadCustomPages() {
+        async function loadSetupData() {
             try {
                 const renderTools = await setupNotu();
                 const notu = renderTools.notu;
+                const fetchedColorScheme = await AsyncStorage.getItem('color-scheme');
+                if (!!fetchedColorScheme)
+                    setColorScheme(fetchedColorScheme);
                 setCustomPages(await notu.getPages());
                 setIsLoaded(true);
             }
@@ -32,7 +45,7 @@ export default function RootLayout() {
                 setError(err);
             }
         }
-        loadCustomPages();
+        loadSetupData();
     }, []);
 
 
@@ -79,6 +92,7 @@ export default function RootLayout() {
                                     onPress={() => navigateToPage(`/${page.id}`)} />
                     )
                 })}
+                <DrawerItem label="Toggle Theme" onPress={() => switchColorScheme()} />
             </DrawerContentScrollView>
         )
     }
