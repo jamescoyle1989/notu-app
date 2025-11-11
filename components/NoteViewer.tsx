@@ -3,7 +3,7 @@ import { NotuButton, NotuText } from '@/helpers/NotuStyles';
 import { Note } from "notu";
 import { useMemo, useState } from "react";
 import { TouchableHighlight } from "react-native";
-import { Dialog, XStack, YStack } from 'tamagui';
+import { Dialog, useTheme, XStack, YStack } from 'tamagui';
 import { NotuRenderTools } from '../helpers/NotuRenderTools';
 import { NoteComponentContainer } from './NoteComponentContainer';
 import NoteTagBadge from './NoteTagBadge';
@@ -26,6 +26,7 @@ export const NoteViewer = ({
     const textComponents = useMemo(() => notuRenderTools.noteTextSplitter(note), [note, note.text]);
     const [actions, setActions] = useState<Array<NoteAction>>(null);
     const [actionBeingConfirmed, setActionBeingConfirmed] = useState<NoteAction>();
+    const theme = useTheme();
 
     function showNoteActions() {
         const actionsList = notuRenderTools.buildNoteActionsMenu(note);
@@ -87,7 +88,7 @@ export const NoteViewer = ({
     }
 
     return (
-        <TouchableHighlight onLongPress={showNoteActions}>
+        <TouchableHighlight onLongPress={showNoteActions} underlayColor={theme.backgroundHover.val}>
             
             <YStack>
                 {textComponents.map((x, index) => (<NoteComponentContainer key={index} component={x}/>))}

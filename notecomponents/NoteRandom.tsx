@@ -80,7 +80,7 @@ export class NoteRandom {
         }
 
         return (
-            <YStack backgroundColor="#0000FF">
+            <YStack bg="#0000FF">
                 <NotuText bold>Random</NotuText>
                 {myself.choices.map((choice, index) => (
                     <NotuText key={`choice${index}`}

@@ -92,7 +92,7 @@ export class NoteChecklist {
         }
 
         return (
-            <YStack backgroundColor="#00FF00">
+            <YStack bg="#00FF00">
                 <XStack>
                     <NotuText bold>Checklist</NotuText>
                     <Checkbox checked={this.showClearButton}

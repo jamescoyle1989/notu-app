@@ -62,7 +62,7 @@ export default function RootLayout() {
 
     if (error != null) {
         return renderInTamagui(() => (
-            <View backgroundColor="$background" flex={1}>
+            <View bg="$background" flex={1}>
                 <NotuText>{error.message}</NotuText>
             </View>
         ));
@@ -71,7 +71,7 @@ export default function RootLayout() {
 
     if (!isLoaded) {
         return renderInTamagui(() => (
-            <View backgroundColor="$background" flex={1}>
+            <View bg="$background" flex={1}>
                 <NotuText>Loading Layout...</NotuText>
             </View>
         ));

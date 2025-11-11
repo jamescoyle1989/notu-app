@@ -8,7 +8,7 @@ export default function AboutScreen() {
     const nav = useNavigation();
 
     return (
-        <View backgroundColor="$background" flex={1}>
+        <View bg="$background" flex={1}>
             <Stack.Screen options={{
                 title: 'Home',
                 headerLeft: () => {

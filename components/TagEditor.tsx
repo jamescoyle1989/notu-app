@@ -59,7 +59,7 @@ export default function TagEditor({
                    onRequestClose={() => setShowColorPicker(false)}
                    visible={showColorPicker}
                    animationType="slide">
-                <YStack backgroundColor="$background" flex={1}>
+                <YStack bg="$background" flex={1}>
                     <ColorPicker value={note.ownTag.color ?? '#AABBCC'}
                                  sliderThickness={20}
                                  thumbSize={24}
