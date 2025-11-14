@@ -109,7 +109,7 @@ export class NoteRandom {
                                     <NotuText>Weight</NotuText>
                                     <NumberInput value={choiceBeingEdited.weight ?? 1}
                                                 onChange={handleWeightChange} />
-                                    <NotuButton danger onPress={removeChoiceBeingEdited}>
+                                    <NotuButton theme="danger" onPress={removeChoiceBeingEdited}>
                                         Remove
                                     </NotuButton>
                                 </Dialog.Content>

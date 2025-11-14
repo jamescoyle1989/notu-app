@@ -38,7 +38,7 @@ export default function CustomPage() {
     }
 
     function addNote() {
-        startEditingNote(new Note('test test').in(page.space));
+        startEditingNote(new Note().in(page.space));
     }
 
     function startEditingNote(note: Note) {
@@ -73,7 +73,7 @@ export default function CustomPage() {
                                notuRenderTools={renderTools}
                                onUIAction={onUIAction}
                                actionsBar={() => (
-                                <Button onPress={addNote}>Add Note</Button>
+                                <Button theme="highlight" onPress={addNote}>Add Note</Button>
                                )} />
         </View>
     )

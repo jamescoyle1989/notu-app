@@ -40,7 +40,7 @@ export class NoteLink {
 
         return (
             <NotuText>
-                <NotuText danger>
+                <NotuText theme="danger">
                     <NotuText bold pressable onPress={() => setShowLinkEditor(true)}>Link: </NotuText>
                     {this.content.map((x, index) => (
                         <NoteComponentContainer key={index} component={x} editMode={true}/>

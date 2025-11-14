@@ -88,10 +88,11 @@ export const NoteSearch = React.forwardRef((
                 </View>
                 
                 {!!error && (
-                    <NotuButton joinedLeft danger flexBasis="auto">Error!</NotuButton>
+                    <NotuButton joinedLeft theme="danger" flexBasis="auto">Error!</NotuButton>
                 )}
                 {!error && (
                     <NotuButton onPress={onSearchSubmit}
+                                theme="highlight"
                                 joinedLeft flexBasis="auto">
                         Search
                     </NotuButton>

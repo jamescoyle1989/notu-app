@@ -56,11 +56,6 @@ export const NotuButton = styled(Button, {
                 borderWidth: 0
             }
         },
-        danger: {
-            true: {
-                background: '#F04438'
-            }
-        },
         success: {
             true: {
                 background: '#8AC44B'

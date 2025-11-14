@@ -74,7 +74,7 @@ export class NoteChecklist {
                     </XStack>
                 ))}
                 {this.showClearButton && (
-                    <NotuButton danger>
+                    <NotuButton theme="danger">
                         Clear Completed Items
                     </NotuButton>
                 )}

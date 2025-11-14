@@ -112,7 +112,7 @@ export default function NoteEditor({
                             note={note}
                             mode={showTextComponentView ? 'Components' : 'Raw'}/>
 
-            <Button onPress={() => setShowTagSelector(true)}>Add Tag</Button>
+            <Button theme="highlight" onPress={() => setShowTagSelector(true)}>Add Tag</Button>
             <Dialog modal open={showTagSelector}>
                 <Dialog.Portal>
                     <Dialog.Overlay key="noteeditortagselectoroverlay" />
@@ -143,7 +143,7 @@ export default function NoteEditor({
 
             {note.tags.map(nt => renderNoteTagData(nt))}
             
-            <Button onPress={submitNote}>Submit</Button>
+            <Button theme="highlight" onPress={submitNote}>Submit</Button>
         </View>
     )
 }
