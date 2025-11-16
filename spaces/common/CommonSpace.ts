@@ -42,6 +42,9 @@ export class CommonSpace implements LogicalSpace {
     private _journal: Tag;
     get journal(): Tag { return this._journal; }
 
+    private _log: Tag;
+    get log(): Tag { return this._log; }
+
     private _memory: Tag;
     get memory(): Tag { return this._memory; }
 
@@ -73,6 +76,7 @@ export class CommonSpace implements LogicalSpace {
         this._ignore = notu.getTagByName(CommonSpaceSetup.ignore, this._space);
         this._info = notu.getTagByName(CommonSpaceSetup.info, this._space);
         this._journal = notu.getTagByName(CommonSpaceSetup.journal, this._space);
+        this._log = notu.getTagByName(CommonSpaceSetup.log, this._space);
         this._memory = notu.getTagByName(CommonSpaceSetup.memory, this._space);
         this._pinned = notu.getTagByName(CommonSpaceSetup.pinned, this._space);
         this._scheduled = notu.getTagByName(CommonSpaceSetup.scheduled, this._space);

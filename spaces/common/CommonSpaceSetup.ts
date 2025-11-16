@@ -11,6 +11,7 @@ export class CommonSpaceSetup {
     static get ignore(): string { return 'Ignore'; }
     static get info(): string { return 'Info'; }
     static get journal(): string { return 'Journal'; }
+    static get log(): string { return 'Log'; }
     static get memory(): string { return 'Memory'; }
     static get pinned(): string { return 'Pinned'; }
     static get scheduled(): string { return 'Scheduled'; }
@@ -60,6 +61,10 @@ export class CommonSpaceSetup {
                 .in(commonSpace).setOwnTag(this.journal);
             journal.ownTag.asInternal();
 
+            const log = new Note(`Notu has various internal processes which can help generate new notes, update existing ones etc. Without any feedback it can sometimes be quite hard to determine what exactly has changed. To combat this, the processes should always produce notes with this tag so that you can see at a glance the full history of what was actually done.`)
+                .in(commonSpace).setOwnTag(this.log);
+            log.ownTag.asInternal();
+
             const memory = new Note(`Adding this tag to a note marks that the note is a helper for a memory.`)
                 .in(commonSpace).setOwnTag(this.memory);
             memory.ownTag.asInternal();
@@ -90,6 +95,7 @@ export class CommonSpaceSetup {
                 ignore,
                 info,
                 journal,
+                log,
                 memory,
                 pinned,
                 scheduled,
