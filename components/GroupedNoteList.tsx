@@ -15,6 +15,20 @@ interface GroupedNoteListProps {
 }
 
 
+class GroupedNotes {
+    public notes: Array<Note> = [];
+
+    public title: string = '';
+
+    public constructor(note: Note = null) {
+        if (note != null) {
+            this.notes.push(note);
+            this.title = note.group;
+        }
+    }
+}
+
+
 export default function GroupedNoteList({
     notes,
     notuRenderTools,
@@ -23,14 +37,14 @@ export default function GroupedNoteList({
 }: GroupedNoteListProps) {
 
     const groupedNotes = useMemo(() => {
-        let output = new Array<Array<Note>>();
+        let output = new Array<GroupedNotes>();
         if (notes.length > 0)
-            output.push([notes[0]]);
+            output.push(new GroupedNotes(notes[0]));
         for (let i = 1; i < notes.length; i++) {
             if (notes[i].group == notes[i - 1].group)
-                output[output.length - 1].push(notes[i]);
+                output[output.length - 1].notes.push(notes[i]);
             else
-                output.push([notes[i]]);
+                output.push(new GroupedNotes(notes[i]));
         }
         return output;
     }, [notes]);
@@ -47,15 +61,18 @@ export default function GroupedNoteList({
     }
 
     return (
-        <SectionList sections={groupedNotes.map(x => ({title: x[0].group, data: x}))}
+        <SectionList sections={groupedNotes.map(x => ({title: x.title, data: x.notes}))}
                      renderItem={({item}) => (
                         <View key={item.id}>
                             {renderNoteViewer(item)}
                         </View>
                      )}
-                     renderSectionHeader={({section}) => (
-                        <NotuText big bold underline>{section.title}</NotuText>
-                     )}
+                     contentContainerStyle={{paddingBottom: 100}}
+                     renderSectionHeader={({section}) => {
+                        if (section.title != null) {
+                            return (<NotuText big bold underline>{section.title}</NotuText>)
+                        }
+                     }}
                      keyExtractor={item => `${item.id}`}/>
     );
 }

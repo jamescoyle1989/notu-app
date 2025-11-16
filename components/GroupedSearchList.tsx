@@ -37,7 +37,7 @@ export const GroupedSearchList = React.forwardRef((
     }));
 
     return (
-        <YStack>
+        <YStack flex={1}>
             <NoteSearch ref={searchRef}
                         space={searchSpace}
                         notu={notuRenderTools.notu}

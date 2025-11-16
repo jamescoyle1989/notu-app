@@ -1,12 +1,14 @@
 import { NoteAction, UIAction } from '@/helpers/NoteAction';
 import { NotuButton, NotuText } from '@/helpers/NotuStyles';
+import { Tag } from '@tamagui/lucide-icons';
 import { Note } from "notu";
 import { useMemo, useState } from "react";
 import { TouchableHighlight } from "react-native";
-import { Dialog, useTheme, XStack, YStack } from 'tamagui';
+import { Dialog, useTheme, View, XStack, YStack } from 'tamagui';
 import { NotuRenderTools } from '../helpers/NotuRenderTools';
 import { NoteComponentContainer } from './NoteComponentContainer';
 import NoteTagBadge from './NoteTagBadge';
+import TagBadge from './TagBadge';
 
 
 interface NoteViewerProps {
@@ -88,10 +90,31 @@ export const NoteViewer = ({
     }
 
     return (
-        <TouchableHighlight onLongPress={showNoteActions} underlayColor={theme.backgroundHover.val}>
+        <TouchableHighlight onLongPress={showNoteActions}
+                            underlayColor={theme.backgroundHover.val}>
             
-            <YStack>
-                {textComponents.map((x, index) => (<NoteComponentContainer key={index} component={x}/>))}
+            <View borderBottomColor="$borderColor" borderBottomWidth={1} paddingBlockEnd={2}>
+
+                <YStack marginStart={5} marginEnd={5}>
+                    {textComponents.map((x, index) => (<NoteComponentContainer key={index} component={x}/>))}
+
+                    <XStack>
+                        {!!note.ownTag && ([
+                            <TagBadge key="badge"
+                                    tag={note.ownTag}
+                                    notuRenderTools={notuRenderTools}
+                                    contextSpace={note.space} />,
+                            <Tag key="icon" size={17} marginEnd={5} />
+                        ])}
+                        {note.tags.map(nt => (
+                            <NoteTagBadge key={nt.tag.id}
+                                        noteTag={nt} note={note}
+                                        notuRenderTools={notuRenderTools}
+                                        contextSpace={note.space}
+                                        useUniqueName={true} />
+                        ))}
+                    </XStack>
+                </YStack>
 
                 <Dialog modal open={actions != null}>
                     <Dialog.Portal>
@@ -106,17 +129,7 @@ export const NoteViewer = ({
                         </Dialog.FocusScope>
                     </Dialog.Portal>
                 </Dialog>
-
-                <XStack>
-                    {note.tags.map(nt => (
-                        <NoteTagBadge key={nt.tag.id}
-                                    noteTag={nt} note={note}
-                                    notuRenderTools={notuRenderTools}
-                                    contextSpace={note.space}
-                                    useUniqueName={true}/>
-                    ))}
-                </XStack>
-            </YStack>
+            </View>
         </TouchableHighlight>
     )
 };
