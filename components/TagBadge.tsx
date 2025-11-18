@@ -38,7 +38,7 @@ export default function TagBadge({
                 flexDirection: 'row',
                 alignItems: 'center'
             }}>
-            <NotuText color={textColor}>{tagDisplayName}</NotuText>
+            <NotuText color={textColor} bold>{tagDisplayName}</NotuText>
             {!!onDelete && (
                 <X size={17} color="red" onPress={() => onDelete()} />
             )}

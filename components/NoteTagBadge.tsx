@@ -1,7 +1,6 @@
 import { NotuText } from '@/helpers/NotuStyles';
 import { X } from '@tamagui/lucide-icons';
 import { Note, NoteTag, Space } from 'notu';
-import { ReactNode } from 'react';
 import { View } from 'tamagui';
 import { getTextContrastColor } from '../helpers/ColorHelpers';
 import { NotuRenderTools } from '../helpers/NotuRenderTools';
@@ -32,12 +31,8 @@ export default function NoteTagBadge({
     const backgroundColor = noteTag.tag.color ?? '#AABBCC';
     const textColor = getTextContrastColor(backgroundColor);
 
-    function renderNoteTagData(): ReactNode {
-        const dataComponent = notuRenderTools.getComponentFactoryForNoteTag(noteTag.tag, note);
-        if (!dataComponent)
-            return;
-        return dataComponent.getBadgeComponent(noteTag, note, notuRenderTools.notu);
-    }
+    const componentFactory = notuRenderTools.getComponentFactoryForNoteTag(noteTag.tag, note);
+    const badgeComponent = componentFactory?.getBadgeComponent(noteTag, note, notuRenderTools.notu);
     
     return (
         <View style={{
@@ -48,10 +43,10 @@ export default function NoteTagBadge({
               flexDirection: 'row',
               alignItems: 'center'
         }}>
-            <NotuText color={textColor}>
+            <NotuText color={textColor} bold marginInlineEnd={!!badgeComponent ? 2 : 0}>
                 {tagDisplayName}
             </NotuText>
-            {renderNoteTagData()}
+            {badgeComponent}
             {!!onDelete && (
                 <X size={17} color="red" onPress={() => onDelete()} />
             )}
