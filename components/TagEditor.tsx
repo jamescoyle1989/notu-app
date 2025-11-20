@@ -4,7 +4,7 @@ import { Note, Tag } from "notu";
 import { useState } from "react";
 import { Modal } from "react-native";
 import ColorPicker, { ColorFormatsObject, HueCircular, Panel1 } from 'reanimated-color-picker';
-import { Dialog, View, XStack, YStack } from "tamagui";
+import { Dialog, useTheme, View, XStack, YStack } from "tamagui";
 import { getTextContrastColor } from "../helpers/ColorHelpers";
 import { useManualRefresh } from "../helpers/Hooks";
 
@@ -24,6 +24,7 @@ export default function TagEditor({
     const manualRefresh = useManualRefresh();
     const [showColorPicker, setShowColorPicker] = useState<boolean>(false);
     const [showExistingTagColors, setShowExistingTagColors] = useState<boolean>(false);
+    const theme = useTheme();
 
     function onNameChange(newValue: string): void {
         if (newValue.length == 0)
@@ -103,12 +104,12 @@ export default function TagEditor({
     }
 
     const showNoteOptions = !!note.ownTag && !note.ownTag.isDeleted;
-    const backgroundColor = note.ownTag?.color ?? '#AABBCC';
+    const backgroundColor = note.ownTag?.color ?? theme.background.val;
     const textColor = getTextContrastColor(backgroundColor);
     
     return (
         <View>
-            <NotuText bold>Own Tag</NotuText>
+            <NotuText bold marginTop={10}>Own Tag</NotuText>
             
             <XStack>
                 <NotuInput value={note.ownTag?.name ?? ''}

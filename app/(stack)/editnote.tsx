@@ -17,7 +17,7 @@ export default function Index() {
     const router = useRouter();
 
     return (
-        <View flex={1}>
+        <View flex={1} paddingInline={5} paddingBlock={5}>
             <NoteEditor notuRenderTools={renderTools}
                         note={_noteBeingEdited}
                         onSave={n => router.back()}/>

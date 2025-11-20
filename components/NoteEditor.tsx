@@ -1,11 +1,12 @@
 import { NotuText } from "@/helpers/NotuStyles";
-import { Note, NoteTag, Tag } from "notu";
+import { Note, NoteTag, Space, Tag } from "notu";
 import { useState } from "react";
 import { Button, Dialog, View, XStack } from "tamagui";
 import { useManualRefresh } from "../helpers/Hooks";
 import { NotuRenderTools } from "../helpers/NotuRenderTools";
 import NoteTagBadge from "./NoteTagBadge";
 import NoteTextEditor from "./NoteTextEditor";
+import { NotuSelect } from "./NotuSelect";
 import TagEditor from "./TagEditor";
 import TagFinder from "./TagFinder";
 
@@ -56,6 +57,11 @@ export default function NoteEditor({
         }
     }
 
+    function onSpaceChange(space: Space): void {
+        note.space = space;
+        manualRefresh();
+    }
+
     function onTagSelected(tag: Tag): void {
         note.addTag(tag);
         setShowTagSelector(false);
@@ -95,13 +101,21 @@ export default function NoteEditor({
         <View>
             {!!error && (<NotuText bold danger>{error}</NotuText>)}
 
-            <NotuText bold>{note.space.name}</NotuText>
+            <NotuText>
+                <NotuText bold>Date: </NotuText>
+                <NotuText italic>{noteDateStr}</NotuText>
+            </NotuText>
 
-            <NotuText italic>{noteDateStr}</NotuText>
+            <NotuText bold marginTop={10}>Space</NotuText>
+
+            <NotuSelect options={notu.getSpaces().map(x => {return {name: x.name, value: x}})}
+                        value={note.space}
+                        onValueChange={onSpaceChange}
+                        placeholderText='Select Space' />
 
             <TagEditor note={note} tags={notu.getTags()}/>
 
-            <XStack>
+            <XStack marginBlockStart={10}>
                 <NotuText bold>Text </NotuText>
                 <NotuText pressable onPress={() => setShowTextComponentView(!showTextComponentView)}>
                     {showTextComponentView ? 'Components View' : 'Raw View'}
@@ -112,7 +126,11 @@ export default function NoteEditor({
                             note={note}
                             mode={showTextComponentView ? 'Components' : 'Raw'}/>
 
-            <Button theme="highlight" onPress={() => setShowTagSelector(true)}>Add Tag</Button>
+            <Button theme="highlight"
+                    marginBlockStart={10}
+                    onPress={() => setShowTagSelector(true)}>
+                Add Tag
+            </Button>
             <Dialog modal open={showTagSelector}>
                 <Dialog.Portal>
                     <Dialog.Overlay key="noteeditortagselectoroverlay" />
@@ -143,7 +161,11 @@ export default function NoteEditor({
 
             {note.tags.map(nt => renderNoteTagData(nt))}
             
-            <Button theme="highlight" onPress={submitNote}>Submit</Button>
+            <Button theme="highlight"
+                    marginBlockStart={10}
+                    onPress={submitNote}>
+                Submit
+            </Button>
         </View>
     )
 }
