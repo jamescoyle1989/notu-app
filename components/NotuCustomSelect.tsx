@@ -1,44 +1,29 @@
 import { Check } from '@tamagui/lucide-icons';
-import { Keyboard } from 'react-native';
+import React from 'react';
 import { Adapt, ScrollView, Select, Sheet } from 'tamagui';
 
-interface NotuSelectProps {
+interface NotuCustomSelectProps {
     options: Array<{name: string, value: any}>,
-    value: any,
     onValueChange: (value: any) => void,
-    placeholderText?: string
+    open: boolean
 }
 
 
-export const NotuSelect = ({
+export const NotuCustomSelect = ({
     options,
-    value,
     onValueChange,
-    placeholderText = "Choose..."
-}: NotuSelectProps) => {
-
-    let selectedName = null;
-    if (!!value)
-        selectedName = options.find(x => x.value == value)?.name;
+    open
+}: NotuCustomSelectProps) => {
 
     function handleValueChange(valueName: string) {
         const selectedValue = options.find(x => x.name == valueName)?.value;
         onValueChange(selectedValue);
     }
 
-    function handleOpenChange(newValue: boolean) {
-        if (newValue)
-            Keyboard.dismiss();
-    }
-
     //See this for buggy behaviour with the select component on android
     //https://github.com/tamagui/tamagui/issues/3436#issuecomment-3133812014
     return (
-        <Select value={selectedName} onValueChange={handleValueChange} disablePreventBodyScroll onOpenChange={handleOpenChange}>
-            <Select.Trigger>
-                <Select.Value placeholder={placeholderText} />
-            </Select.Trigger>
-
+        <Select value={null} onValueChange={handleValueChange} disablePreventBodyScroll open={open}>
             <Adapt when="maxMd" platform="touch">
                 <Sheet modal dismissOnSnapToBottom animation='100ms'>
                     <Sheet.Frame>

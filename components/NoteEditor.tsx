@@ -1,6 +1,7 @@
 import { NotuText } from "@/helpers/NotuStyles";
 import { Note, NoteTag, Space, Tag } from "notu";
 import { useState } from "react";
+import { Keyboard } from "react-native";
 import { Button, Dialog, View, XStack } from "tamagui";
 import { useManualRefresh } from "../helpers/Hooks";
 import { NotuRenderTools } from "../helpers/NotuRenderTools";
@@ -72,6 +73,11 @@ export default function NoteEditor({
         manualRefresh();
     }
 
+    function handleAddTagPress(): void {
+        setShowTagSelector(true);
+        Keyboard.dismiss();
+    }
+
     function renderNoteTagData(noteTag: NoteTag) {
         const componentFactory = notuRenderTools.getComponentFactoryForNoteTag(noteTag.tag, note);
         if (!componentFactory)
@@ -115,36 +121,10 @@ export default function NoteEditor({
 
             <TagEditor note={note} tags={notu.getTags()}/>
 
-            <XStack marginBlockStart={10}>
-                <NotuText bold>Text </NotuText>
-                <NotuText pressable onPress={() => setShowTextComponentView(!showTextComponentView)}>
-                    {showTextComponentView ? 'Components View' : 'Raw View'}
-                </NotuText>
-            </XStack>
-
             <NoteTextEditor notuRenderTools={notuRenderTools}
-                            note={note}
-                            mode={showTextComponentView ? 'Components' : 'Raw'}/>
+                            note={note} />
 
-            <Button theme="highlight"
-                    marginBlockStart={10}
-                    onPress={() => setShowTagSelector(true)}>
-                Add Tag
-            </Button>
-            <Dialog modal open={showTagSelector}>
-                <Dialog.Portal>
-                    <Dialog.Overlay key="noteeditortagselectoroverlay" />
-                    <Dialog.FocusScope>
-                        <Dialog.Content bordered elevate
-                                        width="80%"
-                                        key="noteeditortagselectorcontent">
-                            <TagFinder notuRenderTools={notuRenderTools}
-                                       onTagSelected={onTagSelected}
-                                       tagsToAvoid={note.tags.map(x => x.tag)} />
-                        </Dialog.Content>
-                    </Dialog.FocusScope>
-                </Dialog.Portal>
-            </Dialog>
+            <NotuText bold marginTop={10}>Tags</NotuText>
 
             {note.tags.length > 0 && (
                 <XStack flexWrap="wrap">
@@ -158,6 +138,26 @@ export default function NoteEditor({
                     ))}
                 </XStack>
             )}
+
+            <Button theme="highlight"
+                    marginBlockStart={10}
+                    onPress={handleAddTagPress}>
+                Add Tag
+            </Button>
+            <Dialog modal open={showTagSelector}>
+                <Dialog.Portal>
+                    <Dialog.Overlay key="noteeditortagselectoroverlay" onPress={() => setShowTagSelector(false)} />
+                    <Dialog.FocusScope>
+                        <Dialog.Content bordered elevate
+                                        width="80%"
+                                        key="noteeditortagselectorcontent">
+                            <TagFinder notuRenderTools={notuRenderTools}
+                                       onTagSelected={onTagSelected}
+                                       tagsToAvoid={note.tags.map(x => x.tag)} />
+                        </Dialog.Content>
+                    </Dialog.FocusScope>
+                </Dialog.Portal>
+            </Dialog>
 
             {note.tags.map(nt => renderNoteTagData(nt))}
             

@@ -104,7 +104,9 @@ export default function TagEditor({
     }
 
     const showNoteOptions = !!note.ownTag && !note.ownTag.isDeleted;
-    const backgroundColor = note.ownTag?.color ?? theme.background.val;
+    const backgroundColor = showNoteOptions 
+        ? note.ownTag?.color ?? theme.background.val
+        : theme.background.val;
     const textColor = getTextContrastColor(backgroundColor);
     
     return (
@@ -112,7 +114,7 @@ export default function TagEditor({
             <NotuText bold marginTop={10}>Own Tag</NotuText>
             
             <XStack>
-                <NotuInput value={note.ownTag?.name ?? ''}
+                <NotuInput value={showNoteOptions ? note.ownTag.name : ''}
                            onChangeText={onNameChange}
                            flex={1}
                            joinedRight={showNoteOptions}

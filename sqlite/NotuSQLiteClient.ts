@@ -335,7 +335,7 @@ export class NotuSQLiteClient {
         }
         else if (tag.isDeleted) {
             await connection.run(
-                'DELETE Tag WHERE id = ?',
+                'DELETE FROM Tag WHERE id = ?',
                 tag.id
             );
         }
