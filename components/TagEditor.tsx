@@ -66,12 +66,12 @@ export default function TagEditor({
                                  thumbSize={24}
                                  onCompleteJS={onColorChange}
                                  boundedThumb>
-                        <HueCircular containerStyle={{justifyContent: 'center'}}
+                        <HueCircular containerStyle={{justifyContent: 'center', backgroundColor: theme.background.val}}
                                      thumbShape="pill">
                             <Panel1 style={{borderRadius: 16, width: '70%', height: '70%', alignSelf: 'center'}} />
                         </HueCircular>
                     </ColorPicker>
-                    <NotuButton onPress={() => setShowColorPicker(false)}>
+                    <NotuButton onPress={() => setShowColorPicker(false)} theme="highlight" marginBlockStart={10}>
                         Confirm
                     </NotuButton>
                 </YStack>
