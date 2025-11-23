@@ -43,7 +43,6 @@ function EditorComponent({ noteTag, refreshCallback }: NoteTagDataComponentProps
 
     return (
         <View>
-            <NotuText>Date:</NotuText>
             <NotuDateTimePicker value={data.date} onChange={onDateChange} />
         </View>
     );

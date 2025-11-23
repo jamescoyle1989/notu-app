@@ -1,8 +1,8 @@
-import { NotuText } from "@/helpers/NotuStyles";
+import { NotuText, NotuView } from "@/helpers/NotuStyles";
 import { Note, NoteTag, Space, Tag } from "notu";
 import { useState } from "react";
 import { Keyboard } from "react-native";
-import { Button, Dialog, View, XStack } from "tamagui";
+import { Button, Dialog, ScrollView, Theme, XStack, YStack } from "tamagui";
 import { useManualRefresh } from "../helpers/Hooks";
 import { NotuRenderTools } from "../helpers/NotuRenderTools";
 import NoteTagBadge from "./NoteTagBadge";
@@ -96,76 +96,86 @@ export default function NoteEditor({
             return;
 
         return (
-            <View key={noteTag.tag.id}>
-                <NotuText bold>{noteTag.tag.getQualifiedName(note.space.id)}</NotuText>
-                {editorComponent}
-            </View>
+            <Theme name="box" key={noteTag.tag.id}>
+                <NotuView bg="$background"
+                          borderRadius={10}
+                          marginBlockStart={10}
+                          padding={5}>
+                    
+                    <Theme reset>
+                        <NotuText bold>{noteTag.tag.getQualifiedName(note.space.id)}</NotuText>
+                        {editorComponent}
+                    </Theme>
+                </NotuView>
+            </Theme>
         );
     }
 
     return (
-        <View>
-            {!!error && (<NotuText bold danger>{error}</NotuText>)}
+        <ScrollView>
+            <YStack paddingBlockEnd={100}>
+                {!!error && (<NotuText bold danger>{error}</NotuText>)}
 
-            <NotuText>
-                <NotuText bold>Date: </NotuText>
-                <NotuText italic>{noteDateStr}</NotuText>
-            </NotuText>
+                <NotuText>
+                    <NotuText bold>Date: </NotuText>
+                    <NotuText italic>{noteDateStr}</NotuText>
+                </NotuText>
 
-            <NotuText bold marginTop={10}>Space</NotuText>
+                <NotuText bold marginTop={10}>Space</NotuText>
 
-            <NotuSelect options={notu.getSpaces().map(x => {return {name: x.name, value: x}})}
-                        value={note.space}
-                        onValueChange={onSpaceChange}
-                        placeholderText='Select Space' />
+                <NotuSelect options={notu.getSpaces().map(x => {return {name: x.name, value: x}})}
+                            value={note.space}
+                            onValueChange={onSpaceChange}
+                            placeholderText='Select Space' />
 
-            <TagEditor note={note} tags={notu.getTags()}/>
+                <TagEditor note={note} tags={notu.getTags()}/>
 
-            <NoteTextEditor notuRenderTools={notuRenderTools}
-                            note={note} />
+                <NoteTextEditor notuRenderTools={notuRenderTools}
+                                note={note} />
 
-            <NotuText bold marginTop={10}>Tags</NotuText>
+                <NotuText bold marginTop={10}>Tags</NotuText>
 
-            {note.tags.length > 0 && (
-                <XStack flexWrap="wrap">
-                    {note.tags.map(nt => (
-                        <NoteTagBadge key={nt.tag.id}
-                                      noteTag={nt}
-                                      note={note}
-                                      notuRenderTools={notuRenderTools}
-                                      contextSpace={note.space}
-                                      onDelete={() => removeTagFromNote(nt)}/>
-                    ))}
-                </XStack>
-            )}
+                {note.tags.length > 0 && (
+                    <XStack flexWrap="wrap">
+                        {note.tags.map(nt => (
+                            <NoteTagBadge key={nt.tag.id}
+                                        noteTag={nt}
+                                        note={note}
+                                        notuRenderTools={notuRenderTools}
+                                        contextSpace={note.space}
+                                        onDelete={() => removeTagFromNote(nt)}/>
+                        ))}
+                    </XStack>
+                )}
 
-            <Button theme="highlight"
-                    marginBlockStart={10}
-                    onPress={handleAddTagPress}>
-                Add Tag
-            </Button>
-            <Dialog modal open={showTagSelector}>
-                <Dialog.Portal>
-                    <Dialog.Overlay key="noteeditortagselectoroverlay" onPress={() => setShowTagSelector(false)} />
-                    <Dialog.FocusScope>
-                        <Dialog.Content bordered elevate
-                                        width="80%"
-                                        key="noteeditortagselectorcontent">
-                            <TagFinder notuRenderTools={notuRenderTools}
-                                       onTagSelected={onTagSelected}
-                                       tagsToAvoid={note.tags.map(x => x.tag)} />
-                        </Dialog.Content>
-                    </Dialog.FocusScope>
-                </Dialog.Portal>
-            </Dialog>
+                <Button theme="highlight"
+                        marginBlockStart={10}
+                        onPress={handleAddTagPress}>
+                    Add Tag
+                </Button>
+                <Dialog modal open={showTagSelector}>
+                    <Dialog.Portal>
+                        <Dialog.Overlay key="noteeditortagselectoroverlay" onPress={() => setShowTagSelector(false)} />
+                        <Dialog.FocusScope>
+                            <Dialog.Content bordered elevate
+                                            width="80%"
+                                            key="noteeditortagselectorcontent">
+                                <TagFinder notuRenderTools={notuRenderTools}
+                                        onTagSelected={onTagSelected}
+                                        tagsToAvoid={note.tags.map(x => x.tag)} />
+                            </Dialog.Content>
+                        </Dialog.FocusScope>
+                    </Dialog.Portal>
+                </Dialog>
 
-            {note.tags.map(nt => renderNoteTagData(nt))}
-            
-            <Button theme="highlight"
-                    marginBlockStart={10}
-                    onPress={submitNote}>
-                Submit
-            </Button>
-        </View>
+                {note.tags.map(nt => renderNoteTagData(nt))}
+                
+                <Button theme="highlight"
+                        marginBlockStart={10}
+                        onPress={submitNote}>
+                    Submit
+                </Button>
+            </YStack>
+        </ScrollView>
     )
 }

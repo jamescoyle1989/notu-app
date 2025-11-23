@@ -82,12 +82,34 @@ const dark_danger: BaseTheme = {
     backgroundTransparent: '#EA344980'
 }
 
+const light_box: BaseTheme = {
+    ...light,
+    background: '#E0E0E0',
+    backgroundHover: '#EBEBEB',
+    backgroundPress: '#CCCCCC',
+    backgroundFocus: '#EBEBEB',
+    backgroundStrong: '#F5F5F5',
+    backgroundTransparent: '#E0E0E080'
+}
+
+const dark_box: BaseTheme = {
+    ...dark,
+    background: '#1F1F1F',
+    backgroundHover: '#292929',
+    backgroundPress: '#141414',
+    backgroundFocus: '#292929',
+    backgroundStrong: '#333333',
+    backgroundTransparent: '#1F1F1F80'
+}
+
 
 export const themes = {
     light,
     light_highlight,
     light_danger,
+    light_box,
     dark,
     dark_highlight,
-    dark_danger
+    dark_danger,
+    dark_box
 };

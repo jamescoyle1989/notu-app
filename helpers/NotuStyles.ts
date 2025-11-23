@@ -1,4 +1,4 @@
-import { Text, styled } from '@tamagui/core';
+import { Text, View, styled } from '@tamagui/core';
 import { Button, Input } from 'tamagui';
 
 export const NotuText = styled(Text, {
@@ -83,3 +83,27 @@ export const NotuInput = styled(Input, {
         }
     }
 });
+
+
+export const NotuView = styled(View, {
+    variants: {
+        borderRadius: {
+            ':number': (value) => {
+                return {
+                    borderTopLeftRadius: value,
+                    borderTopRightRadius: value,
+                    borderBottomLeftRadius: value,
+                    borderBottomRightRadius: value
+                }
+            }
+        },
+        padding: {
+            ':number': (value) => {
+                return {
+                    paddingBlock: value,
+                    paddingInline: value
+                }
+            }
+        }
+    }
+})
