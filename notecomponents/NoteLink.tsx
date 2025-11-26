@@ -5,6 +5,7 @@ import { Linking } from 'react-native';
 import { Dialog, View } from 'tamagui';
 import { NoteComponentContainer } from '../components/NoteComponentContainer';
 import { useManualRefresh } from '../helpers/Hooks';
+import { NoteText } from './NoteText';
 
 export class NoteLink {
     private _url: string;
@@ -33,18 +34,46 @@ export class NoteLink {
         const manualRefresh = useManualRefresh();
         const myself = this;
 
-        function handleTextChange(newValue: string): void {
+        function handleURLChange(newValue: string): void {
             myself._url = newValue;
+            manualRefresh();
+        }
+
+        function canEditContent(): boolean {
+            return myself.content.length == 0 ||
+                (myself.content.length == 1 && myself.content[0].typeInfo == 'NoteText');
+        }
+
+        function getContentValue(): string {
+            if (!canEditContent())
+                return '';
+            if (myself.content.length == 0)
+                return '';
+            return myself.content[0].displayText;
+        }
+
+        function handleContentChange(newValue: string): void {
+            if (newValue.length == 0 && myself.content.length == 1) {
+                myself.content.pop();
+                manualRefresh();
+                return;
+            }
+            if (myself.content.length == 0)
+                myself.content.push(new NoteText(newValue));
+            else
+                myself.content[0] = new NoteText(newValue);
             manualRefresh();
         }
 
         return (
             <NotuText>
-                <NotuText theme="danger">
-                    <NotuText bold pressable onPress={() => setShowLinkEditor(true)}>Link: </NotuText>
+                <NotuText bg="#F00">
+                    <NotuText bold> Link: </NotuText>
+                    <NotuText pressable onPress={() => setShowLinkEditor(true)}>Edit </NotuText>
                     {this.content.map((x, index) => (
                         <NoteComponentContainer key={index} component={x} editMode={true}/>
                     ))}
+                    <NotuText> </NotuText>
                 </NotuText>
 
                 <View>
@@ -57,7 +86,14 @@ export class NoteLink {
                                                 key="notelinkeditorcontent">
                                     <NotuText>URL</NotuText>
                                     <NotuInput value={this.url}
-                                               onChangeText={handleTextChange} />
+                                               onChangeText={handleURLChange} />
+                                    {canEditContent() && (
+                                        <View>
+                                            <NotuText>Content</NotuText>
+                                            <NotuInput value={getContentValue()}
+                                                       onChangeText={handleContentChange} />
+                                        </View>
+                                    )}
                                 </Dialog.Content>
                             </Dialog.FocusScope>
                         </Dialog.Portal>
