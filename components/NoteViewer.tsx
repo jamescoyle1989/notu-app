@@ -31,7 +31,7 @@ export const NoteViewer = ({
     const theme = useTheme();
 
     function showNoteActions() {
-        const actionsList = notuRenderTools.buildNoteActionsMenu(note);
+        const actionsList = notuRenderTools.buildNoteActionsMenu(note, textComponents);
         if (actionsList.length == 0)
             return;
         setActions(actionsList);

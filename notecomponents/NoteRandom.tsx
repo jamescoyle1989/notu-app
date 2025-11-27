@@ -1,9 +1,10 @@
 import { NoteComponentContainer } from "@/components/NoteComponentContainer";
 import { NumberInput } from "@/components/NumberInput";
 import { useManualRefresh } from "@/helpers/Hooks";
+import { NoteActionsMenuBuilder } from "@/helpers/NoteAction";
 import { NotuButton, NotuText } from "@/helpers/NotuStyles";
 import { randomInt } from "es-toolkit";
-import { NmlElement, Note } from "notu";
+import { NmlElement, Note, Notu } from "notu";
 import { useState } from "react";
 import { Dialog, YStack } from "tamagui";
 
@@ -138,6 +139,9 @@ export class NoteRandom {
             }
         }
         return output;
+    }
+        
+    buildNoteActionsMenu(note: Note, menuBuilder: NoteActionsMenuBuilder, notu: Notu) {
     }
 }
 

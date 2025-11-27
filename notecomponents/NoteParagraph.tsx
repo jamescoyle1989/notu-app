@@ -1,4 +1,6 @@
+import { NoteActionsMenuBuilder } from '@/helpers/NoteAction';
 import { NotuText } from '@/helpers/NotuStyles';
+import { Note, Notu } from 'notu';
 import React from 'react';
 import { NoteText } from './NoteText';
 
@@ -56,5 +58,8 @@ export class NoteParagraph {
             output.push(...child.getThisPlusAllChildComponents());
         }
         return output;
+    }
+        
+    buildNoteActionsMenu(note: Note, menuBuilder: NoteActionsMenuBuilder, notu: Notu) {
     }
 }

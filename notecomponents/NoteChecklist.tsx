@@ -1,6 +1,7 @@
-import { NotuButton, NotuText } from "@/helpers/NotuStyles";
+import { NoteAction, NoteActionsMenuBuilder, RefreshAction } from "@/helpers/NoteAction";
+import { NotuText } from "@/helpers/NotuStyles";
 import { Check } from "@tamagui/lucide-icons";
-import { NmlElement, Note } from "notu";
+import { NmlElement, Note, Notu } from "notu";
 import { Checkbox, XStack, YStack } from "tamagui";
 import { NoteComponentContainer } from "../components/NoteComponentContainer";
 import { useManualRefresh } from "../helpers/Hooks";
@@ -26,18 +27,14 @@ class NoteChecklistLine {
 export class NoteChecklist {
     private _lines: Array<NoteChecklistLine>;
     get lines(): Array<NoteChecklistLine> { return this._lines; }
-    
-    showClearButton: boolean;
 
     private _save: () => Promise<void>;
 
     constructor(
         lines: Array<NoteChecklistLine>,
-        showClearButton: boolean,
         save: () => Promise<void>
     ) {
         this._lines = lines;
-        this.showClearButton = showClearButton;
         this._save = save;
     }
 
@@ -73,11 +70,6 @@ export class NoteChecklist {
                         </NotuText>
                     </XStack>
                 ))}
-                {this.showClearButton && (
-                    <NotuButton theme="danger">
-                        Clear Completed Items
-                    </NotuButton>
-                )}
             </YStack>
         );
     }
@@ -86,22 +78,10 @@ export class NoteChecklist {
         const manualRefresh = useManualRefresh();
         const myself = this;
 
-        function onShowClearChange() {
-            myself.showClearButton = !myself.showClearButton;
-            manualRefresh();
-        }
-
         return (
             <YStack bg="#00FF00">
                 <XStack>
                     <NotuText bold>Checklist</NotuText>
-                    <Checkbox checked={this.showClearButton}
-                              onCheckedChange={() => onShowClearChange()}>
-                        <Checkbox.Indicator>
-                            <Check />
-                        </Checkbox.Indicator>
-                    </Checkbox>
-                    <NotuText>Show Clear Button</NotuText>
                 </XStack>
                 {this.lines.map((line, index) => (
                     <NotuText key={`line${index}`}>
@@ -115,7 +95,7 @@ export class NoteChecklist {
     }
 
     getText(): string {
-        return `<Checklist${this.showClearButton ? ' showClearButton' : ''}>\n${this._lines.map(x => '  ' + x.getText()).join('\n')}\n</Checklist>`;
+        return `<Checklist>\n${this._lines.map(x => '  ' + x.getText()).join('\n')}\n</Checklist>`;
     }
 
     get typeInfo(): string { return 'NoteChecklist'; }
@@ -132,6 +112,20 @@ export class NoteChecklist {
             }
         }
         return output;
+    }
+
+    buildNoteActionsMenu(note: Note, menuBuilder: NoteActionsMenuBuilder, notu: Notu) {
+        if (!menuBuilder.actions.find(x => x.name == 'Remove checked off items')) {
+            menuBuilder.addToBottomOfStart(
+                new NoteAction('Removed checked off items',
+                    async () => {
+                        this.removeFinishedItems();
+                        await this._save();
+                        return new RefreshAction();
+                    }
+                )
+            )
+        }
     }
 }
 
@@ -177,11 +171,6 @@ ${textContent}
                 lines.push(new NoteChecklistLine([childComponentFactory(child)], false));
         }
 
-        const showClearButton = data.attributes.hasOwnProperty('showClearButton') && (
-            data.attributes['showClearButton'] == true ||
-            data.attributes['showClearButton'].toUpperCase() == 'TRUE'
-        )
-
-        return new NoteChecklist(lines, showClearButton, save);
+        return new NoteChecklist(lines, save);
     }
 }
