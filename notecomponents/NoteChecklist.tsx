@@ -3,7 +3,7 @@ import { NotuInput, NotuText } from "@/helpers/NotuStyles";
 import { Check } from "@tamagui/lucide-icons";
 import { NmlElement, Note, Notu } from "notu";
 import { useState } from "react";
-import { Checkbox, Dialog, View, XStack, YStack } from "tamagui";
+import { Checkbox, Dialog, XStack, YStack } from "tamagui";
 import { NoteComponentContainer } from "../components/NoteComponentContainer";
 import { useManualRefresh } from "../helpers/Hooks";
 import { NoteText } from "./NoteText";
@@ -127,22 +127,20 @@ export class NoteChecklist {
                 ))}
                 <NotuText pressable onPress={addNewLine}>Add Line</NotuText>
 
-                <View>
-                    <Dialog modal open={lineUnderEdit != null}>
-                        <Dialog.Portal>
-                            <Dialog.Overlay key="notechecklisteditoroverlay" onPress={() => setLineUnderEdit(null)} />
-                            <Dialog.FocusScope>
-                                <Dialog.Content bordered elevate
-                                                width="80%"
-                                                key="notechecklisteditorcontent">
-                                    <NotuText>Content</NotuText>
-                                    <NotuInput value={getLineContentValue(lineUnderEdit)}
-                                               onChangeText={newValue => handleLineContentChange(lineUnderEdit, newValue)} />
-                                </Dialog.Content>
-                            </Dialog.FocusScope>
-                        </Dialog.Portal>
-                    </Dialog>
-                </View>
+                <Dialog modal open={lineUnderEdit != null}>
+                    <Dialog.Portal>
+                        <Dialog.Overlay key="notechecklisteditoroverlay" onPress={() => setLineUnderEdit(null)} />
+                        <Dialog.FocusScope>
+                            <Dialog.Content bordered elevate
+                                            width="80%"
+                                            key="notechecklisteditorcontent">
+                                <NotuText>Content</NotuText>
+                                <NotuInput value={getLineContentValue(lineUnderEdit)}
+                                           onChangeText={newValue => handleLineContentChange(lineUnderEdit, newValue)} />
+                            </Dialog.Content>
+                        </Dialog.FocusScope>
+                    </Dialog.Portal>
+                </Dialog>
             </YStack>
         );
     }

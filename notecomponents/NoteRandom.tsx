@@ -2,11 +2,12 @@ import { NoteComponentContainer } from "@/components/NoteComponentContainer";
 import { NumberInput } from "@/components/NumberInput";
 import { useManualRefresh } from "@/helpers/Hooks";
 import { NoteActionsMenuBuilder } from "@/helpers/NoteAction";
-import { NotuButton, NotuText } from "@/helpers/NotuStyles";
+import { NotuButton, NotuInput, NotuText } from "@/helpers/NotuStyles";
 import { randomInt } from "es-toolkit";
 import { NmlElement, Note, Notu } from "notu";
 import { useState } from "react";
-import { Dialog, YStack } from "tamagui";
+import { Dialog, View, YStack } from "tamagui";
+import { NoteText } from "./NoteText";
 
 class NoteRandomChoice {
     private _content: Array<any>;
@@ -60,32 +61,63 @@ export class NoteRandom {
     }
 
     renderForEdit() {
-        const [choiceIndexBeingEdited, setChoiceIndexBeingEdited] = useState(-1);
+        const [choiceUnderEdit, setChoiceUnderEdit] = useState<NoteRandomChoice>(null);
         const manualRefresh = useManualRefresh();
         const myself = this;
 
-        const choiceBeingEdited: NoteRandomChoice = (choiceIndexBeingEdited == -1)
-            ? new NoteRandomChoice([], 1)
-            : myself.choices[choiceIndexBeingEdited];
-
         function handleWeightChange(value: number) {
-            choiceBeingEdited.weight = value;
+            choiceUnderEdit.weight = value;
             manualRefresh();
         }
 
         function removeChoiceBeingEdited() {
-            myself.choices.splice(choiceIndexBeingEdited, 1);
-            if (myself.selectedIndex > choiceIndexBeingEdited)
+            const index = myself.choices.indexOf(choiceUnderEdit);
+            if (index >= 0)
+                myself.choices.splice(index, 1);
+            if (myself.selectedIndex > index)
                 myself.selectedIndex--;
-            setChoiceIndexBeingEdited(-1);
+            setChoiceUnderEdit(null);
+        }
+
+        function canEditChoiceContent(choice: NoteRandomChoice): boolean {
+            if (choice == null)
+                return false;
+            return choice.content.length == 0 ||
+                (choice.content.length == 1 && choice.content[0].typeInfo == 'NoteText');
+        }
+
+        function getChoiceContentValue(choice: NoteRandomChoice): string {
+            if (!canEditChoiceContent(choice))
+                return '';
+            if (choice.content.length == 0)
+                return '';
+            return choice.content[0].displayText;
+        }
+
+        function handleChoiceContentChange(choice: NoteRandomChoice, newValue: string): void {
+            if (newValue.length == 0 && choice.content.length == 1) {
+                choice.content.pop();
+                manualRefresh();
+                return;
+            }
+            if (choice.content.length == 0)
+                choice.content.push(new NoteText(newValue));
+            else
+                choice.content[0] = new NoteText(newValue);
+            manualRefresh();
+        }
+
+        function addNewChoice(): void {
+            myself.choices.push(new NoteRandomChoice([], 1));
+            manualRefresh();
         }
 
         return (
             <YStack bg="#0000FF">
                 <NotuText bold>Random</NotuText>
                 {myself.choices.map((choice, index) => (
-                    <NotuText key={`choice${index}`}
-                          onPress={() => setChoiceIndexBeingEdited(index)}>
+                    <NotuText key={`choice${index}`}>
+                        <NotuText pressable onPress={() => setChoiceUnderEdit(choice)}>Edit </NotuText>
                         {choice.content.map((x, index2) => (
                             <NoteComponentContainer key={`x${index2}`}
                                                     component={x}
@@ -93,30 +125,33 @@ export class NoteRandom {
                         ))}
                     </NotuText>
                 ))}
+                <NotuText pressable onPress={addNewChoice}>Add Line</NotuText>
 
-                    <Dialog modal open={choiceIndexBeingEdited != -1}>
-                        <Dialog.Portal>
-                            <Dialog.Overlay key="noterandomchoiceoverlay"
-                                            onPress={() => setChoiceIndexBeingEdited(-1)} />
-                            <Dialog.FocusScope>
-                                <Dialog.Content bordered elevate
-                                                width="80%"
-                                                key="noterandomchoicecontent">
-                                    <NotuText>
-                                        {choiceBeingEdited.content.map((x, index) => (
-                                            <NoteComponentContainer key={`${index}`} component={x} />
-                                        ))}
-                                    </NotuText>
-                                    <NotuText>Weight</NotuText>
-                                    <NumberInput value={choiceBeingEdited.weight ?? 1}
-                                                onChange={handleWeightChange} />
-                                    <NotuButton theme="danger" onPress={removeChoiceBeingEdited}>
-                                        Remove
-                                    </NotuButton>
-                                </Dialog.Content>
-                            </Dialog.FocusScope>
-                        </Dialog.Portal>
-                    </Dialog>
+                <Dialog modal open={choiceUnderEdit != null}>
+                    <Dialog.Portal>
+                        <Dialog.Overlay key="noterandomchoiceoverlay"
+                                        onPress={() => setChoiceUnderEdit(null)} />
+                        <Dialog.FocusScope>
+                            <Dialog.Content bordered elevate
+                                            width="80%"
+                                            key="noterandomchoicecontent">
+                                {canEditChoiceContent(choiceUnderEdit) && (
+                                    <View>
+                                        <NotuText>Content</NotuText>
+                                        <NotuInput value={getChoiceContentValue(choiceUnderEdit)}
+                                                   onChangeText={newValue => handleChoiceContentChange(choiceUnderEdit, newValue)} />
+                                    </View>
+                                )}
+                                <NotuText>Weight</NotuText>
+                                <NumberInput value={choiceUnderEdit?.weight ?? 1}
+                                             onChange={handleWeightChange} />
+                                <NotuButton theme="danger" onPress={removeChoiceBeingEdited}>
+                                    Remove
+                                </NotuButton>
+                            </Dialog.Content>
+                        </Dialog.FocusScope>
+                    </Dialog.Portal>
+                </Dialog>
             </YStack>
         );
     }
