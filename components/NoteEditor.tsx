@@ -1,12 +1,12 @@
 import { NotuText, NotuView } from "@/helpers/NotuStyles";
 import { Note, NoteTag, Space, Tag } from "notu";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Keyboard } from "react-native";
 import { Button, Dialog, ScrollView, Theme, XStack, YStack } from "tamagui";
 import { useManualRefresh } from "../helpers/Hooks";
 import { NotuRenderTools } from "../helpers/NotuRenderTools";
 import NoteTagBadge from "./NoteTagBadge";
-import NoteTextEditor from "./NoteTextEditor";
+import { NoteTextEditor, NoteTextEditorCommands } from "./NoteTextEditor";
 import { NotuSelect } from "./NotuSelect";
 import TagEditor from "./TagEditor";
 import TagFinder from "./TagFinder";
@@ -32,13 +32,13 @@ export default function NoteEditor({
     const [error, setError] = useState<string>(null);
     const [showTagSelector, setShowTagSelector] = useState(false);
     const manualRefresh = useManualRefresh();
-
-    const [showTextComponentView, setShowTextComponentView] = useState(false);
+    const textEditorRef = useRef<NoteTextEditorCommands>(null);
 
     const noteDateStr = `${note.date.toDateString()} ${note.date.getHours().toString().padStart(2, '0')}:${note.date.getMinutes().toString().padStart(2, '0')}`;
 
     async function submitNote(): Promise<void> {
         try {
+            textEditorRef.current.updateNote();
             for (const nt of note.tags) {
                 const ntd = notuRenderTools.getComponentFactoryForNoteTag(nt.tag, note);
                 if (!!ntd) {
@@ -130,7 +130,8 @@ export default function NoteEditor({
 
                 <TagEditor note={note} tags={notu.getTags()}/>
 
-                <NoteTextEditor notuRenderTools={notuRenderTools}
+                <NoteTextEditor ref={textEditorRef}
+                                notuRenderTools={notuRenderTools}
                                 note={note} />
 
                 <NotuText bold marginTop={10}>Tags</NotuText>

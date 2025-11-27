@@ -1,7 +1,7 @@
 import { NotuText } from "@/helpers/NotuStyles";
 import { Note } from "notu";
 import { NoteComponentProcessor } from "notu/dist/types/notecomponents/NoteComponent";
-import { useEffect, useState } from "react";
+import React, { useEffect, useImperativeHandle, useState } from "react";
 import { Keyboard } from "react-native";
 import { Input, View, XStack, YStack } from "tamagui";
 import { useManualRefresh } from "../helpers/Hooks";
@@ -15,18 +15,31 @@ interface NoteTextEditorProps {
     onTextChange?: () => void
 }
 
+export interface NoteTextEditorCommands {
+    updateNote: () => void
+}
 
-export default function NoteTextEditor({
-    notuRenderTools,
-    note,
-    onTextChange = null
-}: NoteTextEditorProps) {
-    
+
+export const NoteTextEditor = React.forwardRef((
+    {
+        notuRenderTools,
+        note,
+        onTextChange
+    }: NoteTextEditorProps,
+    ref: React.ForwardedRef<NoteTextEditorCommands>
+) => {
     const manualRefresh = useManualRefresh();
     const [selectedTextRange, setSelectedTextRange] = useState({start: note.text.length, end: note.text.length});
     const [textComponents, setTextComponents] = useState<any[]>(null);
     const [showNoteComponentsSelect, setShowNoteComponentsSelect] = useState(false);
     const [mode, setMode] = useState<'Raw' | 'Components'>('Raw');
+
+    useImperativeHandle(ref, () => ({
+        updateNote: () => {
+            if (mode == 'Components')
+                note.text = textComponents.map(x => x.getText()).join('');
+        }
+    }));
 
     useEffect(() => {
         if (mode == 'Components' && textComponents == null)
@@ -120,5 +133,4 @@ export default function NoteTextEditor({
                               open={showNoteComponentsSelect} />
         </YStack>
     );
-
-}
+});

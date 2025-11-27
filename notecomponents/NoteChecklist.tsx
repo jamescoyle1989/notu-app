@@ -1,10 +1,12 @@
 import { NoteAction, NoteActionsMenuBuilder, RefreshAction } from "@/helpers/NoteAction";
-import { NotuText } from "@/helpers/NotuStyles";
+import { NotuInput, NotuText } from "@/helpers/NotuStyles";
 import { Check } from "@tamagui/lucide-icons";
 import { NmlElement, Note, Notu } from "notu";
-import { Checkbox, XStack, YStack } from "tamagui";
+import { useState } from "react";
+import { Checkbox, Dialog, View, XStack, YStack } from "tamagui";
 import { NoteComponentContainer } from "../components/NoteComponentContainer";
 import { useManualRefresh } from "../helpers/Hooks";
+import { NoteText } from "./NoteText";
 
 
 class NoteChecklistLine {
@@ -76,20 +78,71 @@ export class NoteChecklist {
 
     renderForEdit() {
         const manualRefresh = useManualRefresh();
+        const [lineUnderEdit, setLineUnderEdit] = useState<NoteChecklistLine>(null);
         const myself = this;
+
+        function canEditLineContent(line: NoteChecklistLine): boolean {
+            if (line == null)
+                return false;
+            return line.content.length == 0 ||
+                (line.content.length == 1 && line.content[0].typeInfo == 'NoteText');
+        }
+
+        function getLineContentValue(line: NoteChecklistLine): string {
+            if (!canEditLineContent(line))
+                return '';
+            if (line.content.length == 0)
+                return '';
+            return line.content[0].displayText;
+        }
+
+        function handleLineContentChange(line: NoteChecklistLine, newValue: string): void {
+            if (newValue.length == 0 && line.content.length == 1) {
+                line.content.pop();
+                manualRefresh();
+                return;
+            }
+            if (line.content.length == 0)
+                line.content.push(new NoteText(newValue));
+            else
+                line.content[0] = new NoteText(newValue);
+            manualRefresh();
+        }
+
+        function addNewLine(): void {
+            myself.lines.push(new NoteChecklistLine([], false));
+            manualRefresh();
+        }
 
         return (
             <YStack bg="#00FF00">
-                <XStack>
-                    <NotuText bold>Checklist</NotuText>
-                </XStack>
+                <NotuText bold>Checklist</NotuText>
                 {this.lines.map((line, index) => (
                     <NotuText key={`line${index}`}>
+                        {canEditLineContent(line) && (<NotuText pressable onPress={() => setLineUnderEdit(line)}>Edit </NotuText>)}
                         {line.content.map((x, index) => (
                             <NoteComponentContainer key={`x${index}`} component={x} editMode={true} />
                         ))}
                     </NotuText>
                 ))}
+                <NotuText pressable onPress={addNewLine}>Add Line</NotuText>
+
+                <View>
+                    <Dialog modal open={lineUnderEdit != null}>
+                        <Dialog.Portal>
+                            <Dialog.Overlay key="notechecklisteditoroverlay" onPress={() => setLineUnderEdit(null)} />
+                            <Dialog.FocusScope>
+                                <Dialog.Content bordered elevate
+                                                width="80%"
+                                                key="notechecklisteditorcontent">
+                                    <NotuText>Content</NotuText>
+                                    <NotuInput value={getLineContentValue(lineUnderEdit)}
+                                               onChangeText={newValue => handleLineContentChange(lineUnderEdit, newValue)} />
+                                </Dialog.Content>
+                            </Dialog.FocusScope>
+                        </Dialog.Portal>
+                    </Dialog>
+                </View>
             </YStack>
         );
     }
