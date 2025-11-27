@@ -100,13 +100,28 @@ export const NoteTextEditor = React.forwardRef((
         );
     }
 
+    let colorIndex = 0;
+    const colors = [
+        '#9DCF62',
+        '#E6EB81',
+        '#F69B43',
+        '#8F70DC',
+        '#F897BB',
+        '#14B2B4'
+    ]
+    function cycleColors(): string {
+        const output = colors[colorIndex];
+        colorIndex = (colorIndex + 1) % colors.length;
+        return output;
+    }
+
     function renderComponentsView() {
         if (textComponents == null)
             return;
         return (
             <View marginBlockStart={10}>
                 {textComponents.map((x, index) => (
-                    <NoteComponentContainer key={index} component={x} editMode={true}/>
+                    <NoteComponentContainer key={index} component={x} editMode={true} color={cycleColors}/>
                 ))}
             </View>
         );

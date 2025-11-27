@@ -25,7 +25,7 @@ export class NoteText {
         )
     }
 
-    renderForEdit() {
+    renderForEdit(color: () => string) {
         return this.render();
     }
 

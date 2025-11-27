@@ -30,9 +30,10 @@ export class NoteLink {
         );
     }
 
-    renderForEdit() {
+    renderForEdit(color: () => string) {
         const [showLinkEditor, setShowLinkEditor] = useState(false);
         const manualRefresh = useManualRefresh();
+        const [selectedColor, setSelectedColor] = useState(color());
         const myself = this;
 
         function handleURLChange(newValue: string): void {
@@ -68,11 +69,12 @@ export class NoteLink {
 
         return (
             <NotuText>
-                <NotuText bg="#F00">
+                <NotuText bg={selectedColor as any}>
                     <NotuText bold> Link: </NotuText>
-                    <NotuText pressable onPress={() => setShowLinkEditor(true)}>Edit </NotuText>
+                    <NotuText pressable onPress={() => setShowLinkEditor(true)}>Edit</NotuText>
+                    <NotuText> </NotuText>
                     {this.content.map((x, index) => (
-                        <NoteComponentContainer key={index} component={x} editMode={true}/>
+                        <NoteComponentContainer key={index} component={x} editMode={true} color={color}/>
                     ))}
                     <NotuText> </NotuText>
                 </NotuText>

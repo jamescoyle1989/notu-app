@@ -32,7 +32,7 @@ export class NoteParagraph {
         );
     }
 
-    renderForEdit() {
+    renderForEdit(color: () => string) {
         return (
             <NotuText>
                 {this._children.map((x, index) => (

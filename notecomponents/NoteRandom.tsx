@@ -60,9 +60,10 @@ export class NoteRandom {
         );
     }
 
-    renderForEdit() {
+    renderForEdit(color: () => string) {
         const [choiceUnderEdit, setChoiceUnderEdit] = useState<NoteRandomChoice>(null);
         const manualRefresh = useManualRefresh();
+        const [selectedColor, setSelectedColor] = useState(color());
         const myself = this;
 
         function handleWeightChange(value: number) {
@@ -113,19 +114,22 @@ export class NoteRandom {
         }
 
         return (
-            <YStack bg="#0000FF">
-                <NotuText bold>Random</NotuText>
+            <YStack bg={selectedColor as any} width="100%">
+                <NotuText bold> Random</NotuText>
                 {myself.choices.map((choice, index) => (
                     <NotuText key={`choice${index}`}>
-                        <NotuText pressable onPress={() => setChoiceUnderEdit(choice)}>Edit </NotuText>
+                        <NotuText> </NotuText>
+                        <NotuText pressable onPress={() => setChoiceUnderEdit(choice)}>Edit</NotuText>
+                        <NotuText> </NotuText>
                         {choice.content.map((x, index2) => (
                             <NoteComponentContainer key={`x${index2}`}
                                                     component={x}
+                                                    color={color}
                                                     editMode={true} />
                         ))}
                     </NotuText>
                 ))}
-                <NotuText pressable onPress={addNewChoice}>Add Line</NotuText>
+                <NotuText> <NotuText pressable onPress={addNewChoice}>Add Choice</NotuText></NotuText>
 
                 <Dialog modal open={choiceUnderEdit != null}>
                     <Dialog.Portal>

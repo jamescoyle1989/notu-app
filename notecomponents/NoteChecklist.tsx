@@ -76,9 +76,10 @@ export class NoteChecklist {
         );
     }
 
-    renderForEdit() {
+    renderForEdit(color: () => string) {
         const manualRefresh = useManualRefresh();
         const [lineUnderEdit, setLineUnderEdit] = useState<NoteChecklistLine>(null);
+        const [selectedColor, setSelectedColor] = useState(color());
         const myself = this;
 
         function canEditLineContent(line: NoteChecklistLine): boolean {
@@ -115,17 +116,20 @@ export class NoteChecklist {
         }
 
         return (
-            <YStack bg="#00FF00">
-                <NotuText bold>Checklist</NotuText>
+            <YStack bg={selectedColor as any} width="100%">
+                <NotuText bold> Checklist</NotuText>
                 {this.lines.map((line, index) => (
                     <NotuText key={`line${index}`}>
-                        {canEditLineContent(line) && (<NotuText pressable onPress={() => setLineUnderEdit(line)}>Edit </NotuText>)}
+                        <NotuText> </NotuText>
+                        {canEditLineContent(line) && (
+                            <NotuText><NotuText pressable onPress={() => setLineUnderEdit(line)}>Edit</NotuText> </NotuText>
+                        )}
                         {line.content.map((x, index) => (
-                            <NoteComponentContainer key={`x${index}`} component={x} editMode={true} />
+                            <NoteComponentContainer key={`x${index}`} component={x} editMode={true} color={color} />
                         ))}
                     </NotuText>
                 ))}
-                <NotuText pressable onPress={addNewLine}>Add Line</NotuText>
+                <NotuText> <NotuText pressable onPress={addNewLine}>Add Line</NotuText></NotuText>
 
                 <Dialog modal open={lineUnderEdit != null}>
                     <Dialog.Portal>
