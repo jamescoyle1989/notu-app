@@ -3,6 +3,7 @@ import { NumberInput } from "@/components/NumberInput";
 import { useManualRefresh } from "@/helpers/Hooks";
 import { NoteActionsMenuBuilder } from "@/helpers/NoteAction";
 import { NotuButton, NotuInput, NotuText } from "@/helpers/NotuStyles";
+import { Shuffle } from "@tamagui/lucide-icons";
 import { randomInt } from "es-toolkit";
 import { NmlElement, Note, Notu } from "notu";
 import { useState } from "react";
@@ -32,30 +33,48 @@ export class NoteRandom {
 
     selectedIndex: number = 0;
 
+    private _save: () => Promise<void>;
+
     constructor(
         choices: Array<NoteRandomChoice>,
-        selectedIndex: number
+        selectedIndex: number,
+        save: () => Promise<void>
     ) {
         this._choices = choices;
         this.selectedIndex = selectedIndex;
+        this._save = save;
     }
 
     changeSelection(): void {
-        if (this.choices.length > 0)
-            this.selectedIndex = randomInt(this._choices.length);
+        if (this.choices.length > 1) {
+            let newIndex = randomInt(this._choices.length - 1);
+            if (newIndex == this.selectedIndex)
+                newIndex++;
+            this.selectedIndex = newIndex;
+        }
     }
 
     render() {
         if (this.choices.length == 0)
             return;
 
+        const manualRefresh = useManualRefresh();
+        const myself = this;
         const selectedChoice = this.choices[this.selectedIndex % this.choices.length];
+
+        function onShufflePress() {
+            myself.changeSelection();
+            myself._save();
+            manualRefresh();
+        }
 
         return (
             <NotuText>
                 {selectedChoice.content.map((x, index) => (
                     <NoteComponentContainer key={index} component={x} />
                 ))}
+                <NotuText> </NotuText>
+                <Shuffle size={14} onPress={onShufflePress}/>
             </NotuText>
         );
     }
@@ -149,7 +168,9 @@ export class NoteRandom {
                                 <NotuText>Weight</NotuText>
                                 <NumberInput value={choiceUnderEdit?.weight ?? 1}
                                              onChange={handleWeightChange} />
-                                <NotuButton theme="danger" onPress={removeChoiceBeingEdited}>
+                                <NotuButton theme="danger"
+                                            onPress={removeChoiceBeingEdited}
+                                            marginBlockStart={10}>
                                     Remove
                                 </NotuButton>
                             </Dialog.Content>
@@ -231,7 +252,7 @@ export class NoteRandomProcessor {
         }
         selectedIndex = Math.max(0, Math.min(selectedIndex, choices.length - 1));
 
-        return new NoteRandom(choices, selectedIndex);
+        return new NoteRandom(choices, selectedIndex, save);
     }
 
     private _parseChoiceWeight(choiceElement: NmlElement): number {

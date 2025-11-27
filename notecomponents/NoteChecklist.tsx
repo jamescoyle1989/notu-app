@@ -1,9 +1,9 @@
 import { NoteAction, NoteActionsMenuBuilder, RefreshAction } from "@/helpers/NoteAction";
-import { NotuInput, NotuText } from "@/helpers/NotuStyles";
+import { NotuButton, NotuInput, NotuText } from "@/helpers/NotuStyles";
 import { Check } from "@tamagui/lucide-icons";
 import { NmlElement, Note, Notu } from "notu";
 import { useState } from "react";
-import { Checkbox, Dialog, XStack, YStack } from "tamagui";
+import { Checkbox, Dialog, View, XStack, YStack } from "tamagui";
 import { NoteComponentContainer } from "../components/NoteComponentContainer";
 import { useManualRefresh } from "../helpers/Hooks";
 import { NoteText } from "./NoteText";
@@ -115,15 +115,21 @@ export class NoteChecklist {
             manualRefresh();
         }
 
+        function removeLineBeingEdited(): void {
+            const index = myself.lines.indexOf(lineUnderEdit);
+            if (index >= 0)
+                myself.lines.splice(index, 1);
+            setLineUnderEdit(null);
+        }
+
         return (
             <YStack bg={selectedColor as any} width="100%">
                 <NotuText bold> Checklist</NotuText>
                 {this.lines.map((line, index) => (
                     <NotuText key={`line${index}`}>
                         <NotuText> </NotuText>
-                        {canEditLineContent(line) && (
-                            <NotuText><NotuText pressable onPress={() => setLineUnderEdit(line)}>Edit</NotuText> </NotuText>
-                        )}
+                        <NotuText pressable onPress={() => setLineUnderEdit(line)}>Edit</NotuText>
+                        <NotuText> </NotuText>
                         {line.content.map((x, index) => (
                             <NoteComponentContainer key={`x${index}`} component={x} editMode={true} color={color} />
                         ))}
@@ -138,9 +144,18 @@ export class NoteChecklist {
                             <Dialog.Content bordered elevate
                                             width="80%"
                                             key="notechecklisteditorcontent">
-                                <NotuText>Content</NotuText>
-                                <NotuInput value={getLineContentValue(lineUnderEdit)}
-                                           onChangeText={newValue => handleLineContentChange(lineUnderEdit, newValue)} />
+                                {canEditLineContent(lineUnderEdit) && (
+                                    <View>
+                                        <NotuText>Content</NotuText>
+                                        <NotuInput value={getLineContentValue(lineUnderEdit)}
+                                                   onChangeText={newValue => handleLineContentChange(lineUnderEdit, newValue)} />
+                                    </View>
+                                )}
+                                <NotuButton theme="danger"
+                                            onPress={removeLineBeingEdited}
+                                            marginBlockStart={10}>
+                                    Remove
+                                </NotuButton>
                             </Dialog.Content>
                         </Dialog.FocusScope>
                     </Dialog.Portal>
