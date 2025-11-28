@@ -79,7 +79,7 @@ function EditorComponent({ noteTag, refreshCallback }: NoteTagDataComponentProps
 
     return (
         <YStack>
-            <XStack alignItems="center">
+            <XStack style={{alignItems: 'center'}}>
                 <Label width={120}>Include Time</Label>
                 <Checkbox checked={data.includeTime}
                           onCheckedChange={onIncludeTimeChange}>
@@ -88,18 +88,18 @@ function EditorComponent({ noteTag, refreshCallback }: NoteTagDataComponentProps
                     </Checkbox.Indicator>
                 </Checkbox>
             </XStack>
-            <XStack alignItems="center">
+            <XStack style={{alignItems: 'center'}}>
                 <Label width={120}>Start</Label>
                 <NotuDateTimePicker value={data.start}
                                     onChange={onStartChange}
                                     hideTime={!data.includeTime} />
             </XStack>
-            <XStack alignItems="center">
+            <XStack style={{alignItems: 'center'}}>
                 <Label width={120}>Duration</Label>
                 <TimespanPicker milliseconds={data.durationMs}
                                 onChange={onDurationChange} />
             </XStack>
-            <XStack alignItems="center">
+            <XStack style={{alignItems: 'center'}}>
                 <Label width={120}>End</Label>
                 <NotuDateTimePicker value={data.end}
                                     onChange={onEndChange}

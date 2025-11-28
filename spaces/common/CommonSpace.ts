@@ -7,6 +7,7 @@ import CancelledNoteTagDataComponentFactory from "./CancelledNoteTagDataComponen
 import { CommonSpaceSetup } from "./CommonSpaceSetup";
 import DurationNoteTagDataComponentFactory from "./DurationNoteTagDataComponent";
 import FinishedNoteTagDataComponentFactory from "./FinishedNoteTagDataComponent";
+import RecurringNoteTagDataComponentFactory from "./RecurringNoteTagDataComponent";
 import ScheduledNoteTagDataComponentFactory from "./ScheduledNoteTagDataComponent";
 import StartedNoteTagDataComponentFactory from "./StartedNoteTagDataComponent";
 
@@ -51,6 +52,9 @@ export class CommonSpace implements LogicalSpace {
     private _pinned: Tag;
     get pinned(): Tag { return this._pinned; }
 
+    private _recurring: Tag;
+    get recurring(): Tag { return this._recurring; }
+
     private _scheduled: Tag;
     get scheduled(): Tag { return this._scheduled; }
 
@@ -79,6 +83,7 @@ export class CommonSpace implements LogicalSpace {
         this._log = notu.getTagByName(CommonSpaceSetup.log, this._space);
         this._memory = notu.getTagByName(CommonSpaceSetup.memory, this._space);
         this._pinned = notu.getTagByName(CommonSpaceSetup.pinned, this._space);
+        this._recurring = notu.getTagByName(CommonSpaceSetup.recurring, this._space);
         this._scheduled = notu.getTagByName(CommonSpaceSetup.scheduled, this._space);
         this._started = notu.getTagByName(CommonSpaceSetup.started, this._space);
         this._thought = notu.getTagByName(CommonSpaceSetup.thought, this._space);
@@ -120,6 +125,8 @@ export class CommonSpace implements LogicalSpace {
             return new DurationNoteTagDataComponentFactory();
         if (tag.name == CommonSpaceSetup.finished)
             return new FinishedNoteTagDataComponentFactory();
+        if (tag.name == CommonSpaceSetup.recurring)
+            return new RecurringNoteTagDataComponentFactory();
         if (tag.name == CommonSpaceSetup.started)
             return new StartedNoteTagDataComponentFactory();
         if (tag.name == CommonSpaceSetup.scheduled)

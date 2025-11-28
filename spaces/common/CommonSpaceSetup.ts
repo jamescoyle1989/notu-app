@@ -14,6 +14,7 @@ export class CommonSpaceSetup {
     static get log(): string { return 'Log'; }
     static get memory(): string { return 'Memory'; }
     static get pinned(): string { return 'Pinned'; }
+    static get recurring(): string { return 'Recurring'; }
     static get scheduled(): string { return 'Scheduled'; }
     static get started(): string { return 'Started'; }
     static get thought(): string { return 'Thought'; }
@@ -73,6 +74,9 @@ export class CommonSpaceSetup {
                 .in(commonSpace).setOwnTag(this.pinned);
             pinned.ownTag.asInternal();
 
+            const recurring = new Note(`When added to a note, this tag defines a schedule for some recurring action to happen. This tag is generally only useful when added to notes that are operated on by some process. A good example of this would be routine definitions, where each one is expected to have a Recurring tag added to it to define how often that routine happens.`)
+                .in(commonSpace).setOwnTag(this.recurring);
+
             const scheduled = new Note('When added to a note, this tag stores scheduling data. It indicates that the note has set start and end times.')
                 .in(commonSpace).setOwnTag(this.scheduled);
             scheduled.ownTag.asInternal();
@@ -98,6 +102,7 @@ export class CommonSpaceSetup {
                 log,
                 memory,
                 pinned,
+                recurring,
                 scheduled,
                 started,
                 thought
