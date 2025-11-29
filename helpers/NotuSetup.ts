@@ -2,6 +2,7 @@ import { NoteChecklistProcessor } from '@/notecomponents/NoteChecklist';
 import { NoteLinkProcessor } from '@/notecomponents/NoteLink';
 import { NoteRandomProcessor } from '@/notecomponents/NoteRandom';
 import { CommonSpace } from '@/spaces/common/CommonSpace';
+import { PeopleSpace } from '@/spaces/people/PeopleSpace';
 import { NotuSQLiteCacheFetcher } from '@/sqlite/NotuSQLiteCacheFetcher';
 import { NotuSQLiteClient } from '@/sqlite/NotuSQLiteClient';
 import { ExpoSQLiteConnection } from '@/sqlite/SQLiteConnection';
@@ -44,7 +45,8 @@ export async function setupNotu(): Promise<NotuRenderTools> {
             new NoteRandomProcessor()
         ],
         [
-            new CommonSpace(notuVal)
+            new CommonSpace(notuVal),
+            new PeopleSpace(notuVal)
         ]
     );
     for (const space of renderToolsVal.logicalSpaces)
