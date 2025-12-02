@@ -84,7 +84,8 @@ function EditorComponent({ noteTag, refreshCallback }: NoteTagDataComponentProps
             data.daysOfWeek = data.daysOfWeek.filter(x => x != dayOfWeek);
         else {
             data.daysOfWeek.push(dayOfWeek);
-            noteTag.dirty();
+            if (noteTag.isClean)
+                noteTag.dirty();
         }
         manualRefresh();
     }
@@ -102,7 +103,8 @@ function EditorComponent({ noteTag, refreshCallback }: NoteTagDataComponentProps
             data.daysOfMonth = data.daysOfMonth.filter(x => x != day);
         else {
             data.daysOfMonth.push(day);
-            noteTag.dirty();
+            if (noteTag.isClean)
+                noteTag.dirty();
         }
         manualRefresh();
     }
@@ -124,7 +126,8 @@ function EditorComponent({ noteTag, refreshCallback }: NoteTagDataComponentProps
             data.monthsOfYear = data.monthsOfYear.filter(x => x != month);
         else {
             data.monthsOfYear.push(month);
-            noteTag.dirty();
+            if (noteTag.isClean)
+                noteTag.dirty();
         }
         manualRefresh();
     }

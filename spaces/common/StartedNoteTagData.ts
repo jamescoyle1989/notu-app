@@ -28,7 +28,7 @@ export class StartedData {
     get date(): Date {
         if (!this._nt.data.date)
             return null;
-        return new Date (this._nt.data.date);
+        return new Date(this._nt.data.date);
     }
     set date(value: Date) {
         let newVal = (value ?? new Date()).toISOString();

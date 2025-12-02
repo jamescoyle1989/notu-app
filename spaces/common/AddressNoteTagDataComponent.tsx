@@ -7,21 +7,36 @@ import { AddressData } from "./AddressNoteTagData";
 
 export default class AddressNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
 
-    getBadgeComponent(noteTag: NoteTag, note: Note, notu: Notu): ReactNode {
+    getBadgeComponent(
+        noteTag: NoteTag,
+        note: Note,
+        notu: Notu
+    ): ReactNode {
         return (<BadgeComponent noteTag={noteTag} />);
     }
 
-    getEditorComponent(noteTag: NoteTag, note: Note, notu: Notu, refreshCallback: () => void): ReactNode {
+    getEditorComponent(
+        noteTag: NoteTag,
+        note: Note,
+        notu: Notu,
+        refreshCallback: () => void
+    ): ReactNode {
         return (<EditorComponent noteTag={noteTag} refreshCallback={refreshCallback} />);
     }
 
-    validate(noteTag: NoteTag, note: Note, notu: Notu): Promise<boolean> {
+    validate(
+        noteTag: NoteTag,
+        note: Note,
+        notu: Notu
+    ): Promise<boolean> {
         return Promise.resolve(true);
     }
 }
 
 
-function BadgeComponent({ noteTag }: NoteTagDataComponentProps) {
+function BadgeComponent({
+    noteTag
+}: NoteTagDataComponentProps) {
     const data = new AddressData(noteTag);
     if (!!data.url) {
         return (<Anchor href={data.url} target="_blank">{data.name}</Anchor>);
@@ -30,7 +45,10 @@ function BadgeComponent({ noteTag }: NoteTagDataComponentProps) {
 }
 
 
-function EditorComponent({ noteTag, refreshCallback }: NoteTagDataComponentProps) {
+function EditorComponent({
+    noteTag,
+    refreshCallback
+}: NoteTagDataComponentProps) {
     const data = new AddressData(noteTag);
 
     function onNameChange(value: string) {
@@ -64,18 +82,18 @@ function EditorComponent({ noteTag, refreshCallback }: NoteTagDataComponentProps
 
     return (
         <YStack>
-            <XStack alignItems="center">
+            <XStack style={{alignItems: 'center'}}>
                 <Label width={120}>Name</Label>
                 <Input value={data.name} onChangeText={onNameChange} />
             </XStack>
-            <XStack alignItems="center">
+            <XStack style={{alignItems: 'center'}}>
                 <Label width={120}>URL</Label>
                 <Input value={data.url ?? ''} onChangeText={onURLChange} />
             </XStack>
             {!!data.url && !data.coordinates && (
                 <Button onPress={getCoordinates}>Get Coordinates</Button>
             )}
-            <XStack alignItems="center">
+            <XStack style={{alignItems: 'center'}}>
                 <Label width={120}>Coordinates</Label>
                 <Input value={data.coordinates ?? ''} onChangeText={onCoordsChange} />
             </XStack>
