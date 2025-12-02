@@ -2,7 +2,11 @@ import { NoteActionsMenuBuilder } from "@/helpers/NoteAction";
 import { NoteTagDataComponentFactory, SpaceSettingsComponentFactory } from "@/helpers/NotuRenderTools";
 import { Note, Notu, Space, Tag } from "notu";
 import { LogicalSpace } from "../LogicalSpace";
+import CelebrationNoteTagDataComponentFactory from "./CelebrationNoteTagDataComponent";
+import CircleNoteTagDataComponentFactory from "./CircleNoteTagDataComponent";
 import { PeopleSpaceSetup } from "./PeopleSpaceSetup";
+import PersonCelebrationNoteTagDataComponentFactory from "./PersonCelebrationNoteTagDataComponent";
+import PersonNoteTagDataComponentFactory from "./PersonNoteTagDataComponent";
 
 export class PeopleSpace implements LogicalSpace {
 
@@ -49,6 +53,20 @@ export class PeopleSpace implements LogicalSpace {
         tag: Tag,
         note: Note
     ): NoteTagDataComponentFactory | null {
+        if (tag.name == PeopleSpaceSetup.celebration)
+            return new CelebrationNoteTagDataComponentFactory();
+        if (tag.name == PeopleSpaceSetup.circle)
+            return new CircleNoteTagDataComponentFactory();
+        if (tag.name == PeopleSpaceSetup.person)
+            return new PersonNoteTagDataComponentFactory();
+        if (
+            tag.linksTo(this.celebration) &&
+            !!note.tags.find(x => 
+                x.tag.id == this.person.id ||
+                x.tag.id == this.circle.id
+            )
+        )
+            return new PersonCelebrationNoteTagDataComponentFactory();
         return null;
     }
 

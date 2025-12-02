@@ -1,4 +1,4 @@
-import { Note, Notu, Space } from "notu";
+import { Note, Notu, Page, Space } from "notu";
 
 export class PeopleSpaceSetup {
     static get internalName(): string { return 'com.decoyspace.notu.people'; }
@@ -28,12 +28,45 @@ Some celebrations, like Christmas, happen at a fixed time each year and so are b
 
 Others, like birthdays, happen throughout the year on different days for different people. For these celebrations it is best to have no recurring information on the celebration note itself. Instead, each person or social circle will get to define their own day of the year when that celebration occurs on for them.`)
                 .in(peopleSpace).setOwnTag(this.celebration);
+            celebration.ownTag.asInternal();
 
             await notu.saveNotes([
                 person,
                 circle,
                 celebration
             ]);
+
+            const internalsPage = new Page();
+            internalsPage.name = 'People Space Setup';
+            internalsPage.order = 4;
+            internalsPage.group = 'People';
+            internalsPage.space = peopleSpace;
+            internalsPage.query = `t.isInternal`;
+            await notu.savePage(internalsPage);
+
+            const celPage = new Page();
+            celPage.name = 'Celebrations';
+            celPage.order = 4;
+            celPage.group = 'People';
+            celPage.space = peopleSpace;
+            celPage.query = `#People.Celebration`;
+            await notu.savePage(celPage);
+
+            const peoplePage = new Page();
+            peoplePage.name = 'People';
+            peoplePage.order = 5;
+            peoplePage.group = 'People';
+            peoplePage.space = peopleSpace;
+            peoplePage.query = `#People.Person`;
+            await notu.savePage(peoplePage);
+
+            const circlePage = new Page();
+            circlePage.name = 'Circles';
+            circlePage.order = 6;
+            circlePage.group = 'People';
+            circlePage.space = peopleSpace;
+            circlePage.query = `#People.Circle`;
+            await notu.savePage(circlePage);
         }
     }
 }
