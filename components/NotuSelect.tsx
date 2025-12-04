@@ -35,7 +35,7 @@ export const NotuSelect = ({
     //https://github.com/tamagui/tamagui/issues/3436#issuecomment-3133812014
     return (
         <Select value={selectedName} onValueChange={handleValueChange} disablePreventBodyScroll onOpenChange={handleOpenChange}>
-            <Select.Trigger>
+            <Select.Trigger flex={1}>
                 <Select.Value placeholder={placeholderText} />
             </Select.Trigger>
 

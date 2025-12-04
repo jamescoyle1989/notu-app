@@ -1,10 +1,13 @@
 import { Note, Notu, Page, Space } from "notu";
+import { CommonSpace } from "../common/CommonSpace";
+import { CelebrationEventsProcessData } from "./CelebrationEventsProcessNoteTagData";
 
 export class PeopleSpaceSetup {
     static get internalName(): string { return 'com.decoyspace.notu.people'; }
     static get person(): string { return 'Person'; }
     static get circle(): string { return 'Circle'; }
     static get celebration(): string { return 'Celebration'; }
+    static get celebrationEventsProcess(): string { return 'Generate Celebration Events Process'; }
 
     static async setup(notu: Notu): Promise<void> {
         let peopleSpace = notu.getSpaceByInternalName(this.internalName);
@@ -36,12 +39,24 @@ Others, like birthdays, happen throughout the year on different days for differe
                 celebration
             ]);
 
+            const commonSpace = new CommonSpace(notu);
+
+            const celebrationEventsProcess = new Note(`
+This process will automatically generate calendar events out of celebrations for any people or social circles who have been linked to those celebrations. It will also optionally set up tasks in advance of the events to help you plan for those events. After all, what's the benefit of knowing it's your partner's birthday if you only remember the day of?
+                `)
+                .in(peopleSpace).setOwnTag(this.celebrationEventsProcess);
+            celebrationEventsProcess.ownTag.asInternal();
+            const processData = CelebrationEventsProcessData.addTag(celebrationEventsProcess, commonSpace);
+            processData.saveEventsToSpaceId = peopleSpace.id;
+            processData.savePlanTasksToSpaceId = peopleSpace.id;
+            await notu.saveNotes([celebrationEventsProcess]);
+
             const internalsPage = new Page();
             internalsPage.name = 'People Space Setup';
             internalsPage.order = 4;
             internalsPage.group = 'People';
             internalsPage.space = peopleSpace;
-            internalsPage.query = `t.isInternal`;
+            internalsPage.query = `t.isInternal OR #Common.Process OR #Common.Template`;
             await notu.savePage(internalsPage);
 
             const celPage = new Page();

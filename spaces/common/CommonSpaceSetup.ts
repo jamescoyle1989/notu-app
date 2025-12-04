@@ -14,9 +14,11 @@ export class CommonSpaceSetup {
     static get log(): string { return 'Log'; }
     static get memory(): string { return 'Memory'; }
     static get pinned(): string { return 'Pinned'; }
+    static get process(): string { return 'Process'; }
     static get recurring(): string { return 'Recurring'; }
     static get scheduled(): string { return 'Scheduled'; }
     static get started(): string { return 'Started'; }
+    static get template(): string { return 'Template'; }
     static get thought(): string { return 'Thought'; }
 
     static async setup(notu: Notu): Promise<void> {
@@ -74,6 +76,10 @@ export class CommonSpaceSetup {
                 .in(commonSpace).setOwnTag(this.pinned);
             pinned.ownTag.asInternal();
 
+            const process = new Note('Adding this tag to a note marks it as a notu process which can be run.')
+                .in(commonSpace).setOwnTag(this.process);
+            process.ownTag.asInternal();
+
             const recurring = new Note(`When added to a note, this tag defines a schedule for some recurring action to happen. This tag is generally only useful when added to notes that are operated on by some process. A good example of this would be routine definitions, where each one is expected to have a Recurring tag added to it to define how often that routine happens.`)
                 .in(commonSpace).setOwnTag(this.recurring);
 
@@ -84,6 +90,10 @@ export class CommonSpaceSetup {
             const started = new Note(`When added to a note, this tag stores date data to show when the note was started.`)
                 .in(commonSpace).setOwnTag(this.started);
             started.ownTag.asInternal();
+
+            const template = new Note('When added to a note, this tag marks a note as a template that can be used for creating new notes.')
+                .in(commonSpace).setOwnTag(this.template);
+            template.ownTag.asInternal();
 
             const thought = new Note(`Adding this tag to a note marks that the note contains thoughts previously had on a particular subject.`)
                 .in(commonSpace).setOwnTag(this.thought);
@@ -102,14 +112,16 @@ export class CommonSpaceSetup {
                 log,
                 memory,
                 pinned,
+                process,
                 recurring,
                 scheduled,
                 started,
+                template,
                 thought
             ]);
             
             const page1 = new Page();
-            page1.name = 'Page 1';
+            page1.name = 'Common Space Setup';
             page1.order = 1;
             page1.group = 'Pages';
             page1.space = commonSpace;
@@ -117,7 +129,7 @@ export class CommonSpaceSetup {
             await notu.savePage(page1);
             
             const page2 = new Page();
-            page2.name = 'Page 2';
+            page2.name = 'Info';
             page2.order = 2;
             page2.group = 'Pages';
             page2.space = commonSpace;
@@ -125,7 +137,7 @@ export class CommonSpaceSetup {
             await notu.savePage(page2);
             
             const page3 = new Page();
-            page3.name = 'Page 3';
+            page3.name = 'Thoughts';
             page3.order = 3;
             page3.group = null;
             page3.space = commonSpace;
