@@ -23,7 +23,10 @@ export function timespanToText(milliseconds: number): string {
     let output = '';
     if (totalDays > 0)
         output = `${totalDays} day${totalDays > 1 ? 's' : ''}`
-    if (remainingHours > 0 || remainingMinutes > 0 || (totalDays == 0 && remainingHours == 0 && remainingMinutes == 0))
-        output += ` ${remainingHours.toString().padStart(2, '0')}:${remainingMinutes.toString().padStart(2, '0')}`;
+    if (remainingHours > 0 || remainingMinutes > 0 || (totalDays == 0 && remainingHours == 0 && remainingMinutes == 0)) {
+        if (output.length > 0)
+            output += ' ';
+        output += `${remainingHours.toString().padStart(2, '0')}:${remainingMinutes.toString().padStart(2, '0')}`;
+    }
     return output;
 }
