@@ -1,6 +1,7 @@
 import { NoteChecklistProcessor } from '@/notecomponents/NoteChecklist';
 import { NoteLinkProcessor } from '@/notecomponents/NoteLink';
 import { NoteRandomProcessor } from '@/notecomponents/NoteRandom';
+import { CalendarSpace } from '@/spaces/calendar/CalendarSpace';
 import { CommonSpace } from '@/spaces/common/CommonSpace';
 import { PeopleSpace } from '@/spaces/people/PeopleSpace';
 import { TasksSpace } from '@/spaces/tasks/TasksSpace';
@@ -48,7 +49,8 @@ export async function setupNotu(): Promise<NotuRenderTools> {
         [
             new CommonSpace(notuVal),
             new PeopleSpace(notuVal),
-            new TasksSpace(notuVal)
+            new TasksSpace(notuVal),
+            new CalendarSpace(notuVal)
         ]
     );
     for (const space of renderToolsVal.logicalSpaces)

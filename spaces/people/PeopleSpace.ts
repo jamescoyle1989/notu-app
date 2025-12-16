@@ -1,8 +1,9 @@
-import { NoteActionsMenuBuilder } from "@/helpers/NoteAction";
+import { NoteAction, NoteActionsMenuBuilder, RefreshAction } from "@/helpers/NoteAction";
 import { NoteTagDataComponentFactory, SpaceSettingsComponentFactory } from "@/helpers/NotuRenderTools";
 import { Note, Notu, Space, Tag } from "notu";
 import { CommonSpaceSetup } from "../common/CommonSpaceSetup";
 import { LogicalSpace } from "../LogicalSpace";
+import { CelebrationEventsProcessContext, generateCelebrationNotes } from "./CelebrationEventsProcess";
 import CelebrationEventsProcessNoteTagDataComponentFactory from "./CelebrationEventsProcessNoteTagDataComponent";
 import CelebrationNoteTagDataComponentFactory from "./CelebrationNoteTagDataComponent";
 import CircleNoteTagDataComponentFactory from "./CircleNoteTagDataComponent";
@@ -48,6 +49,24 @@ export class PeopleSpace implements LogicalSpace {
         menuBuilder: NoteActionsMenuBuilder,
         notu: Notu
     ) {
+        if (note.ownTag?.name == PeopleSpaceSetup.celebrationEventsProcess) {
+            menuBuilder.addToTopOfEnd(
+                new NoteAction('Run',
+                    async () => {
+                        try {
+                            const newNotes = await generateCelebrationNotes(
+                                new CelebrationEventsProcessContext(notu)
+                            );
+                            await notu.saveNotes(newNotes);
+                            return new RefreshAction();
+                        }
+                        catch (err) {
+                            console.log(err);
+                        }
+                    }
+                )
+            )
+        }
     }
 
 
