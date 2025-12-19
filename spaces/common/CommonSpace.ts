@@ -132,20 +132,22 @@ export class CommonSpace implements LogicalSpace {
 
 
     resolveNoteTagDataComponentFactory(tag: Tag, note: Note): NoteTagDataComponentFactory | null {
-        if (tag.name == CommonSpaceSetup.address)
-            return new AddressNoteTagDataComponentFactory();
-        if (tag.name == CommonSpaceSetup.cancelled)
-            return new CancelledNoteTagDataComponentFactory();
-        if (tag.name == CommonSpaceSetup.duration)
-            return new DurationNoteTagDataComponentFactory();
-        if (tag.name == CommonSpaceSetup.finished)
-            return new FinishedNoteTagDataComponentFactory();
-        if (tag.name == CommonSpaceSetup.recurring)
-            return new RecurringNoteTagDataComponentFactory();
-        if (tag.name == CommonSpaceSetup.started)
-            return new StartedNoteTagDataComponentFactory();
-        if (tag.name == CommonSpaceSetup.scheduled)
-            return new ScheduledNoteTagDataComponentFactory();
+        if (tag.space.internalName == CommonSpaceSetup.internalName) {
+            if (tag.name == CommonSpaceSetup.address)
+                return new AddressNoteTagDataComponentFactory();
+            if (tag.name == CommonSpaceSetup.cancelled)
+                return new CancelledNoteTagDataComponentFactory();
+            if (tag.name == CommonSpaceSetup.duration)
+                return new DurationNoteTagDataComponentFactory();
+            if (tag.name == CommonSpaceSetup.finished)
+                return new FinishedNoteTagDataComponentFactory();
+            if (tag.name == CommonSpaceSetup.recurring)
+                return new RecurringNoteTagDataComponentFactory();
+            if (tag.name == CommonSpaceSetup.started)
+                return new StartedNoteTagDataComponentFactory();
+            if (tag.name == CommonSpaceSetup.scheduled)
+                return new ScheduledNoteTagDataComponentFactory();
+        }
         return null;
     }
 

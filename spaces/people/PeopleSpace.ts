@@ -75,14 +75,16 @@ export class PeopleSpace implements LogicalSpace {
         note: Note
     ): NoteTagDataComponentFactory | null {
 
-        if (tag.name == PeopleSpaceSetup.celebration)
-            return new CelebrationNoteTagDataComponentFactory();
+        if (tag.space.internalName == PeopleSpaceSetup.internalName) {
+            if (tag.name == PeopleSpaceSetup.celebration)
+                return new CelebrationNoteTagDataComponentFactory();
 
-        if (tag.name == PeopleSpaceSetup.circle)
-            return new CircleNoteTagDataComponentFactory();
+            if (tag.name == PeopleSpaceSetup.circle)
+                return new CircleNoteTagDataComponentFactory();
 
-        if (tag.name == PeopleSpaceSetup.person)
-            return new PersonNoteTagDataComponentFactory();
+            if (tag.name == PeopleSpaceSetup.person)
+                return new PersonNoteTagDataComponentFactory();
+        }
 
         if (
             tag.linksTo(this.celebration) &&
@@ -94,6 +96,7 @@ export class PeopleSpace implements LogicalSpace {
             return new PersonCelebrationNoteTagDataComponentFactory();
 
         if (
+            tag.space.internalName == CommonSpaceSetup.internalName &&
             tag.name == CommonSpaceSetup.process &&
             note.ownTag?.isInternal &&
             note.ownTag?.name == PeopleSpaceSetup.celebrationEventsProcess

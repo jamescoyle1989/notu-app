@@ -85,8 +85,10 @@ export class TasksSpace implements LogicalSpace {
 
 
     resolveNoteTagDataComponentFactory(tag: Tag, note: Note): NoteTagDataComponentFactory | null {
-        if (tag.name == TasksSpaceSetup.deadline)
-            return new DeadlineNoteTagDataComponentFactory();
+        if (tag.space.internalName == TasksSpaceSetup.internalName) {
+            if (tag.name == TasksSpaceSetup.deadline)
+                return new DeadlineNoteTagDataComponentFactory();
+        }
         return null;
     }
 
