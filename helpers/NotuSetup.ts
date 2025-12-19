@@ -4,6 +4,7 @@ import { NoteRandomProcessor } from '@/notecomponents/NoteRandom';
 import { CalendarSpace } from '@/spaces/calendar/CalendarSpace';
 import { CommonSpace } from '@/spaces/common/CommonSpace';
 import { PeopleSpace } from '@/spaces/people/PeopleSpace';
+import { RoutinesSpace } from '@/spaces/routines/RoutinesSpace';
 import { TasksSpace } from '@/spaces/tasks/TasksSpace';
 import { NotuSQLiteCacheFetcher } from '@/sqlite/NotuSQLiteCacheFetcher';
 import { NotuSQLiteClient } from '@/sqlite/NotuSQLiteClient';
@@ -50,7 +51,8 @@ export async function setupNotu(): Promise<NotuRenderTools> {
             new CommonSpace(notuVal),
             new PeopleSpace(notuVal),
             new TasksSpace(notuVal),
-            new CalendarSpace(notuVal)
+            new CalendarSpace(notuVal),
+            new RoutinesSpace(notuVal)
         ]
     );
     for (const space of renderToolsVal.logicalSpaces)

@@ -6,10 +6,8 @@ export class RoutineData {
     private _nt: NoteTag;
     constructor(noteTag: NoteTag) {
         if (
-            !noteTag.tag.links.find(x => 
-                x.name == RoutinesSpaceSetup.routine &&
-                x.space.internalName == RoutinesSpaceSetup.internalName
-            )
+            noteTag.tag.name != RoutinesSpaceSetup.routine ||
+            noteTag.tag.space.internalName != RoutinesSpaceSetup.internalName
         ) {
             throw Error('Attempted to create a note tag data helper for a notetag that it does not support');
         }

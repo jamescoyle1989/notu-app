@@ -2,6 +2,7 @@ import { NoteActionsMenuBuilder } from "@/helpers/NoteAction";
 import { NoteTagDataComponentFactory, SpaceSettingsComponentFactory } from "@/helpers/NotuRenderTools";
 import { Note, Notu, Space, Tag } from "notu";
 import { LogicalSpace } from "../LogicalSpace";
+import LinkedRoutineNoteTagDataComponentFactory from "./LinkedRoutineNoteTagDataComponent";
 import RoutineNoteTagDataComponentFactory from "./RoutineNoteTagDataComponent";
 import { RoutinesSpaceSetup } from "./RoutinesSpaceSetup";
 
@@ -39,6 +40,13 @@ export class RoutinesSpace implements LogicalSpace {
             if (tag.name == RoutinesSpaceSetup.routine)
                 return new RoutineNoteTagDataComponentFactory();
         }
+
+        if (
+            tag.linksTo(this.routine) &&
+            !!note.getTag(this.routine)
+        )
+            return new LinkedRoutineNoteTagDataComponentFactory();
+
         return null;
     }
 
