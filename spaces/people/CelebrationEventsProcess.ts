@@ -174,7 +174,7 @@ export function getNewCelebrationDates(
         const output = [];
         let date = dayjs().startOf('day').add(12, 'hours').toDate();
         for (let i = 0; i < recurringData.daysLookahead; i++) {
-            if (!!recurringData && recurringData.isDueOn(date, previousEventDates)) {
+            if (recurringData.isDueOn(date, previousEventDates)) {
                 output.push(date);
                 previousEventDates.push(date);
             }
