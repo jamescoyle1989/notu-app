@@ -3,6 +3,7 @@ import { NoteTagDataComponentFactory, SpaceSettingsComponentFactory } from "@/he
 import { Note, Notu, Space, Tag } from "notu";
 import { CommonSpaceSetup } from "../common/CommonSpaceSetup";
 import { LogicalSpace } from "../LogicalSpace";
+import { CompressRoutinesProcessContext, compressRoutineTasks } from "./CompressRoutinesProcess";
 import { generateRoutines, GenerateRoutinesProcessContext } from "./GenerateRoutinesProcess";
 import GenerateRoutinesProcessNoteTagDataComponentFactory from "./GenerateRoutinesProcessNoteTagDataComponent";
 import LinkedRoutineNoteTagDataComponentFactory from "./LinkedRoutineNoteTagDataComponent";
@@ -51,7 +52,25 @@ export class RoutinesSpace implements LogicalSpace {
                         }
                     }
                 )
-            )
+            );
+        }
+        else if (note.ownTag?.name == RoutinesSpaceSetup.compressRoutinesProcess) {
+            menuBuilder.addToTopOfEnd(
+                new NoteAction('Run',
+                    async () => {
+                        try {
+                            const newNotes = await compressRoutineTasks(
+                                new CompressRoutinesProcessContext(notu)
+                            );
+                            await notu.saveNotes(newNotes);
+                            return new RefreshAction();
+                        }
+                        catch (err) {
+                            console.log(err);
+                        }
+                    }
+                )
+            );
         }
     }
 
