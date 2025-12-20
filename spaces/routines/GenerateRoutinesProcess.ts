@@ -80,6 +80,9 @@ export class GenerateRoutinesProcessContext {
 }
 
 
+/**
+ * Fetches all routines, along with their history & currently scheduled tasks. Uses this data to generate new routine task dates, as well as update currently scheduled ones.
+ */
 export async function generateRoutines(
     context: GenerateRoutinesProcessContext
 ): Promise<Array<Note>> {
@@ -113,7 +116,9 @@ export async function generateRoutines(
 }
 
 
-/** Take already scheduled routines from previous days and update their due date to be today */
+/**
+ * Take already scheduled routines from previous days and update their due date to be today
+ */
 export function bringPendingRoutineTasksUpToDate(
     pendingTasks: Array<Note>,
     commonSpace: CommonSpace
@@ -133,6 +138,9 @@ export function bringPendingRoutineTasksUpToDate(
 }
 
 
+/**
+ * Given a list of routines, this will calculate the best order to process them based on their dependencies, it will also detect circular dependencies
+ */
 export function getGenerationOrder(routines: Array<Note>, routinesSpace: RoutinesSpace): Array<Note> {
     let input = [...routines];
     const output = [];
@@ -167,6 +175,9 @@ export function getScheduledDate(pendingTask: Note, commonSpace: CommonSpace): D
 }
 
 
+/**
+ * Given a routine and a full list of all our historic and pending routines data, this will calculate the next best date for a routine task to be generated on
+ */
 export function getNewRoutineDate(
     routine: Note,
     commonSpace: CommonSpace,
@@ -175,25 +186,23 @@ export function getNewRoutineDate(
     historicTasks: Array<Note>
 ): Date | null {
 
+    // Check if we already have any pending tasks for the routine being generated
+    if (!!pendingTasks.find(x => !!x.getTag(routine.ownTag)))
+        return null;
+
     // Set up storage of data for use later in function
     const dependenciesByRelationType = new Map<RoutineRelationType, Array<Tag>>();
     dependenciesByRelationType.set('Forces Routine Due', []);
     dependenciesByRelationType.set('Must Be Due On Same Day', []);
     dependenciesByRelationType.set('Must Not Be Due On Same Day', []);
+    dependenciesByRelationType.set('Is Treated As Equivalent', []);
 
     const tagsToFetchHistoryFor = [routine.ownTag];
     for (const nt of getRoutineTagsOnNote(routine, routinesSpace)) {
         const linkedData = new LinkedRoutineData(nt);
         if (linkedData.relationship == 'Is Treated As Equivalent')
             tagsToFetchHistoryFor.push(nt.tag);
-        else
-            dependenciesByRelationType.get(linkedData.relationship).push(nt.tag);
-    }
-
-    // Check if we already have any pending tasks for the routine being generated (or any other routines which we're treating as equivalent)
-    for (const tag of tagsToFetchHistoryFor) {
-        if (!!pendingTasks.find(x => !!x.getTag(tag)))
-            return null;
+        dependenciesByRelationType.get(linkedData.relationship).push(nt.tag);
     }
 
     // Get the dates of all historic notes containing our routine tag (or other tags treated as equivalent)
@@ -230,6 +239,11 @@ export function getNewRoutineDate(
 }
 
 
+/**
+ * For a given date, uses a routine's recurring data and date history to figure out if that day is good for creating a new note
+ * Will also use the pendingTasks array in coordination with the dependenciesByRelationType to apply additional filtering based on related routines
+ * In the case where we have one or more 'Is Treated As Equivalent' relations, the dateHistory will get updated with any of those routine tasks already scheduled for the day being evaluated
+ */
 export function evaluatePotentialRoutineDueDate(
     date: Date,
     recurringData: RecurringData,
@@ -240,13 +254,21 @@ export function evaluatePotentialRoutineDueDate(
 ): boolean {
     const startOfDate = dayjs(date).startOf('day').toDate();
 
+    const todaysPendingTasks = pendingTasks.filter(x => {
+        return dayjs(getScheduledDate(x, commonSpace)).startOf('day').toDate().getTime() != startOfDate.getTime()
+    });
+
     const forceDueDeps = dependenciesByRelationType.get('Forces Routine Due');
-    if (forceDueDeps.length > 0) {
-        for (const pendingTask of pendingTasks) {
-            if (dayjs(getScheduledDate(pendingTask, commonSpace)).startOf('day').toDate().getTime() != startOfDate.getTime())
-                continue;
-            if (!!forceDueDeps.find(x => !!pendingTask.getTag(x)))
-                return true;
+    for (const dep of forceDueDeps) {
+        if (!!todaysPendingTasks.find(x => !!x.getTag(dep)))
+            return true;
+    }
+
+    const equivalentDeps = dependenciesByRelationType.get('Is Treated As Equivalent');
+    for (const dep of equivalentDeps) {
+        if (!!todaysPendingTasks.find(x => !!x.getTag(dep))) {
+            dateHistory.push(startOfDate);
+            break;
         }
     }
 
@@ -254,32 +276,22 @@ export function evaluatePotentialRoutineDueDate(
         return false;
 
     const dueOnSameDayDeps = dependenciesByRelationType.get('Must Be Due On Same Day');
-    if (dueOnSameDayDeps.length > 0) {
-        let anyMatches = false;
-        for (const pendingTask of pendingTasks) {
-            if (dayjs(getScheduledDate(pendingTask, commonSpace)).startOf('day').toDate().getTime() != startOfDate.getTime())
-                continue;
-            if (!!dueOnSameDayDeps.find(x => !!pendingTask.getTag(x)))
-                anyMatches = true;
-        }
-        if (!anyMatches)
-            return false;
-    }
+    if (dueOnSameDayDeps.length > 0 && !dueOnSameDayDeps.find(dep => !!todaysPendingTasks.find(note => !!note.getTag(dep))))
+        return false;
 
     const notDueOnSameDayDeps = dependenciesByRelationType.get('Must Not Be Due On Same Day');
-    if (notDueOnSameDayDeps.length > 0) {
-        for (const pendingTask of pendingTasks) {
-            if (dayjs(getScheduledDate(pendingTask, commonSpace)).startOf('day').toDate().getTime() != startOfDate.getTime())
-                continue;
-            if (!!notDueOnSameDayDeps.find(x => !!pendingTask.getTag(x)))
-                return false;
-        }
+    for (const dep of notDueOnSameDayDeps) {
+        if (!!todaysPendingTasks.find(x => !!x.getTag(dep)))
+            return false;
     }
 
     return true;
 }
 
 
+/**
+ * Creates a new routine task note from the passed in routine note and date
+ */
 export function generateNewRoutineTaskNote(
     date: Date,
     routine: Note,
@@ -289,6 +301,8 @@ export function generateNewRoutineTaskNote(
     const output = routine.duplicateAsNew().at(new Date());
     output.removeOwnTag();
     output.removeTag(routinesSpace.routine);
+    output.removeTag(commonSpace.recurring);
+    output.removeTag(commonSpace.duration);
     for (const nt of getRoutineTagsOnNote(routine, routinesSpace))
         output.removeTag(nt.tag);
     output.addTag(routine.ownTag);

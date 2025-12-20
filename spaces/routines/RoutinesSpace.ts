@@ -1,8 +1,9 @@
-import { NoteActionsMenuBuilder } from "@/helpers/NoteAction";
+import { NoteAction, NoteActionsMenuBuilder, RefreshAction } from "@/helpers/NoteAction";
 import { NoteTagDataComponentFactory, SpaceSettingsComponentFactory } from "@/helpers/NotuRenderTools";
 import { Note, Notu, Space, Tag } from "notu";
 import { CommonSpaceSetup } from "../common/CommonSpaceSetup";
 import { LogicalSpace } from "../LogicalSpace";
+import { generateRoutines, GenerateRoutinesProcessContext } from "./GenerateRoutinesProcess";
 import GenerateRoutinesProcessNoteTagDataComponentFactory from "./GenerateRoutinesProcessNoteTagDataComponent";
 import LinkedRoutineNoteTagDataComponentFactory from "./LinkedRoutineNoteTagDataComponent";
 import RoutineNoteTagDataComponentFactory from "./RoutineNoteTagDataComponent";
@@ -34,6 +35,24 @@ export class RoutinesSpace implements LogicalSpace {
 
     
     buildNoteActionsMenu(note: Note, menuBuilder: NoteActionsMenuBuilder, notu: Notu) {
+        if (note.ownTag?.name == RoutinesSpaceSetup.generateRoutinesProcess) {
+            menuBuilder.addToTopOfEnd(
+                new NoteAction('Run',
+                    async () => {
+                        try {
+                            const newNotes = await generateRoutines(
+                                new GenerateRoutinesProcessContext(notu)
+                            );
+                            await notu.saveNotes(newNotes);
+                            return new RefreshAction();
+                        }
+                        catch (err) {
+                            console.log(err);
+                        }
+                    }
+                )
+            )
+        }
     }
 
 

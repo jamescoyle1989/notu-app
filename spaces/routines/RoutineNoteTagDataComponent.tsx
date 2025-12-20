@@ -43,7 +43,7 @@ function EditorComponent({ noteTag }: NoteTagDataComponentProps) {
 
     return (
         <XStack style={{alignItems: 'center'}}>
-            <Label width={120}>Can Be Compressed</Label>
+            <Label>Can Be Compressed</Label>
             <Checkbox checked={data.canBeCompressed} onCheckedChange={handleCanBeCompressedToggle}>
                 <Checkbox.Indicator>
                     <Check />
