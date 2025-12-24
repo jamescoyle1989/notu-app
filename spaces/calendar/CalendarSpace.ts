@@ -1,5 +1,5 @@
 import { NoteActionsMenuBuilder } from "@/helpers/NoteAction";
-import { NoteTagDataComponentFactory, SpaceSettingsComponentFactory } from "@/helpers/NotuRenderTools";
+import { NoteTagDataComponentFactory } from "@/helpers/NotuRenderTools";
 import { Note, Notu, Space, Tag } from "notu";
 import { LogicalSpace } from "../LogicalSpace";
 import { CalendarSpaceSetup } from "./CalendarSpaceSetup";
@@ -42,11 +42,6 @@ export class CalendarSpace implements LogicalSpace {
 
 
     resolveNoteTagDataComponentFactory(tag: Tag, note: Note): NoteTagDataComponentFactory | null {
-        return null;
-    }
-
-
-    getSpaceSettingsComponentFactory(): SpaceSettingsComponentFactory | null {
         return null;
     }
 }

@@ -18,7 +18,6 @@ export class CommonSpaceSetup {
     static get recurring(): string { return 'Recurring'; }
     static get scheduled(): string { return 'Scheduled'; }
     static get started(): string { return 'Started'; }
-    static get template(): string { return 'Template'; }
     static get thought(): string { return 'Thought'; }
 
     static async setup(notu: Notu): Promise<void> {
@@ -91,10 +90,6 @@ export class CommonSpaceSetup {
                 .in(commonSpace).setOwnTag(this.started);
             started.ownTag.asInternal();
 
-            const template = new Note('When added to a note, this tag marks a note as a template that can be used for creating new notes.')
-                .in(commonSpace).setOwnTag(this.template);
-            template.ownTag.asInternal();
-
             const thought = new Note(`Adding this tag to a note marks that the note contains thoughts previously had on a particular subject.`)
                 .in(commonSpace).setOwnTag(this.thought);
             thought.ownTag.asInternal();
@@ -116,7 +111,6 @@ export class CommonSpaceSetup {
                 recurring,
                 scheduled,
                 started,
-                template,
                 thought
             ]);
             

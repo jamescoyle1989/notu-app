@@ -1,5 +1,5 @@
 import { NoteActionsMenuBuilder } from "@/helpers/NoteAction";
-import { NoteTagDataComponentFactory, SpaceSettingsComponentFactory } from "@/helpers/NotuRenderTools";
+import { NoteTagDataComponentFactory } from "@/helpers/NotuRenderTools";
 import { Note, Notu, Space, Tag } from "notu";
 
 /**
@@ -13,6 +13,4 @@ export interface LogicalSpace {
     buildNoteActionsMenu(note: Note, menuBuilder: NoteActionsMenuBuilder, notu: Notu);
 
     resolveNoteTagDataComponentFactory(tag: Tag, note: Note): NoteTagDataComponentFactory | null;
-
-    getSpaceSettingsComponentFactory(): SpaceSettingsComponentFactory | null;
 }

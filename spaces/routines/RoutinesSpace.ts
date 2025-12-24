@@ -1,5 +1,5 @@
 import { NoteAction, NoteActionsMenuBuilder, RefreshAction } from "@/helpers/NoteAction";
-import { NoteTagDataComponentFactory, SpaceSettingsComponentFactory } from "@/helpers/NotuRenderTools";
+import { NoteTagDataComponentFactory } from "@/helpers/NotuRenderTools";
 import { Note, Notu, Space, Tag } from "notu";
 import { CommonSpaceSetup } from "../common/CommonSpaceSetup";
 import { LogicalSpace } from "../LogicalSpace";
@@ -95,11 +95,6 @@ export class RoutinesSpace implements LogicalSpace {
         )
             return new GenerateRoutinesProcessNoteTagDataComponentFactory();
 
-        return null;
-    }
-
-
-    getSpaceSettingsComponentFactory(): SpaceSettingsComponentFactory | null {
         return null;
     }
 }

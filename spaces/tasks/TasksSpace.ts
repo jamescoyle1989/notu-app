@@ -1,5 +1,5 @@
 import { NoteAction, NoteActionsMenuBuilder, RefreshAction, ShowEditorAction } from "@/helpers/NoteAction";
-import { NoteTagDataComponentFactory, SpaceSettingsComponentFactory } from "@/helpers/NotuRenderTools";
+import { NoteTagDataComponentFactory } from "@/helpers/NotuRenderTools";
 import { Note, Notu, Space, Tag } from "notu";
 import { CommonSpace } from "../common/CommonSpace";
 import { LogicalSpace } from "../LogicalSpace";
@@ -89,11 +89,6 @@ export class TasksSpace implements LogicalSpace {
             if (tag.name == TasksSpaceSetup.deadline)
                 return new DeadlineNoteTagDataComponentFactory();
         }
-        return null;
-    }
-
-
-    getSpaceSettingsComponentFactory(): SpaceSettingsComponentFactory | null {
         return null;
     }
 }

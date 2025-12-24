@@ -56,7 +56,7 @@ This process will automatically generate calendar events out of celebrations for
             internalsPage.order = 4;
             internalsPage.group = 'People';
             internalsPage.space = peopleSpace;
-            internalsPage.query = `t.isInternal OR #Common.Process OR #Common.Template`;
+            internalsPage.query = `t.isInternal OR #Common.Process`;
             await notu.savePage(internalsPage);
 
             const celPage = new Page();

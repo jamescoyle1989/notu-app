@@ -15,7 +15,7 @@ export class NotuSQLiteCacheFetcher {
         const connection = await this._connectionFactory();
         try {
             const spaces = (await connection
-                .getAll('SELECT id, name, internalName, version, settings FROM Space;'))
+                .getAll('SELECT id, name, internalName, version FROM Space;'))
                 .map(x => ({
                     state: 'CLEAN',
                     id: x.id,
@@ -23,15 +23,11 @@ export class NotuSQLiteCacheFetcher {
                     internalName: x.internalName,
                     version: x.version,
                     useCommonSpace: false,
-                    settings: x.settings,
                     links: []
                 }));
             const spacesMap = new Map<number, any>();
             for (const space of spaces)
                 spacesMap.set(space.id, space);
-            (await connection
-                .getAll('SELECT fromSpaceId, name, toSpaceId FROM SpaceLink'))
-                .map(x => spacesMap.get(x.fromSpaceId).links.push({name: x.name, toSpaceId: x.toSpaceId}));
             return spaces;
         }
         finally {

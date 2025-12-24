@@ -30,7 +30,7 @@ export class CalendarSpaceSetup {
             internalsPage.order = 10;
             internalsPage.group = 'Calendar';
             internalsPage.space = calendarSpace;
-            internalsPage.query = `t.isInternal OR #Common.Process OR #Common.Template`;
+            internalsPage.query = `t.isInternal OR #Common.Process`;
             await notu.savePage(internalsPage);
             
             const eventsPage = new Page();

@@ -1,5 +1,5 @@
 import { LogicalSpace } from "@/spaces/LogicalSpace";
-import { Note, NoteTag, Notu, Space, splitNoteTextIntoComponents, Tag } from "notu";
+import { Note, NoteTag, Notu, splitNoteTextIntoComponents, Tag } from "notu";
 import { NoteComponent, NoteComponentProcessor } from "notu/dist/types/notecomponents/NoteComponent";
 import { ReactNode } from "react";
 import { NoteParagraph } from "../notecomponents/NoteParagraph";
@@ -47,13 +47,6 @@ export class NotuRenderTools {
         return null;
     }
 
-    getSettingsComponentFactoryForSpace(space: Space): SpaceSettingsComponentFactory | null {
-        const logicalSpace = this.logicalSpaces.find(x => x.space.name == space.name);
-        if (!!logicalSpace)
-            return logicalSpace.getSpaceSettingsComponentFactory();
-        return null;
-    }
-
     buildNoteActionsMenu(note: Note, textComponents: Array<any>): Array<NoteAction> {
         const builder = new NoteActionsMenuBuilder();
         for (const space of this.logicalSpaces)
@@ -86,12 +79,4 @@ export interface NoteTagDataComponentProps {
     note?: Note,
     notu?: Notu,
     refreshCallback?: () => void
-}
-
-
-export interface SpaceSettingsComponentFactory {
-
-    getEditorComponent(space: Space, notu: Notu): ReactNode;
-
-    validate(space: Space, notu: Notu): Promise<boolean>;
 }

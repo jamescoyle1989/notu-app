@@ -48,7 +48,7 @@ This process will automatically compress finished notes that were generated from
             internalsPage.order = 20;
             internalsPage.group = 'Routines';
             internalsPage.space = routinesSpace;
-            internalsPage.query = `t.isInternal OR #Common.Process OR #Common.Template`;
+            internalsPage.query = `t.isInternal OR #Common.Process`;
             await notu.savePage(internalsPage);
             
             const routinesPage = new Page();
