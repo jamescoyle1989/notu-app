@@ -237,6 +237,7 @@ export function generateNewEventNote(
     event.addTag(calendarSpace.event);
     event.addTag(commonSpace.generated);
     const scheduled = ScheduledData.addTag(event, commonSpace);
+    scheduled.includeTime = true;
     scheduled.start = eventDate;
     const celebrationDuration = DurationData.new(celebration.getTag(commonSpace.duration));
     if (!!celebrationDuration)
@@ -265,6 +266,7 @@ export function generateNewReminderNote(
     reminder.addTag(tasksSpace.task);
     reminder.addTag(commonSpace.generated);
     const scheduled = ScheduledData.addTag(reminder, commonSpace);
+    scheduled.includeTime = true;
     scheduled.start = dayjs(eventDate).subtract(personCelebrationData.planDaysAhead, 'days').toDate();
 
     return reminder;
