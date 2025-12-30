@@ -98,20 +98,23 @@ export const NoteViewer = ({
                 <YStack marginStart={5} marginEnd={5}>
                     {textComponents.map((x, index) => (<NoteComponentContainer key={index} component={x}/>))}
 
-                    <XStack flexWrap="wrap">
+                    <XStack flexWrap="wrap" marginBlockStart={1}>
                         {!!note.ownTag && ([
                             <TagBadge key="badge"
                                     tag={note.ownTag}
                                     notuRenderTools={notuRenderTools}
-                                    contextSpace={note.space} />,
-                            <Tag key="icon" size={17} marginEnd={5} />
+                                    contextSpace={note.space}
+                                    marginBlockStart={1} />,
+                            <Tag key="icon" size={15} marginEnd={5} />
                         ])}
                         {note.tags.map(nt => (
                             <NoteTagBadge key={nt.tag.id}
                                         noteTag={nt} note={note}
                                         notuRenderTools={notuRenderTools}
                                         contextSpace={note.space}
-                                        useUniqueName={true} />
+                                        marginInlineEnd={2}
+                                        useUniqueName={true}
+                                        marginBlock={1} />
                         ))}
                     </XStack>
                 </YStack>

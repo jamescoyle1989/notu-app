@@ -65,7 +65,7 @@ export class NotuRenderTools {
 
 export interface NoteTagDataComponentFactory {
 
-    getBadgeComponent(noteTag: NoteTag, note: Note, notu: Notu): ReactNode;
+    getBadgeComponent(noteTag: NoteTag, note: Note, notu: Notu, textColor: string): ReactNode;
 
     getEditorComponent(noteTag: NoteTag, note: Note, notu: Notu, refreshCallback: () => void): ReactNode;
 
@@ -78,5 +78,6 @@ export interface NoteTagDataComponentProps {
     noteTag: NoteTag,
     note?: Note,
     notu?: Notu,
+    textColor?: string,
     refreshCallback?: () => void
 }

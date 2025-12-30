@@ -35,6 +35,11 @@ export const NotuText = styled(Text, {
             true: {
                 fontSize: 18
             }
+        },
+        small: {
+            true: {
+                fontSize: 11
+            }
         }
     } as const
 });

@@ -1,7 +1,7 @@
 import { NotuText } from '@/helpers/NotuStyles';
 import { X } from '@tamagui/lucide-icons';
 import { Note, NoteTag, Space } from 'notu';
-import { View } from 'tamagui';
+import { View, ViewProps } from 'tamagui';
 import { getTextContrastColor } from '../helpers/ColorHelpers';
 import { NotuRenderTools } from '../helpers/NotuRenderTools';
 
@@ -15,40 +15,36 @@ interface NoteTagBadgeProps {
 }
 
 
-export default function NoteTagBadge({
-    noteTag,
-    note,
-    notuRenderTools,
-    contextSpace,
-    onDelete = undefined,
-    useUniqueName = false
-}: NoteTagBadgeProps) {
+export default function NoteTagBadge(props: NoteTagBadgeProps & ViewProps) {
     
-    const tagDisplayName = useUniqueName 
-        ? noteTag.tag.getUniqueName(notuRenderTools.notu.cache) 
-        : noteTag.tag.getQualifiedName(contextSpace.id);
+    const tagDisplayName = props.useUniqueName 
+        ? props.noteTag.tag.getUniqueName(props.notuRenderTools.notu.cache) 
+        : props.noteTag.tag.getQualifiedName(props.contextSpace.id);
 
-    const backgroundColor = noteTag.tag.color ?? '#AABBCC';
+    const backgroundColor = props.noteTag.tag.color ?? '#AABBCC';
     const textColor = getTextContrastColor(backgroundColor);
 
-    const componentFactory = notuRenderTools.getComponentFactoryForNoteTag(noteTag.tag, note);
-    const badgeComponent = componentFactory?.getBadgeComponent(noteTag, note, notuRenderTools.notu);
+    const componentFactory = props.notuRenderTools.getComponentFactoryForNoteTag(props.noteTag.tag, props.note);
+    const badgeComponent = componentFactory?.getBadgeComponent(props.noteTag, props.note, props.notuRenderTools.notu, textColor);
     
     return (
-        <View style={{
-              backgroundColor: backgroundColor,
-              paddingHorizontal: 5,
-              borderRadius: 50,
-              borderWidth: 1,
-              flexDirection: 'row',
-              alignItems: 'center'
-        }}>
-            <NotuText color={textColor} bold marginInlineEnd={!!badgeComponent ? 2 : 0}>
+        <View {...props}
+            borderColor="$borderColor"
+            style={{
+                backgroundColor: backgroundColor,
+                paddingHorizontal: 5,
+                borderRadius: 50,
+                borderWidth: 0.5,
+                flexDirection: 'row',
+                alignItems: 'center'
+            }}>
+            
+            <NotuText color={textColor} bold small marginInlineEnd={!!badgeComponent ? 2 : 0}>
                 {tagDisplayName}
             </NotuText>
             {badgeComponent}
-            {!!onDelete && (
-                <X size={17} color="red" onPress={() => onDelete()} />
+            {!!props.onDelete && (
+                <X size={17} color="red" onPress={() => props.onDelete()} />
             )}
         </View>
     );

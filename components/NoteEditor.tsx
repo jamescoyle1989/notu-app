@@ -144,7 +144,8 @@ export default function NoteEditor({
                                         note={note}
                                         notuRenderTools={notuRenderTools}
                                         contextSpace={note.space}
-                                        onDelete={() => removeTagFromNote(nt)}/>
+                                        onDelete={() => removeTagFromNote(nt)}
+                                        marginInlineEnd={2} />
                         ))}
                     </XStack>
                 )}
