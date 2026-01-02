@@ -166,8 +166,8 @@ export class NoteRandom {
                                     </View>
                                 )}
                                 <NotuText>Weight</NotuText>
-                                <NumberInput value={choiceUnderEdit?.weight ?? 1}
-                                             onChange={handleWeightChange} />
+                                <NumberInput numberValue={choiceUnderEdit?.weight ?? 1}
+                                             onNumberChange={handleWeightChange} />
                                 <NotuButton theme="danger"
                                             onPress={removeChoiceBeingEdited}
                                             marginBlockStart={10}>

@@ -23,7 +23,7 @@ export default class PersonCelebrationNoteTagDataComponentFactory implements Not
             const data = new PersonCelebrationData(noteTag);
             return (
                 <View>
-                    <NotuText>{dateToText(data.date)}</NotuText>
+                    <NotuText small>{dateToText(data.date)}</NotuText>
                 </View>
             )
         }
@@ -118,8 +118,9 @@ function EditorComponent({ noteTag, notu, refreshCallback }: NoteTagDataComponen
                 </Checkbox>
 
                 {data.planDaysAhead != null && (
-                    <NumberInput value={data.planDaysAhead}
-                                 onChange={onPlanDaysAheadValueChange} />
+                    <NumberInput numberValue={data.planDaysAhead}
+                                 onNumberChange={onPlanDaysAheadValueChange}
+                                 marginInlineStart={5} />
                 )}
             </XStack>
         </YStack>

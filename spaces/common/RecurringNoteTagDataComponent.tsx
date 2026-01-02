@@ -136,12 +136,14 @@ function EditorComponent({ noteTag, refreshCallback }: NoteTagDataComponentProps
         <YStack>
             <XStack style={{alignItems: 'center'}}>
                 <Label width={labelWidth}>Min Days Between</Label>
-                <NumberInput value={data.minDaysBetween} onChange={handleMinDaysBetweenChange} />
+                <NumberInput numberValue={data.minDaysBetween}
+                             onNumberChange={handleMinDaysBetweenChange} />
             </XStack>
 
             <XStack style={{alignItems: 'center'}}>
                 <Label width={labelWidth}>Days Lookahead</Label>
-                <NumberInput value={data.daysLookahead} onChange={handleDaysLookaheadChange} />
+                <NumberInput numberValue={data.daysLookahead}
+                             onNumberChange={handleDaysLookaheadChange} />
             </XStack>
 
             <XStack style={{alignItems: 'center'}}>
@@ -162,9 +164,14 @@ function EditorComponent({ noteTag, refreshCallback }: NoteTagDataComponentProps
 
             {data.isCyclic && (
                 <XStack style={{alignItems: 'center'}}>
-                    <NumberInput value={data.timesPerCycle} onChange={handleTimesPerCycleChange} />
+                    <NumberInput numberValue={data.timesPerCycle}
+                                 onNumberChange={handleTimesPerCycleChange} />
+
                     <NotuText> time{data.timesPerCycle == 1 ? '' : 's'} every </NotuText>
-                    <NumberInput value={data.daysPerCycle} onChange={handleDaysPerCycleChange} />
+
+                    <NumberInput numberValue={data.daysPerCycle}
+                                 onNumberChange={handleDaysPerCycleChange} />
+                                 
                     <NotuText> day{data.daysPerCycle == 1 ? '' : 's'}</NotuText>
                 </XStack>
             )}

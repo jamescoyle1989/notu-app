@@ -1,6 +1,7 @@
 import { NotuDateTimePicker } from "@/components/NotuDateTimePicker";
 import { TimespanPicker } from "@/components/TimeSpanPicker";
 import { NoteTagDataComponentFactory, NoteTagDataComponentProps } from "@/helpers/NotuRenderTools";
+import { NotuText } from "@/helpers/NotuStyles";
 import { datetimeToText, dateToText, timespanToText } from "@/helpers/RenderHelpers";
 import { Check } from "@tamagui/lucide-icons";
 import { Note, NoteTag, Notu } from "notu";
@@ -36,7 +37,7 @@ function BadgeComponent({ noteTag }: NoteTagDataComponentProps) {
     return (
         <Popover size="$5" allowFlip stayInFrame offset={15} resize placement="bottom">
             <Popover.Trigger asChild>
-                <Paragraph textDecorationLine="underline">{formatDate(data.start)}</Paragraph>
+                <NotuText textDecorationLine="underline" small>{formatDate(data.start)}</NotuText>
             </Popover.Trigger>
 
             <Popover.Content elevate>

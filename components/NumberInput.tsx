@@ -1,34 +1,22 @@
 import React, { useEffect } from "react";
-import { StyleProp, TextStyle } from "react-native";
-import { Input } from "tamagui";
+import { Input, InputProps } from "tamagui";
 
 interface NumberInputProps {
-    value: number,
-    onChange: (value: number) => void,
-    style?: StyleProp<TextStyle>,
-    allowNull?: boolean,
-    disabled?: boolean,
-    onFocus?: () => void,
-    onBlur?: () => void
+    numberValue: number,
+    onNumberChange: (value: number) => void,
+    allowNull?: boolean
 }
 
 
-export const NumberInput = ({
-    value,
-    onChange,
-    style = {},
-    allowNull = false,
-    onFocus,
-    onBlur
-}: NumberInputProps) => {
+export const NumberInput = (props: NumberInputProps & Omit<InputProps, 'value'>) => {
 
-    const [dirtyText, setDirtyText] = React.useState((value == null) ? '' : value.toString());
+    const [dirtyText, setDirtyText] = React.useState((props.numberValue == null) ? '' : props.numberValue.toString());
     const [isInError, setIsInError] = React.useState(false);
 
     useEffect(() => {
-        setDirtyText((value == null) ? '' : value.toString());
+        setDirtyText((props.numberValue == null) ? '' : props.numberValue.toString());
         setIsInError(false);
-    }, [value]);
+    }, [props.numberValue]);
 
     function onValueChange(newValue: string) {
         const text = (newValue ?? '').trim();
@@ -63,10 +51,10 @@ export const NumberInput = ({
 
         //If the text value parses to a number, raise the change event
         const num = Number(text);
-        if (text == '' && allowNull) {
+        if (text == '' && props.allowNull) {
             setIsInError(false);
             setDirtyText(text);
-            onChange(null);
+            props.onNumberChange(null);
         }
         else if (isNaN(num) || text == '' || text.endsWith('.')) {
             setIsInError(true);
@@ -75,16 +63,14 @@ export const NumberInput = ({
         else {
             setIsInError(false);
             setDirtyText(num.toString());
-            onChange(num);
+            props.onNumberChange(num);
         }
     }
 
     return (
-        <Input keyboardType="numeric"
+        <Input {...props as any}
+               keyboardType="numeric"
                value={dirtyText}
-               style={style}
-               onChangeText={onValueChange}
-               onFocus={() => { if (!!onFocus) onFocus() }}
-               onBlur={() => { if (!!onBlur) onBlur() }} />
+               onChangeText={onValueChange} />
     );
 }
