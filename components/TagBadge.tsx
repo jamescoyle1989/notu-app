@@ -20,7 +20,7 @@ export default function TagBadge(
     
     const tagDisplayName = props.useUniqueName 
         ? props.tag.getUniqueName(props.notuRenderTools.notu.cache) 
-        : props.tag.getQualifiedName(props.contextSpace.id);
+        : props.tag.getQualifiedName(props.contextSpace?.id);
 
     const backgroundColor = props.tag.color ?? '#AABBCC';
     const textColor = getTextContrastColor(backgroundColor);

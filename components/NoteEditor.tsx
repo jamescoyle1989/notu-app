@@ -128,7 +128,7 @@ export default function NoteEditor({
                             onValueChange={onSpaceChange}
                             placeholderText='Select Space' />
 
-                <TagEditor note={note} tags={notu.getTags()}/>
+                <TagEditor notuRenderTools={notuRenderTools} note={note} tags={notu.getTags()}/>
 
                 <NoteTextEditor ref={textEditorRef}
                                 notuRenderTools={notuRenderTools}

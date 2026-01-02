@@ -1,8 +1,10 @@
 import { NotuRenderTools } from "@/helpers/NotuRenderTools";
+import { NotuText } from "@/helpers/NotuStyles";
 import { sortBy } from 'es-toolkit';
 import { Space, Tag } from "notu";
 import { useMemo, useState } from "react";
-import { Accordion, Button, Input, Paragraph, ScrollView, Separator, YGroup, YStack } from "tamagui";
+import { Accordion, Input, ScrollView, View, YGroup, YStack } from "tamagui";
+import TagBadge from "./TagBadge";
 
 interface TagFinderProps {
     notuRenderTools: NotuRenderTools,
@@ -43,8 +45,9 @@ export default function TagFinder({
                     [x => x.name]
                 );
                 return grouping;
-            });
-    }, []);
+            })
+            .filter(x => x.children.length > 0);
+    }, [tagsToAvoid]);
 
     const [filter, setFilter] = useState('');
     const [filteredResults, setFilteredResults] = useState<Array<Tag>>([]);
@@ -77,40 +80,57 @@ export default function TagFinder({
     return (
         <ScrollView>
             <YStack paddingBlockEnd={50}>
-                <Input size="$3" placeholder="Filter..." value={filter} onChangeText={onFilterChange} />
+                <Input size="$3" placeholder={"Filter..."} placeholderTextColor={'gray'} onChangeText={onFilterChange} />
 
                 {filteredResults.length > 0 && (
                     <YGroup>
                         {filteredResults.map(tag => (
                             <YGroup.Item key={tag.id}>
-                                <Button onPress={() => onTagSelected(tag)}>
-                                    {tag.getFullName()}
-                                </Button>
+                                <View onPress={() => onTagSelected(tag)} marginBlock={5} flex={1} flexDirection="row">
+                                    <TagBadge tag={tag}
+                                              notuRenderTools={notuRenderTools}
+                                              contextSpace={null}
+                                              useUniqueName={false} />
+                                </View>
                             </YGroup.Item>
                         ))}
                     </YGroup>
                 )}
-                {filteredResults.length > 0 && filteredTagGroupings.length > 0 && (
-                    <Separator />
-                )}
                 <Accordion overflow="hidden" type="single" collapsible>
-                    {filteredTagGroupings.map(grouping => (
-                        <Accordion.Item key={grouping.space.id} value={`space${grouping.space.id}`}>
-                            <Accordion.Trigger flexDirection="row">
+                    {filteredTagGroupings.map((grouping, index) => (
+                        <Accordion.Item key={grouping.space.id}
+                                        value={`space${grouping.space.id}`}
+                                        borderWidth={1}
+                                        borderTopLeftRadius={5}
+                                        borderTopRightRadius={5}
+                                        borderBottomLeftRadius={5}
+                                        borderBottomRightRadius={5}>
+                            <Accordion.Trigger flexDirection="row"
+                                               borderWidth={0}
+                                               borderTopLeftRadius={5}
+                                               borderTopRightRadius={5}
+                                               borderBottomLeftRadius={5}
+                                               borderBottomRightRadius={5}>
                                 {(
                                     ({ open }: { open: boolean }) => (
-                                        <Paragraph>{grouping.space.name}</Paragraph>
+                                        <NotuText>{grouping.space.name}</NotuText>
                                     )
                                 )}
                             </Accordion.Trigger>
                             <Accordion.HeightAnimator animation="quickest">
-                                <Accordion.Content>
+                                <Accordion.Content borderBottomLeftRadius={5}
+                                                   borderBottomRightRadius={5}
+                                                   paddingBlockStart={0}>
                                     <YGroup>
                                         {grouping.children.map(tag => (
                                             <YGroup.Item key={tag.id}>
-                                                <Button onPress={() => onTagSelected(tag)}>
-                                                    {tag.name}
-                                                </Button>
+                                                <View onPress={() => onTagSelected(tag)} marginBlock={5}
+                                                      flex={1} flexDirection="row">
+                                                    <TagBadge tag={tag}
+                                                              notuRenderTools={notuRenderTools}
+                                                              contextSpace={grouping.space}
+                                                              useUniqueName={false} />
+                                                </View>
                                             </YGroup.Item>
                                         ))}
                                     </YGroup>

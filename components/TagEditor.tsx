@@ -1,3 +1,4 @@
+import { NotuRenderTools } from "@/helpers/NotuRenderTools";
 import { NotuButton, NotuInput, NotuText } from "@/helpers/NotuStyles";
 import { ChevronDown } from '@tamagui/lucide-icons';
 import { Note, Tag } from "notu";
@@ -7,9 +8,11 @@ import ColorPicker, { ColorFormatsObject, HueCircular, Panel1 } from 'reanimated
 import { Dialog, useTheme, View, XStack, YStack } from "tamagui";
 import { getTextContrastColor } from "../helpers/ColorHelpers";
 import { useManualRefresh } from "../helpers/Hooks";
+import TagFinder from "./TagFinder";
 
 
 interface TagEditorProps {
+    notuRenderTools: NotuRenderTools,
     note: Note,
     /** The collection of tags that the note editor has access to */
     tags: Array<Tag>
@@ -17,6 +20,7 @@ interface TagEditorProps {
 
 
 export default function TagEditor({
+    notuRenderTools,
     note,
     tags
 }: TagEditorProps) {
@@ -85,17 +89,11 @@ export default function TagEditor({
                         <Dialog.Content bordered elevate
                                         width="80%"
                                         key="tageditorexistingcolorscontent">
-                            {tags.map((tag, index) => {
-                                const backgroundColor = tag.color ?? '#AABBCC';
-                                const textColor = getTextContrastColor(backgroundColor);
-                                return (
-                                    <NotuButton key={index}
-                                                style={{backgroundColor, color: textColor}}
-                                                onPress={() => onCopyTagColor(tag)}>
-                                        {tag.name}
-                                    </NotuButton> 
-                                )
-                            })}
+                            <NotuText bold>Copy color from tag...</NotuText>
+
+                            <TagFinder notuRenderTools={notuRenderTools}
+                                       onTagSelected={onCopyTagColor}
+                                       tagsToAvoid={notuRenderTools.notu.getTags().filter(x => x.color == null)} />
                         </Dialog.Content>
                     </Dialog.FocusScope>
                 </Dialog.Portal>
