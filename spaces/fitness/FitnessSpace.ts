@@ -2,7 +2,10 @@ import { NoteActionsMenuBuilder } from "@/helpers/NoteAction";
 import { NoteTagDataComponentFactory } from "@/helpers/NotuRenderTools";
 import { Note, Notu, Space, Tag } from "notu";
 import { LogicalSpace } from "../LogicalSpace";
+import ExerciseNoteTagDataComponentFactory from "./ExerciseNoteTagDataComponent";
 import { FitnessSpaceSetup } from "./FitnessSpaceSetup";
+import MetricNoteTagDataComponentFactory from "./MetricNoteTagDataComponent";
+import WorkoutNoteTagDataComponentFactory from "./WorkoutNoteTagDataComponent";
 
 export class FitnessSpace implements LogicalSpace {
 
@@ -49,6 +52,18 @@ export class FitnessSpace implements LogicalSpace {
         tag: Tag,
         note: Note
     ): NoteTagDataComponentFactory | null {
+        
+        if (tag.space.internalName == FitnessSpaceSetup.internalName) {
+            if (tag.name == FitnessSpaceSetup.metric)
+                return new MetricNoteTagDataComponentFactory();
+
+            if (tag.name == FitnessSpaceSetup.exercise)
+                return new ExerciseNoteTagDataComponentFactory();
+
+            if (tag.name == FitnessSpaceSetup.workout)
+                return new WorkoutNoteTagDataComponentFactory();
+        }
+
         return null;
     }
 }
