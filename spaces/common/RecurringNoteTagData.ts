@@ -1,5 +1,6 @@
+import { areArraysDifferent } from "@/helpers/RenderHelpers";
 import dayjs from "dayjs";
-import { difference, last } from "es-toolkit";
+import { last } from "es-toolkit";
 import { Note, NoteTag } from "notu";
 import { CommonSpace } from "./CommonSpace";
 import { CommonSpaceSetup } from "./CommonSpaceSetup";
@@ -34,16 +35,6 @@ export class RecurringData {
         return new RecurringData(note.addTag(commonSpace.recurring));
     }
 
-    private areArraysDifferent(array1: Array<number> | null, array2: Array<number> | null): boolean {
-        if ((array1 == null) != (array2 == null))
-            return true;
-        if (array1 == null && array2 == null)
-            return false;
-        if (array1.length != array2.length)
-            return true;
-        return (difference(array1, array2).length > 0);
-    }
-
     get timeOfDay(): Date {
         if (!this._nt.data.timeOfDay)
             return null;
@@ -61,7 +52,7 @@ export class RecurringData {
         value = value ?? null;
         if (value != null)
             value = value.map(x => Math.round(x)).filter(x => x >= 0 && x <= 6);
-        if (this.areArraysDifferent(value, this._nt.data.daysOfWeek) && this._nt.isClean)
+        if (areArraysDifferent(value, this._nt.data.daysOfWeek) && this._nt.isClean)
             this._nt.dirty();
         this._nt.data.daysOfWeek = value;
     }
@@ -71,7 +62,7 @@ export class RecurringData {
         value = value ?? null;
         if (value != null)
             value = value.map(x => Math.round(x)).filter(x => x >= -31 && x <= 31 && x != 0);
-        if (this.areArraysDifferent(value, this._nt.data.daysOfMonth) && this._nt.isClean)
+        if (areArraysDifferent(value, this._nt.data.daysOfMonth) && this._nt.isClean)
             this._nt.dirty();
         this._nt.data.daysOfMonth = value;
     }
@@ -81,7 +72,7 @@ export class RecurringData {
         value = value ?? null;
         if (value != null)
             value = value.map(x => Math.round(x)).filter(x => x >= 1 && x <= 12);
-        if (this.areArraysDifferent(value, this._nt.data.monthsOfYear) && this._nt.isClean)
+        if (areArraysDifferent(value, this._nt.data.monthsOfYear) && this._nt.isClean)
             this._nt.dirty();
         this._nt.data.monthsOfYear = value;
     }

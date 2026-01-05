@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import { difference } from "es-toolkit";
 
 export function dateToText(date: Date): string {
     return dayjs(date).format('YYYY-MMM-D');
@@ -29,4 +30,15 @@ export function timespanToText(milliseconds: number): string {
         output += `${remainingHours.toString().padStart(2, '0')}:${remainingMinutes.toString().padStart(2, '0')}`;
     }
     return output;
+}
+
+
+export function areArraysDifferent(array1: Array<number> | null, array2: Array<number> | null): boolean {
+    if ((array1 == null) != (array2 == null))
+        return true;
+    if (array1 == null && array2 == null)
+        return false;
+    if (array1.length != array2.length)
+        return true;
+    return (difference(array1, array2).length > 0);
 }

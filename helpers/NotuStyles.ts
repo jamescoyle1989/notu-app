@@ -85,6 +85,11 @@ export const NotuInput = styled(Input, {
                 borderBottomRightRadius: 0,
                 borderWidth: 0
             }
+        },
+        danger: {
+            true: {
+                color: '#F04438'
+            }
         }
     }
 });

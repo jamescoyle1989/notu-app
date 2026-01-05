@@ -25,7 +25,7 @@ export class FitnessSpaceSetup {
             workout.ownTag.asInternal();
 
             const exercise = new Note(`Adding this tag to a note marks that it represents the definition for an exercise. Add metric tags to the note to define how the exercise is measured. This will allow the system to help measure progress and suggest ways to continue growing.`)
-                .in(fitnessSpace).setOwnTag(this.workout);
+                .in(fitnessSpace).setOwnTag(this.exercise);
             exercise.ownTag.asInternal();
 
             await notu.saveNotes([
