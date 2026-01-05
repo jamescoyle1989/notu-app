@@ -109,13 +109,13 @@ function EditorComponent({ noteTag }: NoteTagDataComponentProps) {
 
                     <XStack style={{alignItems: 'center'}}>
                         <Label width={labelWidth}>Max</Label>
-                        <NumberInput numberValue={data.min}
+                        <NumberInput numberValue={data.max}
                                     onNumberChange={(onRangeMaxChange)} />
                     </XStack>
 
                     <XStack style={{alignItems: 'center'}}>
                         <Label width={labelWidth}>Increment</Label>
-                        <NumberInput numberValue={data.min}
+                        <NumberInput numberValue={data.increment}
                                     onNumberChange={(onRangeIncrementChange)} />
                     </XStack>
                 </YStack>

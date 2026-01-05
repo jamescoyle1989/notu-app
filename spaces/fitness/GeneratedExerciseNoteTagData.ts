@@ -1,5 +1,4 @@
-import { Note, NoteTag } from "notu";
-import { FitnessSpace } from "./FitnessSpace";
+import { Note, NoteTag, Tag } from "notu";
 import { FitnessSpaceSetup } from "./FitnessSpaceSetup";
 
 export class GeneratedExerciseData {
@@ -23,8 +22,8 @@ export class GeneratedExerciseData {
             return null;
         return new GeneratedExerciseData(noteTag);
     }
-    static addTag(note: Note, fitnessSpace: FitnessSpace): GeneratedExerciseData {
-        return new GeneratedExerciseData(note.addTag(fitnessSpace.exercise));
+    static addTag(note: Note, exercise: Tag): GeneratedExerciseData {
+        return new GeneratedExerciseData(note.addTag(exercise));
     }
 
     get targetDifficulty(): number { return this._nt.data.targetDifficulty; }

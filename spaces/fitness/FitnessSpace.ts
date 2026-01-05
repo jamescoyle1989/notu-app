@@ -1,8 +1,9 @@
 import { NoteActionsMenuBuilder } from "@/helpers/NoteAction";
 import { NoteTagDataComponentFactory } from "@/helpers/NotuRenderTools";
-import { Note, Notu, Space, Tag } from "notu";
+import { Note, NoteTag, Notu, Space, Tag } from "notu";
 import { LogicalSpace } from "../LogicalSpace";
 import ExerciseMetricDefNoteTagDataComponentFactory from "./ExerciseMetricDefNoteTagDataComponent";
+import ExerciseMetricNoteTagDataComponentFactory from "./ExerciseMetricNoteTagDataComponent";
 import ExerciseNoteTagDataComponentFactory from "./ExerciseNoteTagDataComponent";
 import { FitnessSpaceSetup } from "./FitnessSpaceSetup";
 import GeneratedExerciseNoteTagDataComponentFactory from "./GeneratedExerciseNoteTagDataComponent";
@@ -40,6 +41,16 @@ export class FitnessSpace implements LogicalSpace {
     async setup(notu: Notu): Promise<void> {
         await FitnessSpaceSetup.setup(notu);
         this._load(notu);
+    }
+
+
+    getMetrics(note: Note): Array<NoteTag> {
+        const output = new Array<NoteTag>();
+        for (const nt of note.tags) {
+            if (nt.tag.linksTo(this.metric))
+                output.push(nt);
+        }
+        return output;
     }
 
 
@@ -86,6 +97,14 @@ export class FitnessSpace implements LogicalSpace {
             !note.tags.find(x => x.tag.id == this.workout.id)
         ) {
             return new GeneratedExerciseNoteTagDataComponentFactory();
+        }
+
+        if (
+            tag.linksTo(this.metric) &&
+            !note.tags.find(x => x.tag.id == this.exercise.id) &&
+            !note.tags.find(x => x.tag.id == this.workout.id)
+        ) {
+            return new ExerciseMetricNoteTagDataComponentFactory();
         }
 
         return null;

@@ -1,6 +1,5 @@
 import { areArraysDifferent } from "@/helpers/RenderHelpers";
-import { Note, NoteTag } from "notu";
-import { FitnessSpace } from "./FitnessSpace";
+import { Note, NoteTag, Tag } from "notu";
 import { FitnessSpaceSetup } from "./FitnessSpaceSetup";
 
 export class ExerciseMetricDefData {
@@ -26,8 +25,8 @@ export class ExerciseMetricDefData {
             return null;
         return new ExerciseMetricDefData(noteTag);
     }
-    static addTag(note: Note, fitnessSpace: FitnessSpace): ExerciseMetricDefData {
-        return new ExerciseMetricDefData(note.addTag(fitnessSpace.metric))
+    static addTag(note: Note, metric: Tag): ExerciseMetricDefData {
+        return new ExerciseMetricDefData(note.addTag(metric))
     }
 
 
