@@ -6,6 +6,7 @@ import ExerciseMetricDefNoteTagDataComponentFactory from "./ExerciseMetricDefNot
 import ExerciseNoteTagDataComponentFactory from "./ExerciseNoteTagDataComponent";
 import { FitnessSpaceSetup } from "./FitnessSpaceSetup";
 import MetricNoteTagDataComponentFactory from "./MetricNoteTagDataComponent";
+import WorkoutExerciseNoteTagDataComponentFactory from "./WorkoutExerciseNoteTagDataComponent";
 import WorkoutNoteTagDataComponentFactory from "./WorkoutNoteTagDataComponent";
 
 export class FitnessSpace implements LogicalSpace {
@@ -68,8 +69,16 @@ export class FitnessSpace implements LogicalSpace {
         if (
             tag.linksTo(this.metric) &&
             !!note.tags.find(x => x.tag.id == this.exercise.id)
-        )
+        ) {
             return new ExerciseMetricDefNoteTagDataComponentFactory();
+        }
+        
+        if (
+            tag.linksTo(this.exercise) &&
+            !!note.tags.find(x => x.tag.id == this.workout.id)
+        ) {
+            return new WorkoutExerciseNoteTagDataComponentFactory();
+        }
 
         return null;
     }
