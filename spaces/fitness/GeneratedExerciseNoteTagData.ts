@@ -2,7 +2,7 @@ import { Note, NoteTag } from "notu";
 import { FitnessSpace } from "./FitnessSpace";
 import { FitnessSpaceSetup } from "./FitnessSpaceSetup";
 
-export class WorkoutExerciseData {
+export class GeneratedExerciseData {
     private _nt: NoteTag;
     constructor(noteTag: NoteTag) {
         if (
@@ -21,10 +21,10 @@ export class WorkoutExerciseData {
     static new(noteTag: NoteTag) {
         if (!noteTag)
             return null;
-        return new WorkoutExerciseData(noteTag);
+        return new GeneratedExerciseData(noteTag);
     }
-    static addTag(note: Note, fitnessSpace: FitnessSpace): WorkoutExerciseData {
-        return new WorkoutExerciseData(note.addTag(fitnessSpace.exercise));
+    static addTag(note: Note, fitnessSpace: FitnessSpace): GeneratedExerciseData {
+        return new GeneratedExerciseData(note.addTag(fitnessSpace.exercise));
     }
 
     get targetDifficulty(): number { return this._nt.data.targetDifficulty; }
@@ -36,7 +36,7 @@ export class WorkoutExerciseData {
     }
 
     get description(): string {
-        return WorkoutExerciseData.valueToDescription(this.targetDifficulty);
+        return GeneratedExerciseData.valueToDescription(this.targetDifficulty);
     }
 
     static valueToDescription(value: number): string {
@@ -48,7 +48,9 @@ export class WorkoutExerciseData {
             return 'Moderate';
         else if (value < 4.5)
             return 'Moderately Hard';
-        else
+        else if (value < 5.5)
             return 'Hard';
+        else
+            return 'Failed';
     }
 }
