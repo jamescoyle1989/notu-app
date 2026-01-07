@@ -1,5 +1,4 @@
 import NoteList from "@/components/NoteList";
-import { NoteViewer } from "@/components/NoteViewer";
 import { useManualRefresh } from "@/helpers/Hooks";
 import { ShowEditorAction, ShowNoteListAction, UIAction } from "@/helpers/NoteAction";
 import { getNotu } from "@/helpers/NotuSetup";
@@ -7,6 +6,7 @@ import { last } from "es-toolkit";
 import { Stack, useFocusEffect, useNavigation, useRouter } from "expo-router";
 import { Note } from "notu";
 import { useCallback } from "react";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { View } from "tamagui";
 import { setNoteBeingEdited } from "./editnote";
 
@@ -21,12 +21,11 @@ export default function Index() {
     const renderTools = getNotu();
     const router = useRouter();
     const manualRefresh = useManualRefresh();
+    const insets = useSafeAreaInsets();
 
     useFocusEffect(
         useCallback(() => {
             const unsubscribe = navigation.addListener('beforeRemove', e => {
-                console.log('navigation action');
-                console.log(e);
                 if (e.data.action.type === 'POP')
                     _activeActionStack.pop();
             });
@@ -51,21 +50,29 @@ export default function Index() {
             setActiveNoteListAction(showNoteListAction);
             router.push('/listnoteobjects');
         }
+        else if (action.name == 'PreviousScreen') {
+            _activeActionStack.pop();
+            router.back();
+        }
     }
 
     return (
-        <View flex={1}>
+        <View flex={1} paddingBlockEnd={insets.bottom}>
             <Stack.Screen options={{
                 title: activeAction.title
             }} />
+
+            {!!activeAction.header && activeAction.header(onUIAction)}
+
             <NoteList notes={activeAction.notes}
                       notuRenderTools={renderTools}
                       onUIAction={onUIAction}
-                      noteViewer={note => (
-                        <NoteViewer note={note}
-                                    notuRenderTools={renderTools}
-                                    onUIAction={onUIAction}
-                                    customActions={activeAction.customActions} />)} />
+                      noteViewer={!!activeAction.customNoteViewer
+                        ? note => activeAction.customNoteViewer(note, renderTools, onUIAction, null)
+                        : undefined
+                      } />
+
+            {!!activeAction.footer && activeAction.footer(onUIAction)}
         </View>
     )
 }

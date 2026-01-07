@@ -7,7 +7,8 @@ import ExerciseMetricNoteTagDataComponentFactory from "./ExerciseMetricNoteTagDa
 import ExerciseNoteTagDataComponentFactory from "./ExerciseNoteTagDataComponent";
 import { FitnessSpaceSetup } from "./FitnessSpaceSetup";
 import GeneratedExerciseNoteTagDataComponentFactory from "./GeneratedExerciseNoteTagDataComponent";
-import { generateWorkout, GenerateWorkoutProcessContext, showProcessOutputScreen } from "./GenerateWorkoutProcess";
+import { generateWorkout, GenerateWorkoutProcessContext } from "./GenerateWorkoutProcess";
+import { showProcessOutputScreen } from "./GenerateWorkoutProcessUI";
 import MetricNoteTagDataComponentFactory from "./MetricNoteTagDataComponent";
 import WorkoutExerciseNoteTagDataComponentFactory from "./WorkoutExerciseNoteTagDataComponent";
 import WorkoutNoteTagDataComponentFactory from "./WorkoutNoteTagDataComponent";
@@ -68,7 +69,7 @@ export class FitnessSpace implements LogicalSpace {
                             const newNoteOptions = await generateWorkout(note,
                                 new GenerateWorkoutProcessContext(notu)
                             );
-                            return showProcessOutputScreen(note, newNoteOptions);
+                            return showProcessOutputScreen(note, newNoteOptions, notu);
                         }
                         catch (err) {
                             console.log(err);

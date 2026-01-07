@@ -1,4 +1,3 @@
-import { NoteAction, NoteActionsMenuBuilder, ShowNoteListAction, UIAction } from "@/helpers/NoteAction";
 import { last, orderBy } from "es-toolkit";
 import { Note, NoteTag, Notu, Space, Tag } from "notu";
 import { CommonSpace } from "../common/CommonSpace";
@@ -398,33 +397,4 @@ export class NewExerciseInfo {
     invertDecreasedMetric: boolean = false;
     isRepeatOfSuccess: boolean = false;
     isRepeatOfFailure: boolean = false;
-}
-
-
-export function showProcessOutputScreen(
-    workout: Note,
-    newExerciseOptions: Map<Tag, NewExerciseInfo[]>
-): UIAction {
-    const displayNotes = new Array<Note>();
-    for (const [tag, newExerciseInfos] of newExerciseOptions)
-        displayNotes.push(newExerciseInfos[0].note);
-    return new ShowNoteListAction(
-        displayNotes,
-        `New exercises for ${workout.ownTag.name}`,
-        (note: Note, menuBuilder: NoteActionsMenuBuilder, notu: Notu) => {
-            for (const [tag, newExerciseInfos] of newExerciseOptions) {
-                if (!!newExerciseInfos.find(x => x.note === note)) {
-                    menuBuilder.addToTopOfEnd(
-                        new NoteAction('Change', async () => {
-                            return new ShowNoteListAction(
-                                newExerciseInfos.map(x => x.note),
-                                `Next ${tag.name} options`
-                            )
-                        })
-                    );
-                    break;
-                }
-            }
-        }
-    );
 }

@@ -1,4 +1,6 @@
-import { Note, Notu } from "notu";
+import { Note } from "notu";
+import { JSX } from "react";
+import { NotuRenderTools } from "./NotuRenderTools";
 
 export class NoteAction {
     private _name: string;
@@ -39,6 +41,12 @@ export class RefreshAction extends UIAction {
     }
 }
 
+export class PreviousScreenAction extends UIAction {
+    constructor() {
+        super('PreviousScreen');
+    }
+}
+
 export class ShowEditorAction extends UIAction {
     private _note: Note;
     get note(): Note { return this._note; }
@@ -56,20 +64,39 @@ export class ShowNoteListAction extends UIAction {
     private _title: string;
     get title(): string { return this._title; }
 
-    private _customActions: (note: Note, menuBuilder: NoteActionsMenuBuilder, notu: Notu) => void;
-    get customActions(): (note: Note, menuBuilder: NoteActionsMenuBuilder, notu: Notu) => void {
-        return this._customActions;
+    private _customNoteViewer: (
+        note: Note,
+        notuRenderTools: NotuRenderTools,
+        onUIAction: (action: UIAction) => void,
+        customActions: (menuBuilder: NoteActionsMenuBuilder) => void
+    ) => JSX.Element;
+    get customNoteViewer(): (
+        note: Note,
+        notuRenderTools: NotuRenderTools,
+        onUIAction: (action: UIAction) => void,
+        customActions: (menuBuilder: NoteActionsMenuBuilder) => void
+    ) => JSX.Element {
+        return this._customNoteViewer;
     }
+
+    public header: (onUIAction: (action: UIAction) => void) => JSX.Element;
+
+    public footer: (onUIAction: (action: UIAction) => void) => JSX.Element;
 
     constructor(
         notes: Array<Note>,
         title: string,
-        customActions?: (note: Note, menuBuilder: NoteActionsMenuBuilder, notu: Notu) => void
+        customNoteViewer?: (
+            note: Note,
+            notuRenderTools: NotuRenderTools,
+            onUIAction: (action: UIAction) => void,
+            customActions: (menuBuilder: NoteActionsMenuBuilder) => void
+    ) => JSX.Element
     ) {
         super('ShowNoteList');
         this._notes = notes;
         this._title = title;
-        this._customActions = customActions;
+        this._customNoteViewer = customNoteViewer;
     }
 }
 

@@ -9,6 +9,7 @@ import { Page } from "notu";
 import { ReactNode, useEffect, useState } from "react";
 import { useColorScheme } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { TamaguiProvider, View } from 'tamagui';
 import { tamaguiConfig } from '../tamagui.config';
 
@@ -98,12 +99,14 @@ export default function RootLayout() {
     }
 
     return renderInTamagui(() => (
-        <GestureHandlerRootView style={{flex: 1}}>
-            <Drawer drawerContent={customDrawerContent}
-                    screenOptions={{
-                        headerShown: false
-                    }}>
-            </Drawer>
-        </GestureHandlerRootView>
+        <SafeAreaProvider>
+            <GestureHandlerRootView style={{flex: 1}}>
+                <Drawer drawerContent={customDrawerContent}
+                        screenOptions={{
+                            headerShown: false
+                        }}>
+                </Drawer>
+            </GestureHandlerRootView>
+        </SafeAreaProvider>
     ));
 }
