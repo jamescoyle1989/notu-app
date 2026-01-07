@@ -26,9 +26,7 @@ export default class FinishedNoteTagDataComponentFactory implements NoteTagDataC
 function BadgeComponent({ noteTag }: NoteTagDataComponentProps) {
     const data = new FinishedData(noteTag);
     return (
-        <View>
-            <NotuText>{datetimeToText(data.date)}</NotuText>
-        </View>
+        <NotuText small>{datetimeToText(data.date)}</NotuText>
     );
 }
 

@@ -50,7 +50,7 @@ export function showProcessOutputScreen(
                                         notuRenderTools={notuRenderTools}
                                         onUIAction={onUIAction} />
                         </View>
-                        <NotuButton onPress={() => handleSelectExercise(exerciseTag, note, onUIAction)}>
+                        <NotuButton theme="highlight" onPress={() => handleSelectExercise(exerciseTag, note, onUIAction)}>
                             Select
                         </NotuButton>
                     </XStack>
@@ -91,7 +91,7 @@ export function showProcessOutputScreen(
                                     notuRenderTools={notuRenderTools}
                                     onUIAction={onUIAction} />
                     </View>
-                    <NotuButton onPress={() => handleChangeExercise(note, onUIAction)}>
+                    <NotuButton theme="highlight" onPress={() => handleChangeExercise(note, onUIAction)}>
                         Change
                     </NotuButton>
                 </XStack>
@@ -99,7 +99,7 @@ export function showProcessOutputScreen(
         }
     );
     action.footer = (onUIAction: (action: UIAction) => void) => (
-        <NotuButton success onPress={() => handleSaveExercises(onUIAction)}>Save</NotuButton>
+        <NotuButton theme="highlight" onPress={() => handleSaveExercises(onUIAction)}>Save</NotuButton>
     );
     return action;
 }

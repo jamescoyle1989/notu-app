@@ -60,11 +60,6 @@ export const NotuButton = styled(Button, {
                 borderBottomRightRadius: 0,
                 borderWidth: 0
             }
-        },
-        success: {
-            true: {
-                background: '#8AC44B'
-            }
         }
     }
 });

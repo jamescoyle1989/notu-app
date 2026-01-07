@@ -79,10 +79,16 @@ export const NoteViewer = ({
                         {action.name}
                     </NotuButton>
                     <XStack>
-                        <NotuButton success onPress={() => onActionConfirmed(action)}>
+                        <NotuButton theme="highlight"
+                                    flex={1}
+                                    joinedRight
+                                    onPress={() => onActionConfirmed(action)}>
                             Confirm
                         </NotuButton>
-                        <NotuButton danger onPress={() => onActionCancelled(action)}>
+                        <NotuButton theme="danger"
+                                    flex={1}
+                                    joinedLeft
+                                    onPress={() => onActionCancelled(action)}>
                             Cancel
                         </NotuButton>
                     </XStack>
