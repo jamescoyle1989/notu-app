@@ -53,8 +53,8 @@ function EditorComponent({ noteTag, note, notu, refreshCallback }: NoteTagDataCo
     if (!defNote)
         return (<NotuText>Loading...</NotuText>);
 
-    function onTargetDifficultyChange(value: any) {
-        data.targetDifficulty = value;
+    function onDifficultyChange(value: any) {
+        data.difficulty = value;
         refreshCallback();
     }
 
@@ -67,12 +67,12 @@ function EditorComponent({ noteTag, note, notu, refreshCallback }: NoteTagDataCo
         <YStack>
             <XStack style={{alignItems: 'center'}}>
                 <Label width={labelWidth}>Difficulty</Label>
-                <NotuSelect value={data.targetDifficulty}
+                <NotuSelect value={data.difficulty}
                             options={[1, 2, 3, 4, 5, 6].map(x => ({
                                 name: GeneratedExerciseData.valueToDescription(x),
                                 value: x
                             }))}
-                            onValueChange={onTargetDifficultyChange} />
+                            onValueChange={onDifficultyChange} />
             </XStack>
 
             {fitnessSpace.getMetrics(note).map((metricNT, index) => {

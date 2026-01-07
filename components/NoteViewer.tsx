@@ -1,7 +1,7 @@
-import { NoteAction, UIAction } from '@/helpers/NoteAction';
+import { NoteAction, NoteActionsMenuBuilder, UIAction } from '@/helpers/NoteAction';
 import { NotuButton, NotuText } from '@/helpers/NotuStyles';
 import { Tag } from '@tamagui/lucide-icons';
-import { Note } from "notu";
+import { Note, Notu } from "notu";
 import { useMemo, useState } from "react";
 import { TouchableHighlight } from "react-native";
 import { Dialog, useTheme, View, XStack, YStack } from 'tamagui';
@@ -14,14 +14,16 @@ import TagBadge from './TagBadge';
 interface NoteViewerProps {
     note: Note,
     notuRenderTools: NotuRenderTools,
-    onUIAction: (action: UIAction) => void
+    onUIAction: (action: UIAction) => void,
+    customActions?: (note: Note, menuBuilder: NoteActionsMenuBuilder, notu: Notu) => void
 }
 
 
 export const NoteViewer = ({
     note,
     notuRenderTools,
-    onUIAction
+    onUIAction,
+    customActions = null
 
 }: NoteViewerProps) => {
 
@@ -31,7 +33,7 @@ export const NoteViewer = ({
     const theme = useTheme();
 
     function showNoteActions() {
-        const actionsList = notuRenderTools.buildNoteActionsMenu(note, textComponents);
+        const actionsList = notuRenderTools.buildNoteActionsMenu(note, textComponents, customActions);
         if (actionsList.length == 0)
             return;
         setActions(actionsList);

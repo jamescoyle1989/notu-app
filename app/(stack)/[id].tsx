@@ -1,5 +1,5 @@
 import { GroupedSearchList } from "@/components/GroupedSearchList";
-import { ShowEditorAction, UIAction } from "@/helpers/NoteAction";
+import { ShowEditorAction, ShowNoteListAction, UIAction } from "@/helpers/NoteAction";
 import { getNotu } from "@/helpers/NotuSetup";
 import { DrawerActions } from "@react-navigation/native";
 import { Menu } from '@tamagui/lucide-icons';
@@ -8,6 +8,7 @@ import { Note, Page } from "notu";
 import { useEffect, useRef, useState } from "react";
 import { Button, Text, View } from "tamagui";
 import { setNoteBeingEdited } from "./editnote";
+import { setActiveNoteListAction } from "./listnoteobjects";
 
 export default function CustomPage() {
     const { id } = useLocalSearchParams();
@@ -52,6 +53,11 @@ export default function CustomPage() {
         else if (action.name == 'Edit') {
             const editAction = action as ShowEditorAction;
             startEditingNote(editAction.note);
+        }
+        else if (action.name == 'ShowNoteList') {
+            const showNoteListAction = action as ShowNoteListAction;
+            setActiveNoteListAction(showNoteListAction);
+            router.push('/listnoteobjects');
         }
     }
 

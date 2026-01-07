@@ -15,7 +15,7 @@ export class GeneratedExerciseData {
         this._nt = noteTag;
         if (!noteTag.data)
             noteTag.data = {};
-        this.targetDifficulty = this.targetDifficulty;
+        this.difficulty = this.difficulty;
     }
     static new(noteTag: NoteTag) {
         if (!noteTag)
@@ -26,16 +26,17 @@ export class GeneratedExerciseData {
         return new GeneratedExerciseData(note.addTag(exercise));
     }
 
-    get targetDifficulty(): number { return this._nt.data.targetDifficulty; }
-    set targetDifficulty(value: number) {
-        value = value ?? 1;
-        if (this._nt.data.targetDifficulty != value && this._nt.isClean)
+    get difficulty(): number { return this._nt.data.difficulty; }
+    set difficulty(value: number) {
+        value = Math.round(value ?? 1);
+        value = Math.min(Math.max(1, value), 6);
+        if (this._nt.data.difficulty != value && this._nt.isClean)
             this._nt.dirty();
-        this._nt.data.targetDifficulty = value;
+        this._nt.data.difficulty = value;
     }
 
     get description(): string {
-        return GeneratedExerciseData.valueToDescription(this.targetDifficulty);
+        return GeneratedExerciseData.valueToDescription(this.difficulty);
     }
 
     static valueToDescription(value: number): string {
@@ -51,5 +52,41 @@ export class GeneratedExerciseData {
             return 'Hard';
         else
             return 'Failed';
+    }
+
+    get isEasy(): boolean { return this.difficulty == 1; }
+    asEasy(): GeneratedExerciseData {
+        this.difficulty = 1;
+        return this;
+    }
+
+    get isModeratelyEasy(): boolean { return this.difficulty == 2; }
+    asModeratelyEasy(): GeneratedExerciseData {
+        this.difficulty = 2;
+        return this;
+    }
+
+    get isModerate(): boolean { return this.difficulty == 3; }
+    asModerate(): GeneratedExerciseData {
+        this.difficulty = 3;
+        return this;
+    }
+
+    get isModeratelyHard(): boolean { return this.difficulty == 4; }
+    asModeratelyHard(): GeneratedExerciseData {
+        this.difficulty = 4;
+        return this;
+    }
+
+    get isHard(): boolean { return this.difficulty == 5; }
+    asHard(): GeneratedExerciseData {
+        this.difficulty = 5;
+        return this;
+    }
+
+    get isFailed(): boolean { return this.difficulty == 6; }
+    asFailed(): GeneratedExerciseData {
+        this.difficulty = 6;
+        return this;
     }
 }

@@ -1,4 +1,4 @@
-import { Note } from "notu";
+import { Note, Notu } from "notu";
 
 export class NoteAction {
     private _name: string;
@@ -47,6 +47,30 @@ export class ShowEditorAction extends UIAction {
         super('Edit');
         this._note = note;
     } 
+}
+
+export class ShowNoteListAction extends UIAction {
+    private _notes: Array<Note>;
+    get notes(): Array<Note> { return this._notes; }
+
+    private _title: string;
+    get title(): string { return this._title; }
+
+    private _customActions: (note: Note, menuBuilder: NoteActionsMenuBuilder, notu: Notu) => void;
+    get customActions(): (note: Note, menuBuilder: NoteActionsMenuBuilder, notu: Notu) => void {
+        return this._customActions;
+    }
+
+    constructor(
+        notes: Array<Note>,
+        title: string,
+        customActions?: (note: Note, menuBuilder: NoteActionsMenuBuilder, notu: Notu) => void
+    ) {
+        super('ShowNoteList');
+        this._notes = notes;
+        this._title = title;
+        this._customActions = customActions;
+    }
 }
 
 

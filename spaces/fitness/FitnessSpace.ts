@@ -1,4 +1,4 @@
-import { NoteActionsMenuBuilder } from "@/helpers/NoteAction";
+import { NoteAction, NoteActionsMenuBuilder } from "@/helpers/NoteAction";
 import { NoteTagDataComponentFactory } from "@/helpers/NotuRenderTools";
 import { Note, NoteTag, Notu, Space, Tag } from "notu";
 import { LogicalSpace } from "../LogicalSpace";
@@ -7,6 +7,7 @@ import ExerciseMetricNoteTagDataComponentFactory from "./ExerciseMetricNoteTagDa
 import ExerciseNoteTagDataComponentFactory from "./ExerciseNoteTagDataComponent";
 import { FitnessSpaceSetup } from "./FitnessSpaceSetup";
 import GeneratedExerciseNoteTagDataComponentFactory from "./GeneratedExerciseNoteTagDataComponent";
+import { generateWorkout, GenerateWorkoutProcessContext, showProcessOutputScreen } from "./GenerateWorkoutProcess";
 import MetricNoteTagDataComponentFactory from "./MetricNoteTagDataComponent";
 import WorkoutExerciseNoteTagDataComponentFactory from "./WorkoutExerciseNoteTagDataComponent";
 import WorkoutNoteTagDataComponentFactory from "./WorkoutNoteTagDataComponent";
@@ -59,6 +60,23 @@ export class FitnessSpace implements LogicalSpace {
         menuBuilder: NoteActionsMenuBuilder,
         notu: Notu
     ) {
+        if (!!note.getTag(this.workout)) {
+            menuBuilder.addToTopOfEnd(
+                new NoteAction('Generate Workout Exercises',
+                    async () => {
+                        try {
+                            const newNoteOptions = await generateWorkout(note,
+                                new GenerateWorkoutProcessContext(notu)
+                            );
+                            return showProcessOutputScreen(note, newNoteOptions);
+                        }
+                        catch (err) {
+                            console.log(err);
+                        }
+                    }
+                )
+            )
+        }
     }
 
 

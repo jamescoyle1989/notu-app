@@ -47,7 +47,11 @@ export class NotuRenderTools {
         return null;
     }
 
-    buildNoteActionsMenu(note: Note, textComponents: Array<any>): Array<NoteAction> {
+    buildNoteActionsMenu(
+        note: Note,
+        textComponents: Array<any>,
+        customActions?: (note: Note, menuBuilder: NoteActionsMenuBuilder, notu: Notu) => void
+    ): Array<NoteAction> {
         const builder = new NoteActionsMenuBuilder();
         for (const space of this.logicalSpaces)
             space.buildNoteActionsMenu(note, builder, this.notu);
@@ -57,6 +61,8 @@ export class NotuRenderTools {
                     component.buildNoteActionsMenu(note, builder, this.notu);
             }
         }
+        if (!!customActions)
+            customActions(note, builder, this._notu);
         return builder.actions;
     }
 }
