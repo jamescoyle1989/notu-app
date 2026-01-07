@@ -1,6 +1,6 @@
 import { NoteChecklistProcessor } from '@/notecomponents/NoteChecklist';
+import { NoteChoiceProcessor } from '@/notecomponents/NoteChoice';
 import { NoteLinkProcessor } from '@/notecomponents/NoteLink';
-import { NoteRandomProcessor } from '@/notecomponents/NoteRandom';
 import { CalendarSpace } from '@/spaces/calendar/CalendarSpace';
 import { CommonSpace } from '@/spaces/common/CommonSpace';
 import { FitnessSpace } from '@/spaces/fitness/FitnessSpace';
@@ -46,7 +46,7 @@ export async function setupNotu(): Promise<NotuRenderTools> {
         [
             new NoteLinkProcessor(),
             new NoteChecklistProcessor(),
-            new NoteRandomProcessor()
+            new NoteChoiceProcessor()
         ],
         [
             new CommonSpace(notuVal),
