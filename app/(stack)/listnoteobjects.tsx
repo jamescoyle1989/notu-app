@@ -1,4 +1,3 @@
-import NoteList from "@/components/NoteList";
 import { useManualRefresh } from "@/helpers/Hooks";
 import { ShowEditorAction, ShowNoteListAction, UIAction } from "@/helpers/NoteAction";
 import { getNotu } from "@/helpers/NotuSetup";
@@ -8,6 +7,7 @@ import { Note } from "notu";
 import { useCallback } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { View } from "tamagui";
+import GroupedNoteList from "../../components/GroupedNoteList";
 import { setNoteBeingEdited } from "./editnote";
 
 let _activeActionStack = new Array<ShowNoteListAction>();
@@ -64,13 +64,13 @@ export default function Index() {
 
             {!!activeAction.header && activeAction.header(onUIAction)}
 
-            <NoteList notes={activeAction.notes}
-                      notuRenderTools={renderTools}
-                      onUIAction={onUIAction}
-                      noteViewer={!!activeAction.customNoteViewer
-                        ? note => activeAction.customNoteViewer(note, renderTools, onUIAction, null)
-                        : undefined
-                      } />
+            <GroupedNoteList notes={activeAction.notes}
+                             notuRenderTools={renderTools}
+                             onUIAction={onUIAction}
+                             noteViewer={!!activeAction.customNoteViewer
+                                ? note => activeAction.customNoteViewer(note, renderTools, onUIAction, null)
+                                : undefined
+                             } />
 
             {!!activeAction.footer && activeAction.footer(onUIAction)}
         </View>

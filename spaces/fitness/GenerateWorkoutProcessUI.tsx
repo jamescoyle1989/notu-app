@@ -35,8 +35,11 @@ export function showProcessOutputScreen(
     }
 
     function showChangeExerciseScreen(exerciseTag: Tag): ShowNoteListAction {
+        const newExerciseInfos = newExerciseOptions.get(exerciseTag);
+        for (const exerciseInfo of newExerciseInfos)
+            exerciseInfo.note.group = getExeriseInfoSummaryText(exerciseInfo);
         const output = new ShowNoteListAction(
-            newExerciseOptions.get(exerciseTag).map(x => x.note),
+            newExerciseInfos.map(x => x.note),
             `${exerciseTag.name} options`,
             (
                 note: Note,
@@ -60,7 +63,26 @@ export function showProcessOutputScreen(
         return output;
     }
 
+    function getExeriseInfoSummaryText(exercise: NewExerciseInfo): string {
+        let output = '';
+        if (!!exercise.increasedMetric) {
+            output += `${exercise.invertIncreasedMetric ? 'Less' : 'More'} ${exercise.increasedMetric.name}`
+        }
+        if (!!exercise.decreasedMetric) {
+            if (!!exercise.increasedMetric)
+                output += ', ';
+            output += `${exercise.invertDecreasedMetric ? 'More' : 'Less'} ${exercise.decreasedMetric.name}`;
+        }
+        if (exercise.isRepeatOfFailure)
+            output += ' (Previously failed)';
+        else if (exercise.isRepeatOfSuccess)
+            output += ' (Repeat)';
+        return output.trim();
+    }
+
     function handleSelectExercise(exerciseTag: Tag, note: Note, onUIAction: (action: UIAction) => void) {
+        for (const exerciseInfo of newExerciseOptions.get(exerciseTag))
+            exerciseInfo.note.group = undefined;
         for (let i = 0; i < displayNotes.length; i++) {
             const displayNote = displayNotes[i];
             if (!!displayNote.getTag(exerciseTag)) {

@@ -134,7 +134,7 @@ export function generateNextExerciseOptions(
         );
     }
 
-    const output = new Array<NewExerciseInfo>();
+    let output = new Array<NewExerciseInfo>();
 
     if (previousExercises.length == 0) {
         output.push(generateFirstExercise(exerciseDef, metricAllowedValues, context.fitnessSpace, context.commonSpace));
@@ -169,6 +169,15 @@ export function generateNextExerciseOptions(
                 newExerciseInfo.isRepeatOfSuccess = true;
         }
     }
+
+    output = orderBy(output, [
+        x => Math.abs(GeneratedExerciseData.new(x.note.getTag(exerciseDef.ownTag)).difficulty - workoutExerciseData.targetDifficulty),
+        x => x.isRepeatOfSuccess
+    ], [
+        'asc',
+        'asc'
+    ]);
+
     return output;
 }
 
@@ -212,6 +221,9 @@ export function generateFirstExercise(
 
     newNote.removeOwnTag();
     newNote.removeTag(fitnessSpace.exercise);
+    const exerciseNTs = newNote.tags.filter(nt => !!nt.tag.linksTo(fitnessSpace.exercise));
+    for (const nt of exerciseNTs)
+        newNote.removeTag(nt.tag);
     GeneratedExerciseData.addTag(newNote, exerciseDef.ownTag).asEasy();
 
     for (const metric of fitnessSpace.getMetrics(newNote))
@@ -331,6 +343,9 @@ export function generateExerciseVariation(
 
     newNote.removeOwnTag();
     newNote.removeTag(fitnessSpace.exercise);
+    const exerciseNTs = newNote.tags.filter(nt => !!nt.tag.linksTo(fitnessSpace.exercise));
+    for (const nt of exerciseNTs)
+        newNote.removeTag(nt.tag);
     const previousExerciseData = GeneratedExerciseData.new(previousExercise.getTag(exerciseDef.ownTag));
     const newExerciseData = GeneratedExerciseData.addTag(newNote, exerciseDef.ownTag);
     newExerciseData.difficulty = previousExerciseData.difficulty + (!!metricToIncrease ? 1 : 0) - (!!metricToDecrease ? 1 : 0);
