@@ -47,11 +47,6 @@ function EditorComponent({ noteTag }: NoteTagDataComponentProps) {
         manualRefresh();
     }
 
-    function onConstantValueChange(newValue: number) {
-        data.value = newValue;
-        manualRefresh();
-    }
-
     function onRangeMinChange(newValue: number) {
         data.min = newValue;
         manualRefresh();
@@ -84,20 +79,11 @@ function EditorComponent({ noteTag }: NoteTagDataComponentProps) {
                 <Label width={labelWidth}>Mode</Label>
                 <NotuSelect value={data.mode}
                             options={[
-                                {name: 'Constant', value: 'Constant'},
                                 {name: 'Range', value: 'Range'},
                                 {name: 'Set', value: 'Set'}
                             ]}
                             onValueChange={onModeChange} />
             </XStack>
-
-            {data.mode == 'Constant' && (
-                <XStack style={{alignItems: 'center'}}>
-                    <Label width={labelWidth}>Value</Label>
-                    <NumberInput numberValue={data.value}
-                                 onNumberChange={onConstantValueChange} />
-                </XStack>
-            )}
 
             {data.mode == 'Range' && (
                 <YStack>

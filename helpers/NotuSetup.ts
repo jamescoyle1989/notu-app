@@ -1,3 +1,4 @@
+import { NoteCalcProcessor } from '@/notecomponents/NoteCalc';
 import { NoteChecklistProcessor } from '@/notecomponents/NoteChecklist';
 import { NoteChoiceProcessor } from '@/notecomponents/NoteChoice';
 import { NoteLinkProcessor } from '@/notecomponents/NoteLink';
@@ -46,7 +47,8 @@ export async function setupNotu(): Promise<NotuRenderTools> {
         [
             new NoteLinkProcessor(),
             new NoteChecklistProcessor(),
-            new NoteChoiceProcessor()
+            new NoteChoiceProcessor(),
+            new NoteCalcProcessor()
         ],
         [
             new CommonSpace(notuVal),

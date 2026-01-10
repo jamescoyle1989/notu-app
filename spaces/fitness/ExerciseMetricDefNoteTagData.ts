@@ -30,29 +30,17 @@ export class ExerciseMetricDefData {
     }
 
 
-    get mode(): 'Constant' | 'Range' | 'Set' { return this._nt.data.mode; }
-    set mode(value: 'Constant' | 'Range' | 'Set') {
+    get mode(): 'Range' | 'Set' { return this._nt.data.mode; }
+    set mode(value: 'Range' | 'Set') {
         if (value == undefined)
-            value = 'Constant';
+            value = 'Range';
         if (this._nt.data.mode != value && this._nt.isClean)
             this._nt.dirty();
         this._nt.data.mode = value;
-        this.value = this.value;
         this.min = this.min;
         this.max = this.max;
         this.increment = this.increment;
         this.values = this.values;
-    }
-
-
-    get value(): number { return this._nt.data.value; }
-    set value(value: number) {
-        value = value ?? 0;
-        if (this.mode != 'Constant')
-            value = null;
-        if (this._nt.data.value != value && this._nt.isClean)
-            this._nt.dirty();
-        this._nt.data.value = value;
     }
 
 
@@ -113,9 +101,6 @@ export class ExerciseMetricDefData {
 
 
     getAllowedValues(): Array<number> {
-        if (this.mode == 'Constant')
-            return [this.value];
-
         if (this.mode == 'Set')
             return [...this.values];
 

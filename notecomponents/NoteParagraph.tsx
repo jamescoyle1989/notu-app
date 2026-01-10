@@ -36,7 +36,7 @@ export class NoteParagraph {
         return (
             <NotuText>
                 {this._children.map((x, index) => (
-                    <NotuText key={index}>{(x as any).renderForEdit()}</NotuText>
+                    <NotuText key={index}>{(x as any).renderForEdit(color)}</NotuText>
                 ))}
             </NotuText>
         );
