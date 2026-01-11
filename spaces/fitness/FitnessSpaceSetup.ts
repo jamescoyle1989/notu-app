@@ -37,7 +37,7 @@ export class FitnessSpaceSetup {
             const commonSpace = new CommonSpace(notu);
 
             const generateWorkoutProcess = new Note(`This process will automatically generate exercises for the selected workout. Once exercise suggestions have been generated, they will be displayed on screen so the user can confirm which exercise options they want to go with.`)
-                .in(fitnessSpace).setOwnTag(this.generateWorkoutProcess)
+                .in(fitnessSpace).setOwnTag(this.generateWorkoutProcess);
             generateWorkoutProcess.ownTag.asInternal();
             const processData = GenerateWorkoutProcessData.addTag(generateWorkoutProcess, commonSpace);
             processData.saveExercisesToSpaceId = fitnessSpace.id;
