@@ -2,6 +2,7 @@ import { NoteActionsMenuBuilder } from "@/helpers/NoteAction";
 import { NoteTagDataComponentFactory } from "@/helpers/NotuRenderTools";
 import { Note, Notu, Space, Tag } from "notu";
 import { LogicalSpace } from "../LogicalSpace";
+import CurrencyNoteTagDataComponentFactory from "./CurrencyNoteTagDataComponent";
 import { MoneySpaceSetup } from "./MoneySpaceSetup";
 
 export class MoneySpace implements LogicalSpace {
@@ -54,6 +55,9 @@ export class MoneySpace implements LogicalSpace {
 
 
     resolveNoteTagDataComponentFactory(tag: Tag, note: Note): NoteTagDataComponentFactory | null {
+        if (tag == this.currency)
+            return new CurrencyNoteTagDataComponentFactory();
+        
         return null;
     }
 }
