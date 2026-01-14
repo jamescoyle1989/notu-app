@@ -1,6 +1,7 @@
 import { NoteAction, NoteActionsMenuBuilder } from "@/helpers/NoteAction";
 import { NoteTagDataComponentFactory } from "@/helpers/NotuRenderTools";
 import { Note, NoteTag, Notu, Space, Tag } from "notu";
+import { CommonSpaceSetup } from "../common/CommonSpaceSetup";
 import { LogicalSpace } from "../LogicalSpace";
 import ExerciseMetricDefNoteTagDataComponentFactory from "./ExerciseMetricDefNoteTagDataComponent";
 import ExerciseMetricNoteTagDataComponentFactory from "./ExerciseMetricNoteTagDataComponent";
@@ -8,6 +9,7 @@ import ExerciseNoteTagDataComponentFactory from "./ExerciseNoteTagDataComponent"
 import { FitnessSpaceSetup } from "./FitnessSpaceSetup";
 import GeneratedExerciseNoteTagDataComponentFactory from "./GeneratedExerciseNoteTagDataComponent";
 import { generateWorkout, GenerateWorkoutProcessContext } from "./GenerateWorkoutProcess";
+import GenerateWorkoutProcessNoteTagDataComponentFactory from "./GenerateWorkoutProcessNoteTagDataComponent";
 import { showProcessOutputScreen } from "./GenerateWorkoutProcessUI";
 import MetricNoteTagDataComponentFactory from "./MetricNoteTagDataComponent";
 import WorkoutExerciseNoteTagDataComponentFactory from "./WorkoutExerciseNoteTagDataComponent";
@@ -125,6 +127,14 @@ export class FitnessSpace implements LogicalSpace {
         ) {
             return new ExerciseMetricNoteTagDataComponentFactory();
         }
+
+        if (
+            tag.space.internalName == CommonSpaceSetup.internalName &&
+            tag.name == CommonSpaceSetup.process &&
+            note.ownTag?.isInternal &&
+            note.ownTag?.name == FitnessSpaceSetup.generateWorkoutProcess
+        )
+            return new GenerateWorkoutProcessNoteTagDataComponentFactory();
 
         return null;
     }

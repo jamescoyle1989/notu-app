@@ -1,12 +1,15 @@
 import { NoteActionsMenuBuilder } from "@/helpers/NoteAction";
 import { NoteTagDataComponentFactory } from "@/helpers/NotuRenderTools";
 import { Note, Notu, Space, Tag } from "notu";
+import { CommonSpaceSetup } from "../common/CommonSpaceSetup";
 import { LogicalSpace } from "../LogicalSpace";
 import AccountNoteTagDataComponentFactory from "./AccountNoteTagDataComponent";
 import BudgetCategoryNoteTagDataComponentFactory from "./BudgetCategoryNoteTagDataComponent";
 import BudgetNoteTagDataComponentFactory from "./BudgetNoteTagDataComponent";
 import CurrencyNoteTagDataComponentFactory from "./CurrencyNoteTagDataComponent";
+import ImportTransactionsProcessNoteTagDataComponentFactory from "./ImportTransactionsProcessNoteTagDataComponent";
 import { MoneySpaceSetup } from "./MoneySpaceSetup";
+import TransactionNoteTagDataComponentFactory from "./TransactionNoteTagDataComponent";
 
 export class MoneySpace implements LogicalSpace {
 
@@ -65,6 +68,17 @@ export class MoneySpace implements LogicalSpace {
 
         if (tag == this.budget)
             return new BudgetNoteTagDataComponentFactory();
+
+        if (tag == this.transaction)
+            return new TransactionNoteTagDataComponentFactory();
+
+        if (
+            tag.space.internalName == CommonSpaceSetup.internalName &&
+            tag.name == CommonSpaceSetup.process &&
+            note.ownTag?.isInternal &&
+            note.ownTag?.name == MoneySpaceSetup.importTransactionsProcess
+        )
+            return new ImportTransactionsProcessNoteTagDataComponentFactory();
         
         return null;
     }

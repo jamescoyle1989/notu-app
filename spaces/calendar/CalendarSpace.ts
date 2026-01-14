@@ -1,9 +1,11 @@
 import { NoteAction, NoteActionsMenuBuilder, RefreshAction } from "@/helpers/NoteAction";
 import { NoteTagDataComponentFactory } from "@/helpers/NotuRenderTools";
 import { Note, Notu, Space, Tag } from "notu";
+import { CommonSpaceSetup } from "../common/CommonSpaceSetup";
 import { LogicalSpace } from "../LogicalSpace";
 import { CalendarSpaceSetup } from "./CalendarSpaceSetup";
 import { generateRecurringNotes, RecurringEventsProcessContext } from "./RecurringEventsProcess";
+import RecurringEventsProcessNoteTagDataComponentFactory from "./RecurringEventsProcessNoteTagDataComponent";
 
 export class CalendarSpace implements LogicalSpace {
 
@@ -61,6 +63,14 @@ export class CalendarSpace implements LogicalSpace {
 
 
     resolveNoteTagDataComponentFactory(tag: Tag, note: Note): NoteTagDataComponentFactory | null {
+        if (
+            tag.space.internalName == CommonSpaceSetup.internalName &&
+            tag.name == CommonSpaceSetup.process &&
+            note.ownTag?.isInternal &&
+            note.ownTag?.name == CalendarSpaceSetup.recurringEventsProcess
+        )
+            return new RecurringEventsProcessNoteTagDataComponentFactory();
+        
         return null;
     }
 }
