@@ -3,6 +3,7 @@ import { NoteTagDataComponentFactory } from "@/helpers/NotuRenderTools";
 import { Note, Notu, Space, Tag } from "notu";
 import { LogicalSpace } from "../LogicalSpace";
 import AccountNoteTagDataComponentFactory from "./AccountNoteTagDataComponent";
+import BudgetCategoryNoteTagDataComponentFactory from "./BudgetCategoryNoteTagDataComponent";
 import CurrencyNoteTagDataComponentFactory from "./CurrencyNoteTagDataComponent";
 import { MoneySpaceSetup } from "./MoneySpaceSetup";
 
@@ -26,9 +27,6 @@ export class MoneySpace implements LogicalSpace {
     private _transaction: Tag;
     get transaction(): Tag { return this._transaction; }
 
-    private _confirmed: Tag;
-    get confirmed(): Tag { return this._confirmed; }
-
 
     constructor(notu: Notu) {
         this._load(notu);
@@ -41,7 +39,6 @@ export class MoneySpace implements LogicalSpace {
         this._budgetCategory = notu.getTagByName(MoneySpaceSetup.budgetCategory, this._space);
         this._budget = notu.getTagByName(MoneySpaceSetup.budget, this._space);
         this._transaction = notu.getTagByName(MoneySpaceSetup.transaction, this._space);
-        this._confirmed = notu.getTagByName(MoneySpaceSetup.confirmed, this._space);
     }
 
 
@@ -61,6 +58,9 @@ export class MoneySpace implements LogicalSpace {
 
         if (tag == this.account)
             return new AccountNoteTagDataComponentFactory();
+
+        if (tag == this.budgetCategory)
+            return new BudgetCategoryNoteTagDataComponentFactory();
         
         return null;
     }

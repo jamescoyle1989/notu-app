@@ -9,7 +9,6 @@ export class MoneySpaceSetup {
     static get budgetCategory(): string { return 'Budget Category'; }
     static get budget(): string { return 'Budget'; }
     static get transaction(): string { return 'Transaction'; }
-    static get confirmed(): string { return 'Confirmed'; }
     static get importTransactionsProcess(): string { return 'Import Transactions Process'; }
 
     static async setup(notu: Notu): Promise<void> {
@@ -58,17 +57,12 @@ Transactions also allow you to add categories to them. Each category that you ad
                 .in(moneySpace).setOwnTag(this.transaction);
             transaction.ownTag.asInternal();
 
-            const confirmed = new Note(`Add this tag to a transaction note when you're happy that the transaction is valid and all info on it is correct.`)
-                .in(moneySpace).setOwnTag(this.confirmed);
-            confirmed.ownTag.asInternal();
-
             await notu.saveNotes([
                 currency,
                 account,
                 budgetCategory,
                 budget,
-                transaction,
-                confirmed
+                transaction
             ]);
 
             const commonSpace = new CommonSpace(notu);
