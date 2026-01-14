@@ -4,6 +4,7 @@ import { Note, Notu, Space, Tag } from "notu";
 import { LogicalSpace } from "../LogicalSpace";
 import AccountNoteTagDataComponentFactory from "./AccountNoteTagDataComponent";
 import BudgetCategoryNoteTagDataComponentFactory from "./BudgetCategoryNoteTagDataComponent";
+import BudgetNoteTagDataComponentFactory from "./BudgetNoteTagDataComponent";
 import CurrencyNoteTagDataComponentFactory from "./CurrencyNoteTagDataComponent";
 import { MoneySpaceSetup } from "./MoneySpaceSetup";
 
@@ -61,6 +62,9 @@ export class MoneySpace implements LogicalSpace {
 
         if (tag == this.budgetCategory)
             return new BudgetCategoryNoteTagDataComponentFactory();
+
+        if (tag == this.budget)
+            return new BudgetNoteTagDataComponentFactory();
         
         return null;
     }
