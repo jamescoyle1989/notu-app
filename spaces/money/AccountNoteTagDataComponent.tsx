@@ -59,7 +59,7 @@ function EditorComponent({ noteTag, refreshCallback }: NoteTagDataComponentProps
             {data.importType == 'CSV' && (
                 <YStack>
                     <YStack>
-                        <Label width={120}>File Import Mapping</Label>
+                        <Label>File Import Mapping</Label>
                         <Input value={data.fileImportMapping}
                             onChangeText={onFileImportMappingChange} />
                     </YStack>

@@ -9,6 +9,7 @@ import BudgetNoteTagDataComponentFactory from "./BudgetNoteTagDataComponent";
 import CurrencyNoteTagDataComponentFactory from "./CurrencyNoteTagDataComponent";
 import ImportTransactionsProcessNoteTagDataComponentFactory from "./ImportTransactionsProcessNoteTagDataComponent";
 import { MoneySpaceSetup } from "./MoneySpaceSetup";
+import TransactionCategoryNoteTagDataComponentFactory from "./TransactionCategoryNoteTagDataComponent";
 import TransactionNoteTagDataComponentFactory from "./TransactionNoteTagDataComponent";
 
 export class MoneySpace implements LogicalSpace {
@@ -71,6 +72,13 @@ export class MoneySpace implements LogicalSpace {
 
         if (tag == this.transaction)
             return new TransactionNoteTagDataComponentFactory();
+
+        if (
+            tag.linksTo(this.budgetCategory) &&
+            !!note.tags.find(x => x.tag.id == this.transaction.id)
+        ) {
+            return new TransactionCategoryNoteTagDataComponentFactory();
+        }
 
         if (
             tag.space.internalName == CommonSpaceSetup.internalName &&

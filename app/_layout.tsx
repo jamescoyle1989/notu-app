@@ -8,7 +8,6 @@ import { Drawer } from "expo-router/drawer";
 import { Page } from "notu";
 import { ReactNode, useEffect, useState } from "react";
 import { useColorScheme } from "react-native";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { TamaguiProvider, View } from 'tamagui';
 import { tamaguiConfig } from '../tamagui.config';
@@ -100,13 +99,12 @@ export default function RootLayout() {
 
     return renderInTamagui(() => (
         <SafeAreaProvider>
-            <GestureHandlerRootView style={{flex: 1}}>
-                <Drawer drawerContent={customDrawerContent}
-                        screenOptions={{
-                            headerShown: false
-                        }}>
-                </Drawer>
-            </GestureHandlerRootView>
+            <Drawer drawerContent={customDrawerContent}
+                    screenOptions={{
+                        headerShown: false,
+                        swipeEnabled: false
+                    }}>
+            </Drawer>
         </SafeAreaProvider>
     ));
 }
