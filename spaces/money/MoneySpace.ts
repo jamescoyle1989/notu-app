@@ -1,4 +1,4 @@
-import { NoteActionsMenuBuilder } from "@/helpers/NoteAction";
+import { NoteAction, NoteActionsMenuBuilder } from "@/helpers/NoteAction";
 import { NoteTagDataComponentFactory } from "@/helpers/NotuRenderTools";
 import { Note, Notu, Space, Tag } from "notu";
 import { CommonSpaceSetup } from "../common/CommonSpaceSetup";
@@ -7,7 +7,9 @@ import AccountNoteTagDataComponentFactory from "./AccountNoteTagDataComponent";
 import BudgetCategoryNoteTagDataComponentFactory from "./BudgetCategoryNoteTagDataComponent";
 import BudgetNoteTagDataComponentFactory from "./BudgetNoteTagDataComponent";
 import CurrencyNoteTagDataComponentFactory from "./CurrencyNoteTagDataComponent";
+import { ImportTransactionProcessContext, importTransactions } from "./ImportTransactionsProcess";
 import ImportTransactionsProcessNoteTagDataComponentFactory from "./ImportTransactionsProcessNoteTagDataComponent";
+import { showProcessOutputScreen } from "./ImportTransactionsProcessUI";
 import { MoneySpaceSetup } from "./MoneySpaceSetup";
 import TransactionCategoryNoteTagDataComponentFactory from "./TransactionCategoryNoteTagDataComponent";
 import TransactionNoteTagDataComponentFactory from "./TransactionNoteTagDataComponent";
@@ -54,6 +56,23 @@ export class MoneySpace implements LogicalSpace {
 
 
     buildNoteActionsMenu(note: Note, menuBuilder: NoteActionsMenuBuilder, notu: Notu) {
+        if (!!note.getTag(this.account)) {
+            menuBuilder.addToTopOfEnd(
+                new NoteAction('Import Account Statement',
+                    async () => {
+                        try {
+                            const newNoteOptions = await importTransactions(note,
+                                new ImportTransactionProcessContext(notu)
+                            );
+                            return showProcessOutputScreen(note, newNoteOptions, notu);
+                        }
+                        catch (err) {
+                            console.log(err);
+                        }
+                    }
+                )
+            )
+        }
     }
 
 

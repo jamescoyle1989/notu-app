@@ -30,15 +30,17 @@ export class AccountData {
     get importType(): 'CSV' | 'Manual' { return this._nt.data.importType; }
     set importType(value: 'CSV' | 'Manual') {
         value = value ?? 'CSV';
-        if (this._nt.data.importType != value && this._nt.isClean)
-            this._nt.dirty();
-        this._nt.data.importType = value;
-        if (value == 'CSV') {
-            this.fileImportMapping = '';
-            this.settlementDays = 0;
+        if (this._nt.data.importType != value) {
+            if (value == 'CSV') {
+                this.fileImportMapping = '';
+                this.settlementDays = 0;
+            }
+            else
+                this.fileImportMapping = null;
+            if (this._nt.isClean)
+                this._nt.dirty();
         }
-        else
-            this.fileImportMapping = null;
+        this._nt.data.importType = value;
     }
 
     get fileImportMapping(): string { return this._nt.data.fileImportMapping; }

@@ -4,6 +4,7 @@ import { NumberInput } from "@/components/NumberInput";
 import { useManualRefresh } from "@/helpers/Hooks";
 import { NoteTagDataComponentFactory, NoteTagDataComponentProps } from "@/helpers/NotuRenderTools";
 import { NotuText } from "@/helpers/NotuStyles";
+import { dateToText } from "@/helpers/RenderHelpers";
 import { Check } from "@tamagui/lucide-icons";
 import { sum } from "es-toolkit";
 import { Note, NoteTag, Notu, Tag } from "notu";
@@ -19,7 +20,7 @@ export default class TransactionNoteTagDataComponentFactory implements NoteTagDa
         let description = data.description;
         if (description.length > 32)
             description = description.substring(0, 30) + '...';
-        return (<NotuText color={textColor} small>{data.baseCurrencyAmount}{description.length > 0 ? description : ''}{data.confirmed ? ' ✔' : ''}</NotuText>)
+        return (<NotuText color={textColor} small>{dateToText(data.effectiveStart)} | <NotuText bold>{data.baseCurrencyAmount}</NotuText>{description.length > 0 ? ` | ${description}` : ''}{data.confirmed ? ' ✔' : ''}</NotuText>)
     }
 
     getEditorComponent(noteTag: NoteTag, note: Note, notu: Notu, refreshCallback: () => void): ReactNode {
