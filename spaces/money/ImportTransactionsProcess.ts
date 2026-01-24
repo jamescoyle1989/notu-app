@@ -148,21 +148,31 @@ async function filterOutDuplicateNewTransactions(
     const output: Array<NewTransaction> = [];
     const existingTransactions: Array<Note> = await context.getAccountTransactions(account);
 
-    for (const newTransaction of newTransactions) {
-        const newTran = new NewTransaction();
-        newTran.note = newTransaction;
-        const newData = newTransaction.getTagData(context.moneySpace.transaction, TransactionData);
-        const potentialDuplicates = existingTransactions.filter(x => {
-            const oldData = x.getTagData(context.moneySpace.transaction, TransactionData);
-            return x.date.getTime() == newTransaction.date.getTime() &&
-                newData.accountCurrencyAmount == oldData.accountCurrencyAmount;
-        });
-        const exactDuplicates = potentialDuplicates.filter(x => x.text.trim().toUpperCase() == newTransaction.text.trim().toUpperCase());
-        if (exactDuplicates.length == 0) {
-            newTran.potentialDuplicates = potentialDuplicates;
-            output.push(newTran);
+    for (const newTxn of newTransactions) {
+        const withDuplicates = findTransactionDuplicates(newTxn, existingTransactions, context.moneySpace);
+        if (!!withDuplicates)
+            output.push(withDuplicates);
+    }
+    return output;
+}
+
+
+function findTransactionDuplicates(newTxn: Note, existingTxns: Array<Note>, moneySpace: MoneySpace): NewTransaction {
+    const output = new NewTransaction();
+    output.note = newTxn;
+    const newData = newTxn.getTagData(moneySpace.transaction, TransactionData);
+
+    const potentialDuplicates = new Array<Note>();
+    for (const oldTxn of existingTxns) {
+        const oldData = oldTxn.getTagData(moneySpace.transaction, TransactionData);
+        if (oldTxn.date.getTime() == newTxn.date.getTime() && oldData.accountCurrencyAmount == newData.accountCurrencyAmount) {
+            if (oldData.description.trim().toUpperCase() == newData.description.trim().toUpperCase())
+                return null;
+            else
+                potentialDuplicates.push(oldTxn);
         }
     }
+    output.potentialDuplicates = potentialDuplicates;
     return output;
 }
 
@@ -276,6 +286,7 @@ export class CsvTransactionImporter implements TransactionImporter {
             
             const transactionData = TransactionData.addTag(note, context.moneySpace);
             transactionData.effectiveStart = transactionData.effectiveEnd = date.toDate();
+            transactionData.description = line[this.textColumn];
             note.addTag(this.account.ownTag);
 
             let amount = 0;

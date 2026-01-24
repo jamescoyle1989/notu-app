@@ -7,6 +7,7 @@ import { XStack } from 'tamagui';
 interface NotuDateTimePickerProps {
     value: Date,
     onChange: (value: Date) => void,
+    disabled?: boolean,
     hideDate?: boolean,
     hideTime?: boolean
 }
@@ -15,6 +16,7 @@ interface NotuDateTimePickerProps {
 export const NotuDateTimePicker = ({
     value,
     onChange,
+    disabled = false,
     hideDate = false,
     hideTime = false
 }: NotuDateTimePickerProps) => {
@@ -35,13 +37,17 @@ export const NotuDateTimePicker = ({
     return (
         <XStack>
             {!hideDate && (
-                <NotuButton joinedRight={!hideTime} onPress={() => setShowCalendar(true)}>
+                <NotuButton joinedRight={!hideTime}
+                            disabled={disabled}
+                            onPress={() => setShowCalendar(true)}>
                     {dateToText(value)}
                 </NotuButton>
             )}
             
             {!hideTime && (
-                <NotuButton joinedLeft={!hideDate} onPress={() => setShowClock(true)}>
+                <NotuButton joinedLeft={!hideDate}
+                            disabled={disabled}
+                            onPress={() => setShowClock(true)}>
                     {timeToText(value)}
                 </NotuButton>
             )}

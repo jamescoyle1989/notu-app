@@ -3,7 +3,7 @@ import { Input, InputProps } from "tamagui";
 
 interface NumberInputProps {
     numberValue: number,
-    onNumberChange: (value: number) => void,
+    onNumberChange?: (value: number) => void,
     allowNull?: boolean
 }
 
@@ -54,7 +54,8 @@ export const NumberInput = (props: NumberInputProps & Omit<InputProps, 'value'>)
         if (text == '' && props.allowNull) {
             setIsInError(false);
             setDirtyText(text);
-            props.onNumberChange(null);
+            if (!!props.onNumberChange)
+                props.onNumberChange(null);
         }
         else if (isNaN(num) || text == '' || text.endsWith('.')) {
             setIsInError(true);
@@ -63,7 +64,8 @@ export const NumberInput = (props: NumberInputProps & Omit<InputProps, 'value'>)
         else {
             setIsInError(false);
             setDirtyText(num.toString());
-            props.onNumberChange(num);
+            if (!!props.onNumberChange)
+                props.onNumberChange(num);
         }
     }
 

@@ -64,7 +64,7 @@ export default function Index() {
 
             {!!activeAction.header && activeAction.header(onUIAction)}
 
-            <GroupedNoteList notes={activeAction.notes}
+            <GroupedNoteList notes={activeAction.notes.filter(x => !x.isDeleted)}
                              notuRenderTools={renderTools}
                              onUIAction={onUIAction}
                              noteViewer={!!activeAction.customNoteViewer

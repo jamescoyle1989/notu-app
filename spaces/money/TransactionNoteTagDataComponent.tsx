@@ -10,6 +10,8 @@ import { sum } from "es-toolkit";
 import { Note, NoteTag, Notu, Tag } from "notu";
 import { ReactNode, useEffect, useState } from "react";
 import { Checkbox, CheckedState, Input, Label, Slider, XStack, YStack } from "tamagui";
+import { CurrencyData } from "./CurrencyNoteTagData";
+import { MoneySpace } from "./MoneySpace";
 import { TransactionCategoryData } from "./TransactionCategoryData";
 import { TransactionData } from "./TransactionNoteTagData";
 
@@ -17,10 +19,7 @@ export default class TransactionNoteTagDataComponentFactory implements NoteTagDa
 
     getBadgeComponent(noteTag: NoteTag, note: Note, notu: Notu, textColor: string): ReactNode {
         const data = new TransactionData(noteTag);
-        let description = data.description;
-        if (description.length > 32)
-            description = description.substring(0, 30) + '...';
-        return (<NotuText color={textColor} small>{dateToText(data.effectiveStart)} | <NotuText bold>{data.baseCurrencyAmount}</NotuText>{description.length > 0 ? ` | ${description}` : ''}{data.confirmed ? ' ✔' : ''}</NotuText>)
+        return (<NotuText color={textColor} small>{dateToText(data.effectiveStart)} | <NotuText bold>{data.baseCurrencyAmount}</NotuText>{data.confirmed ? ' ✔' : ''}</NotuText>)
     }
 
     getEditorComponent(noteTag: NoteTag, note: Note, notu: Notu, refreshCallback: () => void): ReactNode {
@@ -35,12 +34,15 @@ export default class TransactionNoteTagDataComponentFactory implements NoteTagDa
 
 function EditorComponent({ noteTag, note, notu, refreshCallback }: NoteTagDataComponentProps) {
     const data = new TransactionData(noteTag);
+    const moneySpace = new MoneySpace(notu);
     const manualRefresh = useManualRefresh();
     const labelWidth = 120;
     const [categories, setCategories] = useState<Array<Tag>>([]);
     const [showCategoryValueSliders, setShowCategoryValueSliders] = useState(false);
+    const [currencyData, setCurrencyData] = useState<CurrencyData>();
 
     const addedCategories = categories.filter(x => !!note.getTag(x));
+    const accountId = note.tags.find(x => x.tag.linksTo(moneySpace.account))?.tag?.id;
 
     useEffect(() => {
         async function fetch() {
@@ -49,15 +51,28 @@ function EditorComponent({ noteTag, note, notu, refreshCallback }: NoteTagDataCo
         fetch();
     }, []);
 
+    useEffect(() => {
+        async function fetchCurrency() {
+            if (!accountId) {
+                setCurrencyData(null);
+                return;
+            }
+            const account = (await notu.getNotes(`n.id = ${accountId}`)).find(x => true);
+            const currencyId = account.tags.find(x => x.tag.linksTo(moneySpace.currency))?.tag?.id;
+            if (!currencyId) {
+                setCurrencyData(null);
+                return;
+            }
+            const currency = (await notu.getNotes(`n.id = ${currencyId}`)).find(x => true);
+            setCurrencyData(CurrencyData.new(currency.getTag(moneySpace.currency)));
+        }
+        fetchCurrency();
+    }, [accountId]);
+
     function onCurrencyAmountChange(value: number) {
         data.accountCurrencyAmount = value;
-        data.baseCurrencyAmount = value;
+        data.baseCurrencyAmount = value * (currencyData?.baseExchangeRate ?? 1);
         realignCategoryValues([], addedCategories.map(x => TransactionCategoryData.new(note.getTag(x))));
-        refreshCallback();
-    }
-
-    function onBaseAmountChange(value: number) {
-        data.baseCurrencyAmount = value;
         refreshCallback();
     }
 
@@ -145,31 +160,37 @@ function EditorComponent({ noteTag, note, notu, refreshCallback }: NoteTagDataCo
             <XStack style={{alignItems: 'center'}}>
                 <Label width={labelWidth}>Currency Amount</Label>
                 <NumberInput numberValue={data.accountCurrencyAmount}
-                             onNumberChange={onCurrencyAmountChange} />
+                             onNumberChange={onCurrencyAmountChange}
+                             disabled={data.confirmed} />
             </XStack>
 
             <XStack style={{alignItems: 'center'}}>
                 <Label width={labelWidth}>Base Amount</Label>
                 <NumberInput numberValue={data.baseCurrencyAmount}
-                             disabled
-                             onNumberChange={onBaseAmountChange} />
+                             disabled />
             </XStack>
 
             <Label>Description</Label>
             <Input value={data.description}
-                   onChangeText={onDescriptionChange} />
+                   onChangeText={onDescriptionChange}
+                   disabled />
 
-            <XStack style={{alignItems: 'center'}}>
-                <Label marginInlineEnd={10}>Categories</Label>
-                {addedCategories.length > 0 && (
-                    <NotuText pressable onPress={toggleShowCategoryValueSliders}>
-                        {showCategoryValueSliders ? 'Show Number Inputs' : 'Show Percentage Sliders'}
-                    </NotuText>
-                )}
-            </XStack>
-            <NotuSelect value={null}
-                        options={getAvailableCategories().map(x => ({ name: x.name, value: x.id }))}
-                        onValueChange={onCategorySelected} />
+            {(!data.confirmed || addedCategories.length > 0) && (
+                <XStack style={{alignItems: 'center'}}>
+                    <Label marginInlineEnd={10}>Categories</Label>
+                    {addedCategories.length > 0 && (
+                        <NotuText pressable onPress={toggleShowCategoryValueSliders}>
+                            {showCategoryValueSliders ? 'Show Number Inputs' : 'Show Percentage Sliders'}
+                        </NotuText>
+                    )}
+                </XStack>
+            )}
+
+            {!data.confirmed && (
+                <NotuSelect value={null}
+                            options={getAvailableCategories().map(x => ({ name: x.name, value: x.id }))}
+                            onValueChange={onCategorySelected} />
+            )}
 
             {addedCategories.map((category, index) => {
                 const categoryData = TransactionCategoryData.new(note.getTag(category));
@@ -177,18 +198,24 @@ function EditorComponent({ noteTag, note, notu, refreshCallback }: NoteTagDataCo
                     <XStack key={index} style={{alignItems: 'center'}}>
                         <Label width={labelWidth}>{category.name}</Label>
                         {showCategoryValueSliders && (
-                            <Slider size="$6" width={200}
-                                    value={[Math.round((categoryData.value / data.baseCurrencyAmount) * 100)]}
-                                    onValueChange={values => onCategoryValueChange(category, (values[0] / 100) * data.baseCurrencyAmount)}
-                                    min={0} max={100} step={1}>
-                                <Slider.Track>
-                                    <Slider.TrackActive />
-                                </Slider.Track>
-                                <Slider.Thumb circular size="$2" index={0} />
-                            </Slider>
+                            <XStack style={{alignItems: 'center'}}>
+                                <Slider size="$6" width={200}
+                                        disabled={data.confirmed}
+                                        marginInlineEnd={5}
+                                        value={[Math.round((categoryData.value / data.baseCurrencyAmount) * 100)]}
+                                        onValueChange={values => onCategoryValueChange(category, (values[0] / 100) * data.baseCurrencyAmount)}
+                                        min={0} max={100} step={1}>
+                                    <Slider.Track>
+                                        <Slider.TrackActive />
+                                    </Slider.Track>
+                                    <Slider.Thumb circular size="$2" index={0} />
+                                </Slider>
+                                <NotuText>{Math.round((categoryData.value / data.baseCurrencyAmount) * 100)}%</NotuText>
+                            </XStack>
                         )}
                         {!showCategoryValueSliders && (
                             <NumberInput numberValue={categoryData.value}
+                                         disabled={data.confirmed}
                                          onNumberChange={value => onCategoryValueChange(category, value)} />
                         )}
                     </XStack>
@@ -198,12 +225,14 @@ function EditorComponent({ noteTag, note, notu, refreshCallback }: NoteTagDataCo
             <XStack style={{alignItems: 'center'}}>
                 <Label width={labelWidth}>Effective Start</Label>
                 <NotuDateTimePicker hideTime value={data.effectiveStart}
+                                    disabled={data.confirmed}
                                     onChange={onEffectiveStartChange} />
             </XStack>
 
             <XStack style={{alignItems: 'center'}}>
                 <Label width={labelWidth}>Effective End</Label>
                 <NotuDateTimePicker hideTime value={data.effectiveEnd}
+                                    disabled={data.confirmed}
                                     onChange={onEffectiveEndChange} />
             </XStack>
 
