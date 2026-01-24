@@ -6,6 +6,7 @@ import { CommonSpace } from "../common/CommonSpace";
 import { DurationData } from "../common/DurationNoteTagData";
 import { RecurringData } from "../common/RecurringNoteTagData";
 import { ScheduledData } from "../common/ScheduledNoteTagData";
+import { ProcessesSpace } from "../processes/ProcessesSpace";
 import { TasksSpace } from "../tasks/TasksSpace";
 import { CelebrationEventsProcessData } from "./CelebrationEventsProcessNoteTagData";
 import { PeopleSpace } from "./PeopleSpace";
@@ -28,12 +29,16 @@ export class CelebrationEventsProcessContext {
     private _calendar: CalendarSpace;
     get calendarSpace(): CalendarSpace { return this._calendar; }
 
+    private _processes: ProcessesSpace;
+    get processesSpace(): ProcessesSpace { return this._processes; }
+
     constructor(notu: Notu) {
         this._notu = notu;
         this._people = new PeopleSpace(notu);
         this._common = new CommonSpace(notu);
         this._tasks = new TasksSpace(notu);
         this._calendar = new CalendarSpace(notu);
+        this._processes = new ProcessesSpace(notu);
     }
 
     async getPeopleAndCircles(): Promise<Array<Note>> {
@@ -79,7 +84,7 @@ export class CelebrationEventsProcessContext {
                     this._people.space.id
                 ))[0];
                 this._processData = new CelebrationEventsProcessData(
-                    processNote.getTag(this.commonSpace.process)
+                    processNote.getTag(this.processesSpace.process)
                 );
             }
             return this._processData;

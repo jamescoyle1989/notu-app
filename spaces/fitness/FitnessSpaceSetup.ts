@@ -1,5 +1,5 @@
 import { Note, Notu, Page, Space } from "notu";
-import { CommonSpace } from "../common/CommonSpace";
+import { ProcessesSpace } from "../processes/ProcessesSpace";
 import { GenerateWorkoutProcessData } from "./GenerateWorkoutProcessNoteTagData";
 
 export class FitnessSpaceSetup {
@@ -34,12 +34,12 @@ export class FitnessSpaceSetup {
                 exercise
             ]);
 
-            const commonSpace = new CommonSpace(notu);
+            const processesSpace = new ProcessesSpace(notu);
 
             const generateWorkoutProcess = new Note(`This process will automatically generate exercises for the selected workout. Once exercise suggestions have been generated, they will be displayed on screen so the user can confirm which exercise options they want to go with.`)
                 .in(fitnessSpace).setOwnTag(this.generateWorkoutProcess);
             generateWorkoutProcess.ownTag.asInternal();
-            const processData = GenerateWorkoutProcessData.addTag(generateWorkoutProcess, commonSpace);
+            const processData = GenerateWorkoutProcessData.addTag(generateWorkoutProcess, processesSpace);
             processData.saveExercisesToSpaceId = fitnessSpace.id;
             await notu.saveNotes([generateWorkoutProcess]);
 
@@ -48,7 +48,7 @@ export class FitnessSpaceSetup {
             internalsPage.order = 50;
             internalsPage.group = 'Fitness';
             internalsPage.space = fitnessSpace;
-            internalsPage.query = `t.isInternal OR #Common.Process`;
+            internalsPage.query = `t.isInternal OR #Processes.Process`;
             await notu.savePage(internalsPage);
 
             const metricsPage = new Page();

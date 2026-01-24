@@ -1,5 +1,5 @@
 import { Note, Notu, Page, Space } from "notu";
-import { CommonSpace } from "../common/CommonSpace";
+import { ProcessesSpace } from "../processes/ProcessesSpace";
 import { ImportTransactionsProcessData } from "./ImportTransactionsProcessNoteTagData";
 
 export class MoneySpaceSetup {
@@ -65,12 +65,12 @@ Transactions also allow you to add categories to them. Each category that you ad
                 transaction
             ]);
 
-            const commonSpace = new CommonSpace(notu);
+            const processesSpace = new ProcessesSpace(notu);
 
             const importTransactionsProcess = new Note(`This process will allow you to select a file for the selected account and import transactions from it. The process will automatically detect transactions that have already been imported. If it finds any which appear similar, though slightly different to ones already imported, then it will flag them for your attention.`)
                 .in(moneySpace).setOwnTag(this.importTransactionsProcess);
             importTransactionsProcess.ownTag.asInternal();
-            const processData = ImportTransactionsProcessData.addTag(importTransactionsProcess, commonSpace);
+            const processData = ImportTransactionsProcessData.addTag(importTransactionsProcess, processesSpace);
             processData.saveTransactionsToSpaceId = moneySpace.id;
             await notu.saveNotes([importTransactionsProcess]);
 
@@ -79,7 +79,7 @@ Transactions also allow you to add categories to them. Each category that you ad
             internalsPage.order = 60;
             internalsPage.group = 'Money';
             internalsPage.space = moneySpace;
-            internalsPage.query = `t.isInternal OR #Common.Process`;
+            internalsPage.query = `t.isInternal OR #Processes.Process`;
             await notu.savePage(internalsPage);
 
             const currenciesPage = new Page();

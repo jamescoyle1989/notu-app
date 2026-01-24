@@ -6,6 +6,7 @@ import { DurationData } from "../common/DurationNoteTagData";
 import { FinishedData } from "../common/FinishedNoteTagData";
 import { RecurringData } from "../common/RecurringNoteTagData";
 import { ScheduledData } from "../common/ScheduledNoteTagData";
+import { ProcessesSpace } from "../processes/ProcessesSpace";
 import { CalendarSpace } from "./CalendarSpace";
 import { CalendarSpaceSetup } from "./CalendarSpaceSetup";
 import { RecurringEventsProcessData } from "./RecurringEventsProcessNoteTagData";
@@ -19,10 +20,14 @@ export class RecurringEventsProcessContext {
     private _common: CommonSpace;
     get commonSpace(): CommonSpace { return this._common; }
 
+    private _processes: ProcessesSpace;
+    get processesSpace(): ProcessesSpace { return this._processes; }
+
     constructor(notu: Notu) {
         this._notu = notu;
         this._calendar = new CalendarSpace(notu);
         this._common = new CommonSpace(notu);
+        this._processes = new ProcessesSpace(notu);
     }
 
     async getRecurringEvents(): Promise<Array<Note>> {
@@ -46,7 +51,7 @@ export class RecurringEventsProcessContext {
                     this._calendar.space.id
                 ))[0];
                 this._processData = new RecurringEventsProcessData(
-                    processNote.getTag(this.commonSpace.process)
+                    processNote.getTag(this.processesSpace.process)
                 );
             }
             return this._processData;

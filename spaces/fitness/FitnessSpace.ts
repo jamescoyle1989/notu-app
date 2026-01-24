@@ -1,8 +1,8 @@
 import { NoteAction, NoteActionsMenuBuilder } from "@/helpers/NoteAction";
 import { NoteTagDataComponentFactory } from "@/helpers/NotuRenderTools";
 import { Note, NoteTag, Notu, Space, Tag } from "notu";
-import { CommonSpaceSetup } from "../common/CommonSpaceSetup";
 import { LogicalSpace } from "../LogicalSpace";
+import { ProcessesSpaceSetup } from "../processes/ProcessesSpaceSetup";
 import ExerciseMetricDefNoteTagDataComponentFactory from "./ExerciseMetricDefNoteTagDataComponent";
 import ExerciseMetricNoteTagDataComponentFactory from "./ExerciseMetricNoteTagDataComponent";
 import ExerciseNoteTagDataComponentFactory from "./ExerciseNoteTagDataComponent";
@@ -129,8 +129,8 @@ export class FitnessSpace implements LogicalSpace {
         }
 
         if (
-            tag.space.internalName == CommonSpaceSetup.internalName &&
-            tag.name == CommonSpaceSetup.process &&
+            tag.space.internalName == ProcessesSpaceSetup.internalName &&
+            tag.name == ProcessesSpaceSetup.process &&
             note.ownTag?.isInternal &&
             note.ownTag?.name == FitnessSpaceSetup.generateWorkoutProcess
         )

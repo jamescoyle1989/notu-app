@@ -52,9 +52,6 @@ export class CommonSpace implements LogicalSpace {
     private _pinned: Tag;
     get pinned(): Tag { return this._pinned; }
 
-    private _process: Tag;
-    get process(): Tag { return this._process; }
-
     private _recurring: Tag;
     get recurring(): Tag { return this._recurring; }
 
@@ -86,7 +83,6 @@ export class CommonSpace implements LogicalSpace {
         this._log = notu.getTagByName(CommonSpaceSetup.log, this._space);
         this._memory = notu.getTagByName(CommonSpaceSetup.memory, this._space);
         this._pinned = notu.getTagByName(CommonSpaceSetup.pinned, this._space);
-        this._process = notu.getTagByName(CommonSpaceSetup.process, this._space);
         this._recurring = notu.getTagByName(CommonSpaceSetup.recurring, this._space);
         this._scheduled = notu.getTagByName(CommonSpaceSetup.scheduled, this._space);
         this._started = notu.getTagByName(CommonSpaceSetup.started, this._space);
@@ -114,13 +110,6 @@ export class CommonSpace implements LogicalSpace {
                         return new RefreshAction();
                     },
                     true
-                )
-            );
-        }
-        if (note.ownTag?.isInternal == true && !!note.getTag(this.process)) {
-            menuBuilder.addToTopOfStart(
-                new NoteAction('Edit',
-                    () => Promise.resolve(new ShowEditorAction(note))
                 )
             );
         }

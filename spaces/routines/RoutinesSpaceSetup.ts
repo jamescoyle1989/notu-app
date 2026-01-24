@@ -1,5 +1,5 @@
 import { Note, Notu, Page, Space } from "notu";
-import { CommonSpace } from "../common/CommonSpace";
+import { ProcessesSpace } from "../processes/ProcessesSpace";
 import { CompressRoutinesProcessData } from "./CompressRoutinesProcessNoteTagData";
 import { GenerateRoutinesProcessData } from "./GenerateRoutinesProcessNoteTagData";
 
@@ -22,20 +22,20 @@ export class RoutinesSpaceSetup {
 
             await notu.saveNotes([routine]);
 
-            const commonSpace = new CommonSpace(notu);
+            const processesSpace = new ProcessesSpace(notu);
 
             const generateRoutinesProcess = new Note(`
 This process will automatically generate notes from routine definitions according to the schedules that they've been set up with.
                 `)
                 .in(routinesSpace).setOwnTag(this.generateRoutinesProcess);
-            const generateProcessData = GenerateRoutinesProcessData.addTag(generateRoutinesProcess, commonSpace);
+            const generateProcessData = GenerateRoutinesProcessData.addTag(generateRoutinesProcess, processesSpace);
             generateProcessData.saveNotesToSpaceId = routinesSpace.id;
             
             const compressRoutinesProcess = new Note(`
 This process will automatically compress finished notes that were generated from routine definitions. Otherwise you end up with loads of notes that aren't particularly helpful. This process will boil those notes down into just one note that gives a summary of what routines were done on each day.
                 `)
                 .in(routinesSpace).setOwnTag(this.compressRoutinesProcess);
-            const compressProcessData = CompressRoutinesProcessData.addTag(compressRoutinesProcess, commonSpace);
+            const compressProcessData = CompressRoutinesProcessData.addTag(compressRoutinesProcess, processesSpace);
             compressProcessData.saveNotesToSpaceId = routinesSpace.id;
             
             await notu.saveNotes([
@@ -48,7 +48,7 @@ This process will automatically compress finished notes that were generated from
             internalsPage.order = 20;
             internalsPage.group = 'Routines';
             internalsPage.space = routinesSpace;
-            internalsPage.query = `t.isInternal OR #Common.Process`;
+            internalsPage.query = `t.isInternal OR #Processes.Process`;
             await notu.savePage(internalsPage);
             
             const routinesPage = new Page();

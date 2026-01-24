@@ -2,6 +2,7 @@ import { last, orderBy } from "es-toolkit";
 import { Note, NoteTag, Notu, Space, Tag } from "notu";
 import { CommonSpace } from "../common/CommonSpace";
 import { FinishedData } from "../common/FinishedNoteTagData";
+import { ProcessesSpace } from "../processes/ProcessesSpace";
 import { ExerciseMetricDefData } from "./ExerciseMetricDefNoteTagData";
 import { ExerciseMetricData } from "./ExerciseMetricNoteTagData";
 import { FitnessSpace } from "./FitnessSpace";
@@ -19,10 +20,14 @@ export class GenerateWorkoutProcessContext {
     private _common: CommonSpace;
     get commonSpace(): CommonSpace { return this._common; }
 
+    private _processes: ProcessesSpace;
+    get processesSpace(): ProcessesSpace { return this._processes; }
+
     constructor(notu: Notu) {
         this._notu = notu;
         this._fitness = new FitnessSpace(notu);
         this._common = new CommonSpace(notu);
+        this._processes = new ProcessesSpace(notu);
     }
 
     getWorkoutExerciseNTs(workout: Note): Array<NoteTag> {
@@ -55,7 +60,7 @@ export class GenerateWorkoutProcessContext {
                     this._fitness.space.id
                 ))[0];
                 this._processData = new GenerateWorkoutProcessData(
-                    processNote.getTag(this.commonSpace.process)
+                    processNote.getTag(this.processesSpace.process)
                 );
             }
             return this._processData;

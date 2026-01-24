@@ -1,13 +1,13 @@
 import { Note, NoteTag } from "notu";
-import { CommonSpace } from "../common/CommonSpace";
-import { CommonSpaceSetup } from "../common/CommonSpaceSetup";
+import { ProcessesSpace } from "../processes/ProcessesSpace";
+import { ProcessesSpaceSetup } from "../processes/ProcessesSpaceSetup";
 
 export class CelebrationEventsProcessData {
     private _nt: NoteTag;
     constructor(noteTag: NoteTag) {
         if (
-            noteTag.tag.name != CommonSpaceSetup.process ||
-            noteTag.tag.space.internalName != CommonSpaceSetup.internalName
+            noteTag.tag.name != ProcessesSpaceSetup.process ||
+            noteTag.tag.space.internalName != ProcessesSpaceSetup.internalName
         ) {
             throw Error('Attempted to create a note tag data helper for a notetag that it does not support');
         }
@@ -22,8 +22,8 @@ export class CelebrationEventsProcessData {
             return null;
         return new CelebrationEventsProcessData(noteTag);
     }
-    static addTag(note: Note, commonSpace: CommonSpace): CelebrationEventsProcessData {
-        return new CelebrationEventsProcessData(note.addTag(commonSpace.process));
+    static addTag(note: Note, processesSpace: ProcessesSpace): CelebrationEventsProcessData {
+        return new CelebrationEventsProcessData(note.addTag(processesSpace.process));
     }
 
     get saveEventsToSpaceId(): number { return this._nt.data.saveEventsToSpaceId; }

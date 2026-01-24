@@ -6,6 +6,7 @@ import { DurationData } from "../common/DurationNoteTagData";
 import { FinishedData } from "../common/FinishedNoteTagData";
 import { RecurringData } from "../common/RecurringNoteTagData";
 import { ScheduledData } from "../common/ScheduledNoteTagData";
+import { ProcessesSpace } from "../processes/ProcessesSpace";
 import { GenerateRoutinesProcessData } from "./GenerateRoutinesProcessNoteTagData";
 import { LinkedRoutineData, RoutineRelationType } from "./LinkedRoutineNoteTagData";
 import { RoutinesSpace } from "./RoutinesSpace";
@@ -20,10 +21,14 @@ export class GenerateRoutinesProcessContext {
     private _common: CommonSpace;
     get commonSpace(): CommonSpace { return this._common; }
 
+    private _processes: ProcessesSpace;
+    get processesSpace(): ProcessesSpace { return this._processes; }
+
     constructor(notu: Notu) {
         this._notu = notu;
         this._common = new CommonSpace(notu);
         this._routines = new RoutinesSpace(notu);
+        this._processes = new ProcessesSpace(notu);
     }
 
     async getActiveRoutines(): Promise<Array<Note>> {
@@ -64,7 +69,7 @@ export class GenerateRoutinesProcessContext {
                     this._routines.space.id
                 ))[0];
                 this._processData = new GenerateRoutinesProcessData(
-                    processNote.getTag(this.commonSpace.process)
+                    processNote.getTag(this.processesSpace.process)
                 );
             }
             return this._processData;

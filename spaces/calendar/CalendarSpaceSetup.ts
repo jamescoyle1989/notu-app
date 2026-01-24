@@ -1,5 +1,5 @@
 import { Note, Notu, Page, Space } from "notu";
-import { CommonSpace } from "../common/CommonSpace";
+import { ProcessesSpace } from "../processes/ProcessesSpace";
 import { RecurringEventsProcessData } from "./RecurringEventsProcessNoteTagData";
 
 export class CalendarSpaceSetup {
@@ -28,7 +28,7 @@ export class CalendarSpaceSetup {
                 tentative
             ]);
 
-            const commonSpace = new CommonSpace(notu);
+            const processesSpace = new ProcessesSpace(notu);
 
             const recurringEventsProcess = new Note(`
 This process will automatically generate calendar events out of celebrations for any people or social circles who have been linked to those celebrations. It will also optionally set up tasks in advance of the events to help you plan for those events. After all, what's the benefit of knowing it's your partner's birthday if you only remember the day of?
@@ -37,7 +37,7 @@ This process will find any definitions for recurring events (notes that define t
                 `)
                 .in(calendarSpace).setOwnTag(this.recurringEventsProcess);
             recurringEventsProcess.ownTag.asInternal();
-            const processData = RecurringEventsProcessData.addTag(recurringEventsProcess, commonSpace);
+            const processData = RecurringEventsProcessData.addTag(recurringEventsProcess, processesSpace);
             processData.saveEventsToSpaceId = calendarSpace.id;
             await notu.saveNotes([recurringEventsProcess]);
         
@@ -46,7 +46,7 @@ This process will find any definitions for recurring events (notes that define t
             internalsPage.order = 10;
             internalsPage.group = 'Calendar';
             internalsPage.space = calendarSpace;
-            internalsPage.query = `t.isInternal OR #Common.Process`;
+            internalsPage.query = `t.isInternal OR #Processes.Process`;
             await notu.savePage(internalsPage);
             
             const eventsPage = new Page();

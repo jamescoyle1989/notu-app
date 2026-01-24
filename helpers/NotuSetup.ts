@@ -7,6 +7,7 @@ import { CommonSpace } from '@/spaces/common/CommonSpace';
 import { FitnessSpace } from '@/spaces/fitness/FitnessSpace';
 import { MoneySpace } from '@/spaces/money/MoneySpace';
 import { PeopleSpace } from '@/spaces/people/PeopleSpace';
+import { ProcessesSpace } from '@/spaces/processes/ProcessesSpace';
 import { RoutinesSpace } from '@/spaces/routines/RoutinesSpace';
 import { TasksSpace } from '@/spaces/tasks/TasksSpace';
 import { NotuSQLiteCacheFetcher } from '@/sqlite/NotuSQLiteCacheFetcher';
@@ -53,6 +54,7 @@ export async function setupNotu(): Promise<NotuRenderTools> {
         ],
         [
             new CommonSpace(notuVal),
+            new ProcessesSpace(notuVal),
             new PeopleSpace(notuVal),
             new TasksSpace(notuVal),
             new CalendarSpace(notuVal),

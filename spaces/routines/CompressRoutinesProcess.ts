@@ -3,6 +3,7 @@ import { Note, NoteTag, Notu, Space, Tag } from "notu";
 import { CancelledData } from "../common/CancelledNoteTagData";
 import { CommonSpace } from "../common/CommonSpace";
 import { FinishedData } from "../common/FinishedNoteTagData";
+import { ProcessesSpace } from "../processes/ProcessesSpace";
 import { CompressRoutinesProcessData } from "./CompressRoutinesProcessNoteTagData";
 import { RoutinesSpace } from "./RoutinesSpace";
 import { RoutinesSpaceSetup } from "./RoutinesSpaceSetup";
@@ -15,6 +16,9 @@ export class CompressRoutinesProcessContext {
     
     private _common: CommonSpace;
     get commonSpace(): CommonSpace { return this._common; }
+
+    private _processes: ProcessesSpace;
+    get processesSpace(): ProcessesSpace { return this._processes; }
 
     constructor(notu: Notu) {
         this._notu = notu;
@@ -57,7 +61,7 @@ export class CompressRoutinesProcessContext {
                     this._routines.space.id
                 ))[0];
                 this._processData = new CompressRoutinesProcessData(
-                    processNote.getTag(this.commonSpace.process)
+                    processNote.getTag(this.processesSpace.process)
                 );
             }
             return this._processData;

@@ -3,6 +3,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from "expo-file-system";
 import { Note, Notu, Space } from "notu";
 import { CommonSpace } from '../common/CommonSpace';
+import { ProcessesSpace } from '../processes/ProcessesSpace';
 import { AccountData } from './AccountNoteTagData';
 import { CurrencyData } from './CurrencyNoteTagData';
 import { ImportTransactionsProcessData } from './ImportTransactionsProcessNoteTagData';
@@ -19,10 +20,14 @@ export class ImportTransactionProcessContext {
     private _common: CommonSpace;
     get commonSpace(): CommonSpace { return this._common; }
 
+    private _processes: ProcessesSpace;
+    get processesSpace(): ProcessesSpace { return this._processes; }
+
     constructor(notu: Notu) {
         this._notu = notu;
         this._money = new MoneySpace(notu);
         this._common = new CommonSpace(notu);
+        this._processes = new ProcessesSpace(notu);
     }
 
     async getAccountTransactions(account: Note): Promise<Array<Note>> {
@@ -51,7 +56,7 @@ export class ImportTransactionProcessContext {
                     this._money.space.id
                 ))[0];
                 this._processData = new ImportTransactionsProcessData(
-                    processNote.getTag(this.commonSpace.process)
+                    processNote.getTag(this.processesSpace.process)
                 );
             }
             return this._processData;
