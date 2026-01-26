@@ -46,6 +46,7 @@ This process will automatically generate calendar events out of celebrations for
                 `)
                 .in(peopleSpace).setOwnTag(this.celebrationEventsProcess);
             celebrationEventsProcess.ownTag.asInternal();
+            celebrationEventsProcess.addTag(processesSpace.pageProcess);
             const processData = CelebrationEventsProcessData.addTag(celebrationEventsProcess, processesSpace);
             processData.saveEventsToSpaceId = peopleSpace.id;
             processData.savePlanTasksToSpaceId = peopleSpace.id;

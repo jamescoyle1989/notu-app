@@ -37,6 +37,7 @@ This process will find any definitions for recurring events (notes that define t
                 `)
                 .in(calendarSpace).setOwnTag(this.recurringEventsProcess);
             recurringEventsProcess.ownTag.asInternal();
+            recurringEventsProcess.addTag(processesSpace.pageProcess);
             const processData = RecurringEventsProcessData.addTag(recurringEventsProcess, processesSpace);
             processData.saveEventsToSpaceId = calendarSpace.id;
             await notu.saveNotes([recurringEventsProcess]);

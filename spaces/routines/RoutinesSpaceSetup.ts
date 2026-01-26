@@ -28,6 +28,8 @@ export class RoutinesSpaceSetup {
 This process will automatically generate notes from routine definitions according to the schedules that they've been set up with.
                 `)
                 .in(routinesSpace).setOwnTag(this.generateRoutinesProcess);
+            generateRoutinesProcess.ownTag.asInternal();
+            generateRoutinesProcess.addTag(processesSpace.pageProcess);
             const generateProcessData = GenerateRoutinesProcessData.addTag(generateRoutinesProcess, processesSpace);
             generateProcessData.saveNotesToSpaceId = routinesSpace.id;
             
@@ -35,6 +37,8 @@ This process will automatically generate notes from routine definitions accordin
 This process will automatically compress finished notes that were generated from routine definitions. Otherwise you end up with loads of notes that aren't particularly helpful. This process will boil those notes down into just one note that gives a summary of what routines were done on each day.
                 `)
                 .in(routinesSpace).setOwnTag(this.compressRoutinesProcess);
+            compressRoutinesProcess.ownTag.asInternal();
+            compressRoutinesProcess.addTag(processesSpace.pageProcess);
             const compressProcessData = CompressRoutinesProcessData.addTag(compressRoutinesProcess, processesSpace);
             compressProcessData.saveNotesToSpaceId = routinesSpace.id;
             
