@@ -1,13 +1,12 @@
-import { NotuRenderTools } from "@/helpers/NotuRenderTools";
 import { NotuText } from "@/helpers/NotuStyles";
 import { sortBy } from 'es-toolkit';
-import { Space, Tag } from "notu";
+import { Notu, Space, Tag } from "notu";
 import { useMemo, useState } from "react";
 import { Accordion, Input, ScrollView, View, YGroup, YStack } from "tamagui";
 import TagBadge from "./TagBadge";
 
 interface TagFinderProps {
-    notuRenderTools: NotuRenderTools,
+    notu: Notu,
     onTagSelected: (tag: Tag) => void,
     tagsToAvoid: Array<Tag>
 }
@@ -30,17 +29,17 @@ class TagGrouping {
 
 
 export default function TagFinder({
-    notuRenderTools,
+    notu,
     onTagSelected,
     tagsToAvoid
 }: TagFinderProps) {
 
     const tagGroupings = useMemo(() => {
-        return sortBy(notuRenderTools.notu.getSpaces(), [x => x.name])
+        return sortBy(notu.getSpaces(), [x => x.name])
             .map(space => {
                 const grouping = new TagGrouping(space);
                 grouping.children = sortBy(
-                    notuRenderTools.notu.getTags(space)
+                    notu.getTags(space)
                         .filter(x => !tagsToAvoid.find(y => x.id == y.id)),
                     [x => x.name]
                 );
@@ -56,7 +55,7 @@ export default function TagFinder({
     function onFilterChange(text: string) {
         const upperText = text.toUpperCase();
         setFilter(text);
-        const allTags = notuRenderTools.notu.getTags()
+        const allTags = notu.getTags()
             .filter(x => !tagsToAvoid.find(y => x.id == y.id));
 
         const results = new Array<Tag>();
@@ -88,7 +87,7 @@ export default function TagFinder({
                             <YGroup.Item key={tag.id}>
                                 <View onPress={() => onTagSelected(tag)} marginBlock={5} flex={1} flexDirection="row">
                                     <TagBadge tag={tag}
-                                              notuRenderTools={notuRenderTools}
+                                              notu={notu}
                                               contextSpace={null}
                                               useUniqueName={false} />
                                 </View>
@@ -127,7 +126,7 @@ export default function TagFinder({
                                                 <View onPress={() => onTagSelected(tag)} marginBlock={5}
                                                       flex={1} flexDirection="row">
                                                     <TagBadge tag={tag}
-                                                              notuRenderTools={notuRenderTools}
+                                                              notu={notu}
                                                               contextSpace={grouping.space}
                                                               useUniqueName={false} />
                                                 </View>

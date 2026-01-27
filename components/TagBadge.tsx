@@ -1,13 +1,12 @@
 import { NotuText } from '@/helpers/NotuStyles';
 import { X } from '@tamagui/lucide-icons';
-import { Space, Tag } from 'notu';
+import { Notu, Space, Tag } from 'notu';
 import { View, ViewProps } from 'tamagui';
 import { getTextContrastColor } from '../helpers/ColorHelpers';
-import { NotuRenderTools } from '../helpers/NotuRenderTools';
 
 interface TagBadgeProps {
     tag: Tag,
-    notuRenderTools: NotuRenderTools,
+    notu: Notu,
     contextSpace: Space,
     onDelete?: () => void,
     useUniqueName?: boolean
@@ -19,7 +18,7 @@ export default function TagBadge(
 ) {
     
     const tagDisplayName = props.useUniqueName 
-        ? props.tag.getUniqueName(props.notuRenderTools.notu.cache) 
+        ? props.tag.getUniqueName(props.notu.cache) 
         : props.tag.getQualifiedName(props.contextSpace?.id);
 
     const backgroundColor = props.tag.color ?? '#AABBCC';

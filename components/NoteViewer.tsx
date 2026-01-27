@@ -110,7 +110,7 @@ export const NoteViewer = ({
                         {!!note.ownTag && ([
                             <TagBadge key="badge"
                                     tag={note.ownTag}
-                                    notuRenderTools={notuRenderTools}
+                                    notu={notuRenderTools.notu}
                                     contextSpace={note.space}
                                     marginBlockStart={1} />,
                             <Tag key="icon" size={15} marginEnd={5} />

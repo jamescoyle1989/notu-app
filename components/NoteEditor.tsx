@@ -163,9 +163,9 @@ export default function NoteEditor({
                             <Dialog.Content bordered elevate
                                             width="80%"
                                             key="noteeditortagselectorcontent">
-                                <TagFinder notuRenderTools={notuRenderTools}
-                                        onTagSelected={onTagSelected}
-                                        tagsToAvoid={note.tags.map(x => x.tag)} />
+                                <TagFinder notu={notuRenderTools.notu}
+                                           onTagSelected={onTagSelected}
+                                           tagsToAvoid={note.tags.map(x => x.tag)} />
                             </Dialog.Content>
                         </Dialog.FocusScope>
                     </Dialog.Portal>

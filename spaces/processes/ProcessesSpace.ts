@@ -2,6 +2,7 @@ import { NoteAction, NoteActionsMenuBuilder, ShowEditorAction } from "@/helpers/
 import { NoteTagDataComponentFactory } from "@/helpers/NotuRenderTools";
 import { Note, Notu, Space, Tag } from "notu";
 import { LogicalSpace } from "../LogicalSpace";
+import CreateNoteProcessNoteTagDataComponentFactory from "./CreateNoteProcessNoteTagDataComponent";
 import { ProcessesSpaceSetup } from "./ProcessesSpaceSetup";
 
 export class ProcessesSpace implements LogicalSpace {
@@ -61,6 +62,10 @@ export class ProcessesSpace implements LogicalSpace {
 
 
     resolveNoteTagDataComponentFactory(tag: Tag, note: Note): NoteTagDataComponentFactory | null {
+        if (tag.space.internalName == ProcessesSpaceSetup.internalName) {
+            if (tag.name == ProcessesSpaceSetup.createNoteProcess)
+                return new CreateNoteProcessNoteTagDataComponentFactory();
+        }
         return null;
     }
 }

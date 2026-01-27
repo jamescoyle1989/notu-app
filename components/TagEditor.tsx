@@ -91,7 +91,7 @@ export default function TagEditor({
                                         key="tageditorexistingcolorscontent">
                             <NotuText bold>Copy color from tag...</NotuText>
 
-                            <TagFinder notuRenderTools={notuRenderTools}
+                            <TagFinder notu={notuRenderTools.notu}
                                        onTagSelected={onCopyTagColor}
                                        tagsToAvoid={notuRenderTools.notu.getTags().filter(x => x.color == null)} />
                         </Dialog.Content>
