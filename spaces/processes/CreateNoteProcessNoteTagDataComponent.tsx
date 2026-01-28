@@ -56,6 +56,11 @@ function EditorComponent({ noteTag, notu }: NoteTagDataComponentProps) {
         setShowTagSelector(false);
     }
 
+    function handleTagRemoval(tag: Tag) {
+        data.tagIds = data.tagIds.filter(x => x != tag.id);
+        manualRefresh();
+    }
+
     return (
         <YStack>
             <XStack style={{alignItems: 'center'}}>
@@ -75,7 +80,8 @@ function EditorComponent({ noteTag, notu }: NoteTagDataComponentProps) {
                     <TagBadge key={tag.id}
                               tag={tag}
                               notu={notu}
-                              contextSpace={null} />
+                              contextSpace={null}
+                              onDelete={() => handleTagRemoval(tag)} />
                 ))}
             </XStack>
             <NotuButton onPress={handleAddTagPress}

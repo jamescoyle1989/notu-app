@@ -13,6 +13,7 @@ export class CommonSpaceSetup {
     static get journal(): string { return 'Journal'; }
     static get log(): string { return 'Log'; }
     static get memory(): string { return 'Memory'; }
+    static get page(): string { return 'Page'; }
     static get pinned(): string { return 'Pinned'; }
     static get recurring(): string { return 'Recurring'; }
     static get scheduled(): string { return 'Scheduled'; }
@@ -70,6 +71,10 @@ export class CommonSpaceSetup {
                 .in(commonSpace).setOwnTag(this.memory);
             memory.ownTag.asInternal();
 
+            const page = new Note(`Adding this tag to a note marks it as being a page which can be displayed.`)
+                .in(commonSpace).setOwnTag(this.page);
+            page.ownTag.asInternal();
+
             const pinned = new Note('Adding this tag to a note is an easy way to highlight that the note is important and should remain on top of your mind.')
                 .in(commonSpace).setOwnTag(this.pinned);
             pinned.ownTag.asInternal();
@@ -101,6 +106,7 @@ export class CommonSpaceSetup {
                 journal,
                 log,
                 memory,
+                page,
                 pinned,
                 recurring,
                 scheduled,

@@ -7,6 +7,7 @@ import CancelledNoteTagDataComponentFactory from "./CancelledNoteTagDataComponen
 import { CommonSpaceSetup } from "./CommonSpaceSetup";
 import DurationNoteTagDataComponentFactory from "./DurationNoteTagDataComponent";
 import FinishedNoteTagDataComponentFactory from "./FinishedNoteTagDataComponent";
+import PageNoteTagDataComponentFactory from "./PageNoteTagDataComponent";
 import RecurringNoteTagDataComponentFactory from "./RecurringNoteTagDataComponent";
 import ScheduledNoteTagDataComponentFactory from "./ScheduledNoteTagDataComponent";
 import StartedNoteTagDataComponentFactory from "./StartedNoteTagDataComponent";
@@ -49,6 +50,9 @@ export class CommonSpace implements LogicalSpace {
     private _memory: Tag;
     get memory(): Tag { return this._memory; }
 
+    private _page: Tag;
+    get page(): Tag { return this._page; }
+
     private _pinned: Tag;
     get pinned(): Tag { return this._pinned; }
 
@@ -82,6 +86,7 @@ export class CommonSpace implements LogicalSpace {
         this._journal = notu.getTagByName(CommonSpaceSetup.journal, this._space);
         this._log = notu.getTagByName(CommonSpaceSetup.log, this._space);
         this._memory = notu.getTagByName(CommonSpaceSetup.memory, this._space);
+        this._page = notu.getTagByName(CommonSpaceSetup.page, this._space);
         this._pinned = notu.getTagByName(CommonSpaceSetup.pinned, this._space);
         this._recurring = notu.getTagByName(CommonSpaceSetup.recurring, this._space);
         this._scheduled = notu.getTagByName(CommonSpaceSetup.scheduled, this._space);
@@ -126,6 +131,8 @@ export class CommonSpace implements LogicalSpace {
                 return new DurationNoteTagDataComponentFactory();
             if (tag.name == CommonSpaceSetup.finished)
                 return new FinishedNoteTagDataComponentFactory();
+            if (tag.name == CommonSpaceSetup.page)
+                return new PageNoteTagDataComponentFactory();
             if (tag.name == CommonSpaceSetup.recurring)
                 return new RecurringNoteTagDataComponentFactory();
             if (tag.name == CommonSpaceSetup.started)
