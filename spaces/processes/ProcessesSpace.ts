@@ -4,6 +4,7 @@ import { Note, Notu, Space, Tag } from "notu";
 import { LogicalSpace } from "../LogicalSpace";
 import CreateNoteProcessNoteTagDataComponentFactory from "./CreateNoteProcessNoteTagDataComponent";
 import { ProcessesSpaceSetup } from "./ProcessesSpaceSetup";
+import ProcessNoteTagDataComponentFactory from "./ProcessNoteTagDataComponent";
 
 export class ProcessesSpace implements LogicalSpace {
 
@@ -61,6 +62,9 @@ export class ProcessesSpace implements LogicalSpace {
         if (tag.space.internalName == ProcessesSpaceSetup.internalName) {
             if (tag.name == ProcessesSpaceSetup.createNoteProcess)
                 return new CreateNoteProcessNoteTagDataComponentFactory();
+
+            if (tag.name == ProcessesSpaceSetup.process)
+                return new ProcessNoteTagDataComponentFactory();
         }
         return null;
     }
