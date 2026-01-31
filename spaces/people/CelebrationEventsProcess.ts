@@ -6,11 +6,9 @@ import { CommonSpace } from "../common/CommonSpace";
 import { DurationData } from "../common/DurationNoteTagData";
 import { RecurringData } from "../common/RecurringNoteTagData";
 import { ScheduledData } from "../common/ScheduledNoteTagData";
-import { ProcessesSpace } from "../processes/ProcessesSpace";
 import { TasksSpace } from "../tasks/TasksSpace";
 import { CelebrationEventsProcessData } from "./CelebrationEventsProcessNoteTagData";
 import { PeopleSpace } from "./PeopleSpace";
-import { PeopleSpaceSetup } from "./PeopleSpaceSetup";
 import { PersonCelebrationData } from "./PersonCelebrationNoteTagData";
 
 
@@ -29,16 +27,13 @@ export class CelebrationEventsProcessContext {
     private _calendar: CalendarSpace;
     get calendarSpace(): CalendarSpace { return this._calendar; }
 
-    private _processes: ProcessesSpace;
-    get processesSpace(): ProcessesSpace { return this._processes; }
-
-    constructor(notu: Notu) {
+    constructor(processData: CelebrationEventsProcessData, notu: Notu) {
         this._notu = notu;
         this._people = new PeopleSpace(notu);
         this._common = new CommonSpace(notu);
         this._tasks = new TasksSpace(notu);
         this._calendar = new CalendarSpace(notu);
-        this._processes = new ProcessesSpace(notu);
+        this._processData = processData;
     }
 
     async getPeopleAndCircles(): Promise<Array<Note>> {
@@ -76,29 +71,12 @@ export class CelebrationEventsProcessContext {
     }
 
     private _processData: CelebrationEventsProcessData;
-    private async _loadProcessData(): Promise<CelebrationEventsProcessData> {
-        try {
-            if (!this._processData) {
-                const processNote = (await this._notu.getNotes(
-                    `@[${PeopleSpaceSetup.celebrationEventsProcess}]`,
-                    this._people.space.id
-                ))[0];
-                this._processData = new CelebrationEventsProcessData(
-                    processNote.getTag(this.processesSpace.process)
-                );
-            }
-            return this._processData;
-        }
-        catch {
-            throw new Error(`Failed to load Generate Celebration Events Process data`);
-        }
-    }
-    async getSpaceToSaveEventsTo(): Promise<Space> {
-        const spaceId = (await this._loadProcessData()).saveEventsToSpaceId;
+    getSpaceToSaveEventsTo(): Space {
+        const spaceId = this._processData.saveEventsToSpaceId;
         return this._notu.getSpace(spaceId);
     }
-    async getSpaceToSaveRemindersTo(): Promise<Space> {
-        const spaceId = (await this._loadProcessData()).savePlanTasksToSpaceId;
+    getSpaceToSaveRemindersTo(): Space {
+        const spaceId = this._processData.savePlanTasksToSpaceId;
         return this._notu.getSpace(spaceId);
     }
 }
@@ -108,8 +86,8 @@ export async function generateCelebrationNotes(
     context: CelebrationEventsProcessContext
 ): Promise<Array<Note>> {
 
-    const spaceToSaveEventsTo = await context.getSpaceToSaveEventsTo();
-    const spaceToSaveRemindersTo = await context.getSpaceToSaveRemindersTo();
+    const spaceToSaveEventsTo = context.getSpaceToSaveEventsTo();
+    const spaceToSaveRemindersTo = context.getSpaceToSaveRemindersTo();
     if (!spaceToSaveEventsTo || !spaceToSaveRemindersTo) {
         throw new Error(`Check your Generate Celebration Events Process configuration. It appears to be pointing to non-existent spaces.`)
     }

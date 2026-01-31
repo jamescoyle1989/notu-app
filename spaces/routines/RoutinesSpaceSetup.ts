@@ -1,7 +1,5 @@
 import { Note, Notu, Page, Space } from "notu";
 import { ProcessesSpace } from "../processes/ProcessesSpace";
-import { CompressRoutinesProcessData } from "./CompressRoutinesProcessNoteTagData";
-import { GenerateRoutinesProcessData } from "./GenerateRoutinesProcessNoteTagData";
 
 export class RoutinesSpaceSetup {
     static get internalName(): string { return 'com.decoyspace.notu.routines'; }
@@ -29,18 +27,14 @@ This process will automatically generate notes from routine definitions accordin
                 `)
                 .in(routinesSpace).setOwnTag(this.generateRoutinesProcess);
             generateRoutinesProcess.ownTag.asInternal();
-            generateRoutinesProcess.addTag(processesSpace.pageProcess);
-            const generateProcessData = GenerateRoutinesProcessData.addTag(generateRoutinesProcess, processesSpace);
-            generateProcessData.saveNotesToSpaceId = routinesSpace.id;
+            generateRoutinesProcess.addTag(processesSpace.process);
             
             const compressRoutinesProcess = new Note(`
 This process will automatically compress finished notes that were generated from routine definitions. Otherwise you end up with loads of notes that aren't particularly helpful. This process will boil those notes down into just one note that gives a summary of what routines were done on each day.
                 `)
                 .in(routinesSpace).setOwnTag(this.compressRoutinesProcess);
             compressRoutinesProcess.ownTag.asInternal();
-            compressRoutinesProcess.addTag(processesSpace.pageProcess);
-            const compressProcessData = CompressRoutinesProcessData.addTag(compressRoutinesProcess, processesSpace);
-            compressProcessData.saveNotesToSpaceId = routinesSpace.id;
+            compressRoutinesProcess.addTag(processesSpace.process);
             
             await notu.saveNotes([
                 generateRoutinesProcess,

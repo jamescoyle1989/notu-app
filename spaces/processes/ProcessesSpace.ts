@@ -13,11 +13,8 @@ export class ProcessesSpace implements LogicalSpace {
     private _process: Tag;
     get process(): Tag { return this._process; }
 
-    private _noteProcess: Tag;
-    get noteProcess(): Tag { return this._noteProcess; }
-
-    private _pageProcess: Tag;
-    get pageProcess(): Tag { return this._pageProcess; }
+    private _processAvailability: Tag;
+    get processAvailability(): Tag { return this._processAvailability; }
 
     private _createNoteProcess: Tag;
     get createNoteProcess(): Tag { return this._createNoteProcess; }
@@ -36,8 +33,7 @@ export class ProcessesSpace implements LogicalSpace {
     private _load(notu: Notu) {
         this._space = notu.getSpaceByInternalName(ProcessesSpaceSetup.internalName);
         this._process = notu.getTagByName(ProcessesSpaceSetup.process, this._space);
-        this._noteProcess = notu.getTagByName(ProcessesSpaceSetup.noteProcess, this._space);
-        this._pageProcess = notu.getTagByName(ProcessesSpaceSetup.pageProcess, this._space);
+        this._processAvailability = notu.getTagByName(ProcessesSpaceSetup.processAvailability, this._space);
         this._createNoteProcess = notu.getTagByName(ProcessesSpaceSetup.createNoteProcess, this._space);
         this._editNoteProcess = notu.getTagByName(ProcessesSpaceSetup.editNoteProcess, this._space);
         this._deleteNoteProcess = notu.getTagByName(ProcessesSpaceSetup.deleteNoteProcess, this._space);

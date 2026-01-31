@@ -3,12 +3,10 @@ import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from "expo-file-system";
 import { Note, Notu, Space } from "notu";
 import { CommonSpace } from '../common/CommonSpace';
-import { ProcessesSpace } from '../processes/ProcessesSpace';
 import { AccountData } from './AccountNoteTagData';
 import { CurrencyData } from './CurrencyNoteTagData';
 import { ImportTransactionsProcessData } from './ImportTransactionsProcessNoteTagData';
 import { MoneySpace } from './MoneySpace';
-import { MoneySpaceSetup } from './MoneySpaceSetup';
 import { TransactionData } from './TransactionNoteTagData';
 
 export class ImportTransactionProcessContext {
@@ -20,14 +18,11 @@ export class ImportTransactionProcessContext {
     private _common: CommonSpace;
     get commonSpace(): CommonSpace { return this._common; }
 
-    private _processes: ProcessesSpace;
-    get processesSpace(): ProcessesSpace { return this._processes; }
-
-    constructor(notu: Notu) {
+    constructor(processData: ImportTransactionsProcessData, notu: Notu) {
         this._notu = notu;
         this._money = new MoneySpace(notu);
         this._common = new CommonSpace(notu);
-        this._processes = new ProcessesSpace(notu);
+        this._processData = processData;
     }
 
     async getAccountTransactions(account: Note): Promise<Array<Note>> {
@@ -48,25 +43,8 @@ export class ImportTransactionProcessContext {
     }
     
     private _processData: ImportTransactionsProcessData;
-    private async _loadProcessData(): Promise<ImportTransactionsProcessData> {
-        try {
-            if (!this._processData) {
-                const processNote = (await this._notu.getNotes(
-                    `@[${MoneySpaceSetup.importTransactionsProcess}]`,
-                    this._money.space.id
-                ))[0];
-                this._processData = new ImportTransactionsProcessData(
-                    processNote.getTag(this.processesSpace.process)
-                );
-            }
-            return this._processData;
-        }
-        catch {
-            throw new Error(`Failed to load Generate Workout Process data`);
-        }
-    }
-    async getSpaceToSaveTransactionsTo(): Promise<Space> {
-        const spaceId = (await this._loadProcessData()).saveTransactionsToSpaceId;
+    getSpaceToSaveTransactionsTo(): Space {
+        const spaceId = this._processData.saveTransactionsToSpaceId;
         return this._notu.getSpace(spaceId);
     }
 }
@@ -286,7 +264,7 @@ export class CsvTransactionImporter implements TransactionImporter {
                 continue;
 
             const note = new Note(line[this.textColumn])
-                .in(await context.getSpaceToSaveTransactionsTo())
+                .in(context.getSpaceToSaveTransactionsTo())
                 .at(date.toDate());
             
             const transactionData = TransactionData.addTag(note, context.moneySpace);

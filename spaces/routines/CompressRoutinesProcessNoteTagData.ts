@@ -1,13 +1,13 @@
 import { Note, NoteTag } from "notu";
-import { ProcessesSpace } from "../processes/ProcessesSpace";
-import { ProcessesSpaceSetup } from "../processes/ProcessesSpaceSetup";
+import { RoutinesSpace } from "./RoutinesSpace";
+import { RoutinesSpaceSetup } from "./RoutinesSpaceSetup";
 
 export class CompressRoutinesProcessData {
     private _nt: NoteTag;
     constructor(noteTag: NoteTag) {
         if (
-            noteTag.tag.name != ProcessesSpaceSetup.process ||
-            noteTag.tag.space.internalName != ProcessesSpaceSetup.internalName
+            noteTag.tag.name != RoutinesSpaceSetup.compressRoutinesProcess ||
+            noteTag.tag.space.internalName != RoutinesSpaceSetup.internalName
         ) {
             throw Error('Attempted to create a note tag data helper for a notetag that it does not support.');
         }
@@ -21,8 +21,8 @@ export class CompressRoutinesProcessData {
             return null;
         return new CompressRoutinesProcessData(noteTag);
     }
-    static addTag(note: Note, processesSpace: ProcessesSpace): CompressRoutinesProcessData {
-        return new CompressRoutinesProcessData(note.addTag(processesSpace.process));
+    static addTag(note: Note, routinesSpace: RoutinesSpace): CompressRoutinesProcessData {
+        return new CompressRoutinesProcessData(note.addTag(routinesSpace.compressRoutinesProcess));
     }
 
     get saveNotesToSpaceId(): number { return this._nt.data.saveNotesToSpaceId; }

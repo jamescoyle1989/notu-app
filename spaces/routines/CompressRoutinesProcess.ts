@@ -3,10 +3,8 @@ import { Note, NoteTag, Notu, Space, Tag } from "notu";
 import { CancelledData } from "../common/CancelledNoteTagData";
 import { CommonSpace } from "../common/CommonSpace";
 import { FinishedData } from "../common/FinishedNoteTagData";
-import { ProcessesSpace } from "../processes/ProcessesSpace";
 import { CompressRoutinesProcessData } from "./CompressRoutinesProcessNoteTagData";
 import { RoutinesSpace } from "./RoutinesSpace";
-import { RoutinesSpaceSetup } from "./RoutinesSpaceSetup";
 
 export class CompressRoutinesProcessContext {
     private _notu: Notu;
@@ -17,13 +15,11 @@ export class CompressRoutinesProcessContext {
     private _common: CommonSpace;
     get commonSpace(): CommonSpace { return this._common; }
 
-    private _processes: ProcessesSpace;
-    get processesSpace(): ProcessesSpace { return this._processes; }
-
-    constructor(notu: Notu) {
+    constructor(processData: CompressRoutinesProcessData, notu: Notu) {
         this._notu = notu;
         this._routines = new RoutinesSpace(notu);
         this._common = new CommonSpace(notu);
+        this._processData = processData;
     }
 
     async getCompressableRoutines(): Promise<Array<Tag>> {
@@ -53,25 +49,8 @@ export class CompressRoutinesProcessContext {
     }
     
     private _processData: CompressRoutinesProcessData;
-    private async _loadProcessData(): Promise<CompressRoutinesProcessData> {
-        try {
-            if (!this._processData) {
-                const processNote = (await this._notu.getNotes(
-                    `@[${RoutinesSpaceSetup.compressRoutinesProcess}]`,
-                    this._routines.space.id
-                ))[0];
-                this._processData = new CompressRoutinesProcessData(
-                    processNote.getTag(this.processesSpace.process)
-                );
-            }
-            return this._processData;
-        }
-        catch {
-            throw new Error(`Failed to load Compress Routines Process data`);
-        }
-    }
-    async getSpaceToSaveNotesTo(): Promise<Space> {
-        const spaceId = (await this._loadProcessData()).saveNotesToSpaceId;
+    getSpaceToSaveNotesTo(): Space {
+        const spaceId = this._processData.saveNotesToSpaceId;
         return this._notu.getSpace(spaceId);
     }
 }
@@ -81,7 +60,7 @@ export async function compressRoutineTasks(
     context: CompressRoutinesProcessContext
 ): Promise<Array<Note>> {
 
-    const spaceToSaveNotesTo = await context.getSpaceToSaveNotesTo();
+    const spaceToSaveNotesTo = context.getSpaceToSaveNotesTo();
     if (!spaceToSaveNotesTo) {
         throw new Error(`Check your Compress Routines Process configuration. It appears to be pointing to non-existent spaces.`);
     }

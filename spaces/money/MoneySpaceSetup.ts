@@ -1,6 +1,5 @@
 import { Note, Notu, Page, Space } from "notu";
 import { ProcessesSpace } from "../processes/ProcessesSpace";
-import { ImportTransactionsProcessData } from "./ImportTransactionsProcessNoteTagData";
 
 export class MoneySpaceSetup {
     static get internalName(): string { return 'com.decoyspace.notu.money'; }
@@ -70,9 +69,7 @@ Transactions also allow you to add categories to them. Each category that you ad
             const importTransactionsProcess = new Note(`This process will allow you to select a file for the selected account and import transactions from it. The process will automatically detect transactions that have already been imported. If it finds any which appear similar, though slightly different to ones already imported, then it will flag them for your attention.`)
                 .in(moneySpace).setOwnTag(this.importTransactionsProcess);
             importTransactionsProcess.ownTag.asInternal();
-            importTransactionsProcess.addTag(processesSpace.noteProcess);
-            const processData = ImportTransactionsProcessData.addTag(importTransactionsProcess, processesSpace);
-            processData.saveTransactionsToSpaceId = moneySpace.id;
+            importTransactionsProcess.addTag(processesSpace.process);
             await notu.saveNotes([importTransactionsProcess]);
 
             const internalsPage = new Page();

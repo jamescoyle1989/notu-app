@@ -1,6 +1,5 @@
 import { Note, Notu, Page, Space } from "notu";
 import { ProcessesSpace } from "../processes/ProcessesSpace";
-import { CelebrationEventsProcessData } from "./CelebrationEventsProcessNoteTagData";
 
 export class PeopleSpaceSetup {
     static get internalName(): string { return 'com.decoyspace.notu.people'; }
@@ -46,10 +45,7 @@ This process will automatically generate calendar events out of celebrations for
                 `)
                 .in(peopleSpace).setOwnTag(this.celebrationEventsProcess);
             celebrationEventsProcess.ownTag.asInternal();
-            celebrationEventsProcess.addTag(processesSpace.pageProcess);
-            const processData = CelebrationEventsProcessData.addTag(celebrationEventsProcess, processesSpace);
-            processData.saveEventsToSpaceId = peopleSpace.id;
-            processData.savePlanTasksToSpaceId = peopleSpace.id;
+            celebrationEventsProcess.addTag(processesSpace.process);
             await notu.saveNotes([celebrationEventsProcess]);
 
             const internalsPage = new Page();

@@ -1,6 +1,5 @@
 import { Note, Notu, Page, Space } from "notu";
 import { ProcessesSpace } from "../processes/ProcessesSpace";
-import { RecurringEventsProcessData } from "./RecurringEventsProcessNoteTagData";
 
 export class CalendarSpaceSetup {
     static get internalName(): string { return 'com.decoyspace.notu.calendar'; }
@@ -37,9 +36,7 @@ This process will find any definitions for recurring events (notes that define t
                 `)
                 .in(calendarSpace).setOwnTag(this.recurringEventsProcess);
             recurringEventsProcess.ownTag.asInternal();
-            recurringEventsProcess.addTag(processesSpace.pageProcess);
-            const processData = RecurringEventsProcessData.addTag(recurringEventsProcess, processesSpace);
-            processData.saveEventsToSpaceId = calendarSpace.id;
+            recurringEventsProcess.addTag(processesSpace.process);
             await notu.saveNotes([recurringEventsProcess]);
         
             const internalsPage = new Page();

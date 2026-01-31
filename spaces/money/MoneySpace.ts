@@ -2,16 +2,15 @@ import { NoteAction, NoteActionsMenuBuilder } from "@/helpers/NoteAction";
 import { NoteTagDataComponentFactory } from "@/helpers/NotuRenderTools";
 import { Note, Notu, Space, Tag } from "notu";
 import { LogicalSpace } from "../LogicalSpace";
-import { ProcessesSpaceSetup } from "../processes/ProcessesSpaceSetup";
 import AccountNoteTagDataComponentFactory from "./AccountNoteTagDataComponent";
 import BudgetCategoryNoteTagDataComponentFactory from "./BudgetCategoryNoteTagDataComponent";
 import BudgetNoteTagDataComponentFactory from "./BudgetNoteTagDataComponent";
 import CurrencyNoteTagDataComponentFactory from "./CurrencyNoteTagDataComponent";
 import { ImportTransactionProcessContext, importTransactions } from "./ImportTransactionsProcess";
+import { ImportTransactionsProcessData } from "./ImportTransactionsProcessNoteTagData";
 import ImportTransactionsProcessNoteTagDataComponentFactory from "./ImportTransactionsProcessNoteTagDataComponent";
 import { showProcessOutputScreen } from "./ImportTransactionsProcessUI";
 import { MoneySpaceSetup } from "./MoneySpaceSetup";
-import TransactionCategoryNoteTagDataComponentFactory from "./TransactionCategoryNoteTagDataComponent";
 import TransactionNoteTagDataComponentFactory from "./TransactionNoteTagDataComponent";
 
 export class MoneySpace implements LogicalSpace {
@@ -34,6 +33,9 @@ export class MoneySpace implements LogicalSpace {
     private _transaction: Tag;
     get transaction(): Tag { return this._transaction; }
 
+    private _importTransactionsProcess: Tag;
+    get importTransactionsProcess(): Tag { return this._importTransactionsProcess; }
+
 
     constructor(notu: Notu) {
         this._load(notu);
@@ -46,6 +48,7 @@ export class MoneySpace implements LogicalSpace {
         this._budgetCategory = notu.getTagByName(MoneySpaceSetup.budgetCategory, this._space);
         this._budget = notu.getTagByName(MoneySpaceSetup.budget, this._space);
         this._transaction = notu.getTagByName(MoneySpaceSetup.transaction, this._space);
+        this._importTransactionsProcess = notu.getTagByName(MoneySpaceSetup.importTransactionsProcess, this._space);
     }
 
 
@@ -62,7 +65,10 @@ export class MoneySpace implements LogicalSpace {
                     async () => {
                         try {
                             const newNoteOptions = await importTransactions(note,
-                                new ImportTransactionProcessContext(notu)
+                                new ImportTransactionProcessContext(
+                                    note.getTagData(this.importTransactionsProcess, ImportTransactionsProcessData),
+                                    notu
+                                )
                             );
                             return showProcessOutputScreen(note, newNoteOptions, notu);
                         }
@@ -92,19 +98,7 @@ export class MoneySpace implements LogicalSpace {
         if (tag == this.transaction)
             return new TransactionNoteTagDataComponentFactory();
 
-        if (
-            tag.linksTo(this.budgetCategory) &&
-            !!note.tags.find(x => x.tag.id == this.transaction.id)
-        ) {
-            return new TransactionCategoryNoteTagDataComponentFactory();
-        }
-
-        if (
-            tag.space.internalName == ProcessesSpaceSetup.internalName &&
-            tag.name == ProcessesSpaceSetup.process &&
-            note.ownTag?.isInternal &&
-            note.ownTag?.name == MoneySpaceSetup.importTransactionsProcess
-        )
+        if (tag == this.importTransactionsProcess)
             return new ImportTransactionsProcessNoteTagDataComponentFactory();
         
         return null;

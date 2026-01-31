@@ -2,11 +2,9 @@ import { last, orderBy } from "es-toolkit";
 import { Note, NoteTag, Notu, Space, Tag } from "notu";
 import { CommonSpace } from "../common/CommonSpace";
 import { FinishedData } from "../common/FinishedNoteTagData";
-import { ProcessesSpace } from "../processes/ProcessesSpace";
 import { ExerciseMetricDefData } from "./ExerciseMetricDefNoteTagData";
 import { ExerciseMetricData } from "./ExerciseMetricNoteTagData";
 import { FitnessSpace } from "./FitnessSpace";
-import { FitnessSpaceSetup } from "./FitnessSpaceSetup";
 import { GeneratedExerciseData } from "./GeneratedExerciseNoteTagData";
 import { GenerateWorkoutProcessData } from "./GenerateWorkoutProcessNoteTagData";
 import { WorkoutExerciseData } from "./WorkoutExerciseNoteTagData";
@@ -20,14 +18,11 @@ export class GenerateWorkoutProcessContext {
     private _common: CommonSpace;
     get commonSpace(): CommonSpace { return this._common; }
 
-    private _processes: ProcessesSpace;
-    get processesSpace(): ProcessesSpace { return this._processes; }
-
-    constructor(notu: Notu) {
+    constructor(processData: GenerateWorkoutProcessData, notu: Notu) {
         this._notu = notu;
         this._fitness = new FitnessSpace(notu);
         this._common = new CommonSpace(notu);
-        this._processes = new ProcessesSpace(notu);
+        this._processData = processData;
     }
 
     getWorkoutExerciseNTs(workout: Note): Array<NoteTag> {
@@ -52,25 +47,8 @@ export class GenerateWorkoutProcessContext {
     }
 
     private _processData: GenerateWorkoutProcessData;
-    private async _loadProcessData(): Promise<GenerateWorkoutProcessData> {
-        try {
-            if (!this._processData) {
-                const processNote = (await this._notu.getNotes(
-                    `@[${FitnessSpaceSetup.generateWorkoutProcess}]`,
-                    this._fitness.space.id
-                ))[0];
-                this._processData = new GenerateWorkoutProcessData(
-                    processNote.getTag(this.processesSpace.process)
-                );
-            }
-            return this._processData;
-        }
-        catch {
-            throw new Error(`Failed to load Generate Workout Process data`);
-        }
-    }
-    async getSpaceToSaveExercisesTo(): Promise<Space> {
-        const spaceId = (await this._loadProcessData()).saveExercisesToSpaceId;
+    getSpaceToSaveExercisesTo(): Space {
+        const spaceId = this._processData.saveExercisesToSpaceId;
         return this._notu.getSpace(spaceId);
     }
 }
@@ -81,7 +59,7 @@ export async function generateWorkout(
     context: GenerateWorkoutProcessContext
 ): Promise<Map<Tag, Array<NewExerciseInfo>>> {
 
-    const spaceToSaveExercisesTo = await context.getSpaceToSaveExercisesTo();
+    const spaceToSaveExercisesTo = context.getSpaceToSaveExercisesTo();
     if (!spaceToSaveExercisesTo) {
         throw new Error(`Check your Generate Workout Process configuration. It appears to be pointing to a non-existent space.`);
     }

@@ -2,9 +2,10 @@ import { NoteAction, NoteActionsMenuBuilder, RefreshAction } from "@/helpers/Not
 import { NoteTagDataComponentFactory } from "@/helpers/NotuRenderTools";
 import { Note, Notu, Space, Tag } from "notu";
 import { LogicalSpace } from "../LogicalSpace";
-import { ProcessesSpaceSetup } from "../processes/ProcessesSpaceSetup";
+import { ProcessesSpace } from "../processes/ProcessesSpace";
 import { CalendarSpaceSetup } from "./CalendarSpaceSetup";
 import { generateRecurringNotes, RecurringEventsProcessContext } from "./RecurringEventsProcess";
+import { RecurringEventsProcessData } from "./RecurringEventsProcessNoteTagData";
 import RecurringEventsProcessNoteTagDataComponentFactory from "./RecurringEventsProcessNoteTagDataComponent";
 
 export class CalendarSpace implements LogicalSpace {
@@ -18,6 +19,9 @@ export class CalendarSpace implements LogicalSpace {
     private _tentative: Tag;
     get tentative(): Tag { return this._tentative; }
 
+    private _recurringEventsProcess: Tag;
+    get recurringEventsProcess(): Tag { return this._recurringEventsProcess; }
+
 
     constructor(notu: Notu) {
         this._load(notu);
@@ -27,6 +31,7 @@ export class CalendarSpace implements LogicalSpace {
         this._space = notu.getSpaceByInternalName(CalendarSpaceSetup.internalName);
         this._event = notu.getTagByName(CalendarSpaceSetup.event, this._space);
         this._tentative = notu.getTagByName(CalendarSpaceSetup.tentative, this._space);
+        this._recurringEventsProcess = notu.getTagByName(CalendarSpaceSetup.recurringEventsProcess, this._space);
     }
 
 
@@ -41,13 +46,17 @@ export class CalendarSpace implements LogicalSpace {
         menuBuilder: NoteActionsMenuBuilder,
         notu: Notu
     ) {
-        if (note.ownTag?.name == CalendarSpaceSetup.recurringEventsProcess) {
+        const processesSpace = new ProcessesSpace(notu);
+        if (!!note.getTag(processesSpace.process) && !!note.getTag(this.recurringEventsProcess)) {
             menuBuilder.addToTopOfEnd(
                 new NoteAction('Run',
                     async () => {
                         try {
                             const newNotes = await generateRecurringNotes(
-                                new RecurringEventsProcessContext(notu)
+                                new RecurringEventsProcessContext(
+                                    note.getTagData(this.recurringEventsProcess, RecurringEventsProcessData),
+                                    notu
+                                )
                             );
                             await notu.saveNotes(newNotes);
                             return new RefreshAction();
@@ -57,19 +66,17 @@ export class CalendarSpace implements LogicalSpace {
                         }
                     }
                 )
-            )
+            );
         }
     }
 
 
     resolveNoteTagDataComponentFactory(tag: Tag, note: Note): NoteTagDataComponentFactory | null {
-        if (
-            tag.space.internalName == ProcessesSpaceSetup.internalName &&
-            tag.name == ProcessesSpaceSetup.process &&
-            note.ownTag?.isInternal &&
-            note.ownTag?.name == CalendarSpaceSetup.recurringEventsProcess
-        )
-            return new RecurringEventsProcessNoteTagDataComponentFactory();
+        
+        if (tag.space.internalName == CalendarSpaceSetup.internalName) {
+            if (tag.name == CalendarSpaceSetup.recurringEventsProcess)
+                return new RecurringEventsProcessNoteTagDataComponentFactory();
+        }
         
         return null;
     }

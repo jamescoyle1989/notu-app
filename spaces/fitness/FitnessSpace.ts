@@ -2,13 +2,13 @@ import { NoteAction, NoteActionsMenuBuilder } from "@/helpers/NoteAction";
 import { NoteTagDataComponentFactory } from "@/helpers/NotuRenderTools";
 import { Note, NoteTag, Notu, Space, Tag } from "notu";
 import { LogicalSpace } from "../LogicalSpace";
-import { ProcessesSpaceSetup } from "../processes/ProcessesSpaceSetup";
 import ExerciseMetricDefNoteTagDataComponentFactory from "./ExerciseMetricDefNoteTagDataComponent";
 import ExerciseMetricNoteTagDataComponentFactory from "./ExerciseMetricNoteTagDataComponent";
 import ExerciseNoteTagDataComponentFactory from "./ExerciseNoteTagDataComponent";
 import { FitnessSpaceSetup } from "./FitnessSpaceSetup";
 import GeneratedExerciseNoteTagDataComponentFactory from "./GeneratedExerciseNoteTagDataComponent";
 import { generateWorkout, GenerateWorkoutProcessContext } from "./GenerateWorkoutProcess";
+import { GenerateWorkoutProcessData } from "./GenerateWorkoutProcessNoteTagData";
 import GenerateWorkoutProcessNoteTagDataComponentFactory from "./GenerateWorkoutProcessNoteTagDataComponent";
 import { showProcessOutputScreen } from "./GenerateWorkoutProcessUI";
 import MetricNoteTagDataComponentFactory from "./MetricNoteTagDataComponent";
@@ -29,6 +29,9 @@ export class FitnessSpace implements LogicalSpace {
     private _exercise: Tag;
     get exercise(): Tag { return this._exercise; }
 
+    private _generateWorkoutProcess: Tag;
+    get generateWorkoutProcess(): Tag { return this._generateWorkoutProcess; }
+
 
     constructor(notu: Notu) {
         this._load(notu);
@@ -39,6 +42,7 @@ export class FitnessSpace implements LogicalSpace {
         this._metric = notu.getTagByName(FitnessSpaceSetup.metric, this._space);
         this._workout = notu.getTagByName(FitnessSpaceSetup.workout, this._space);
         this._exercise = notu.getTagByName(FitnessSpaceSetup.exercise, this._space);
+        this._generateWorkoutProcess = notu.getTagByName(FitnessSpaceSetup.generateWorkoutProcess, this._space);
     }
 
 
@@ -69,7 +73,10 @@ export class FitnessSpace implements LogicalSpace {
                     async () => {
                         try {
                             const newNoteOptions = await generateWorkout(note,
-                                new GenerateWorkoutProcessContext(notu)
+                                new GenerateWorkoutProcessContext(
+                                    note.getTagData(this.generateWorkoutProcess, GenerateWorkoutProcessData),
+                                    notu
+                                )
                             );
                             return showProcessOutputScreen(note, newNoteOptions, notu);
                         }
@@ -97,6 +104,9 @@ export class FitnessSpace implements LogicalSpace {
 
             if (tag.name == FitnessSpaceSetup.workout)
                 return new WorkoutNoteTagDataComponentFactory();
+
+            if (tag.name == FitnessSpaceSetup.generateWorkoutProcess)
+                return new GenerateWorkoutProcessNoteTagDataComponentFactory();
         }
 
         if (
@@ -127,14 +137,6 @@ export class FitnessSpace implements LogicalSpace {
         ) {
             return new ExerciseMetricNoteTagDataComponentFactory();
         }
-
-        if (
-            tag.space.internalName == ProcessesSpaceSetup.internalName &&
-            tag.name == ProcessesSpaceSetup.process &&
-            note.ownTag?.isInternal &&
-            note.ownTag?.name == FitnessSpaceSetup.generateWorkoutProcess
-        )
-            return new GenerateWorkoutProcessNoteTagDataComponentFactory();
 
         return null;
     }

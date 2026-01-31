@@ -1,13 +1,13 @@
 import { Note, NoteTag } from "notu";
-import { ProcessesSpace } from "../processes/ProcessesSpace";
-import { ProcessesSpaceSetup } from "../processes/ProcessesSpaceSetup";
+import { CalendarSpace } from "./CalendarSpace";
+import { CalendarSpaceSetup } from "./CalendarSpaceSetup";
 
 export class RecurringEventsProcessData {
     private _nt: NoteTag;
     constructor(noteTag: NoteTag) {
         if (
-            noteTag.tag.name != ProcessesSpaceSetup.process ||
-            noteTag.tag.space.internalName != ProcessesSpaceSetup.internalName
+            noteTag.tag.name != CalendarSpaceSetup.recurringEventsProcess ||
+            noteTag.tag.space.internalName != CalendarSpaceSetup.internalName
         ) {
             throw Error('Attempted to create a note tag data helper for a notetag that it does not support');
         }
@@ -21,8 +21,8 @@ export class RecurringEventsProcessData {
             return null;
         return new RecurringEventsProcessData(noteTag);
     }
-    static addTag(note: Note, processesSpace: ProcessesSpace): RecurringEventsProcessData {
-        return new RecurringEventsProcessData(note.addTag(processesSpace.process));
+    static addTag(note: Note, calendarSpace: CalendarSpace): RecurringEventsProcessData {
+        return new RecurringEventsProcessData(note.addTag(calendarSpace.recurringEventsProcess));
     }
 
     get saveEventsToSpaceId(): number { return this._nt.data.saveEventsToSpaceId; }

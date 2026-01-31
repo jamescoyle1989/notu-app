@@ -2,8 +2,9 @@ import { NoteAction, NoteActionsMenuBuilder, RefreshAction } from "@/helpers/Not
 import { NoteTagDataComponentFactory } from "@/helpers/NotuRenderTools";
 import { Note, Notu, Space, Tag } from "notu";
 import { LogicalSpace } from "../LogicalSpace";
-import { ProcessesSpaceSetup } from "../processes/ProcessesSpaceSetup";
+import { ProcessesSpace } from "../processes/ProcessesSpace";
 import { CelebrationEventsProcessContext, generateCelebrationNotes } from "./CelebrationEventsProcess";
+import { CelebrationEventsProcessData } from "./CelebrationEventsProcessNoteTagData";
 import CelebrationEventsProcessNoteTagDataComponentFactory from "./CelebrationEventsProcessNoteTagDataComponent";
 import CelebrationNoteTagDataComponentFactory from "./CelebrationNoteTagDataComponent";
 import CircleNoteTagDataComponentFactory from "./CircleNoteTagDataComponent";
@@ -25,6 +26,9 @@ export class PeopleSpace implements LogicalSpace {
     private _celebration: Tag;
     get celebration(): Tag { return this._celebration; }
 
+    private _celebrationEventsProcess: Tag;
+    get celebrationEventsProcess(): Tag { return this._celebrationEventsProcess; }
+
 
     constructor(notu: Notu) {
         this._load(notu);
@@ -35,6 +39,7 @@ export class PeopleSpace implements LogicalSpace {
         this._person = notu.getTagByName(PeopleSpaceSetup.person, this._space);
         this._circle = notu.getTagByName(PeopleSpaceSetup.circle, this._space);
         this._celebration = notu.getTagByName(PeopleSpaceSetup.celebration, this._space);
+        this._celebrationEventsProcess = notu.getTagByName(PeopleSpaceSetup.celebrationEventsProcess, this._space);
     }
 
 
@@ -49,13 +54,18 @@ export class PeopleSpace implements LogicalSpace {
         menuBuilder: NoteActionsMenuBuilder,
         notu: Notu
     ) {
-        if (note.ownTag?.name == PeopleSpaceSetup.celebrationEventsProcess) {
+        const processesSpace = new ProcessesSpace(notu);
+
+        if (!!note.getTag(processesSpace.process) && !!note.getTag(this.celebrationEventsProcess)) {
             menuBuilder.addToTopOfEnd(
                 new NoteAction('Run',
                     async () => {
                         try {
                             const newNotes = await generateCelebrationNotes(
-                                new CelebrationEventsProcessContext(notu)
+                                new CelebrationEventsProcessContext(
+                                    note.getTagData(this.celebrationEventsProcess, CelebrationEventsProcessData),
+                                    notu
+                                )
                             );
                             await notu.saveNotes(newNotes);
                             return new RefreshAction();
@@ -84,6 +94,9 @@ export class PeopleSpace implements LogicalSpace {
 
             if (tag.name == PeopleSpaceSetup.person)
                 return new PersonNoteTagDataComponentFactory();
+
+            if (tag.name == PeopleSpaceSetup.celebrationEventsProcess)
+                return new CelebrationEventsProcessNoteTagDataComponentFactory();
         }
 
         if (
@@ -94,14 +107,6 @@ export class PeopleSpace implements LogicalSpace {
             )
         )
             return new PersonCelebrationNoteTagDataComponentFactory();
-
-        if (
-            tag.space.internalName == ProcessesSpaceSetup.internalName &&
-            tag.name == ProcessesSpaceSetup.process &&
-            note.ownTag?.isInternal &&
-            note.ownTag?.name == PeopleSpaceSetup.celebrationEventsProcess
-        )
-            return new CelebrationEventsProcessNoteTagDataComponentFactory();
         
         return null;
     }

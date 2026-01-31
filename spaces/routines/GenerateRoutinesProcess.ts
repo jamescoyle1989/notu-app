@@ -6,11 +6,9 @@ import { DurationData } from "../common/DurationNoteTagData";
 import { FinishedData } from "../common/FinishedNoteTagData";
 import { RecurringData } from "../common/RecurringNoteTagData";
 import { ScheduledData } from "../common/ScheduledNoteTagData";
-import { ProcessesSpace } from "../processes/ProcessesSpace";
 import { GenerateRoutinesProcessData } from "./GenerateRoutinesProcessNoteTagData";
 import { LinkedRoutineData, RoutineRelationType } from "./LinkedRoutineNoteTagData";
 import { RoutinesSpace } from "./RoutinesSpace";
-import { RoutinesSpaceSetup } from "./RoutinesSpaceSetup";
 
 export class GenerateRoutinesProcessContext {
     private _notu: Notu;
@@ -21,14 +19,11 @@ export class GenerateRoutinesProcessContext {
     private _common: CommonSpace;
     get commonSpace(): CommonSpace { return this._common; }
 
-    private _processes: ProcessesSpace;
-    get processesSpace(): ProcessesSpace { return this._processes; }
-
-    constructor(notu: Notu) {
+    constructor(processData: GenerateRoutinesProcessData, notu: Notu) {
         this._notu = notu;
         this._common = new CommonSpace(notu);
         this._routines = new RoutinesSpace(notu);
-        this._processes = new ProcessesSpace(notu);
+        this._processData = processData;
     }
 
     async getActiveRoutines(): Promise<Array<Note>> {
@@ -61,25 +56,8 @@ export class GenerateRoutinesProcessContext {
     }
 
     private _processData: GenerateRoutinesProcessData;
-    private async _loadProcessData(): Promise<GenerateRoutinesProcessData> {
-        try {
-            if (!this._processData) {
-                const processNote = (await this._notu.getNotes(
-                    `@[${RoutinesSpaceSetup.generateRoutinesProcess}]`,
-                    this._routines.space.id
-                ))[0];
-                this._processData = new GenerateRoutinesProcessData(
-                    processNote.getTag(this.processesSpace.process)
-                );
-            }
-            return this._processData;
-        }
-        catch {
-            throw new Error(`Failed to load Generate Routines Process data`);
-        }
-    }
-    async getSpaceToSaveNotesTo(): Promise<Space> {
-        const spaceId = (await this._loadProcessData()).saveNotesToSpaceId;
+    getSpaceToSaveNotesTo(): Space {
+        const spaceId = this._processData.saveNotesToSpaceId;
         return this._notu.getSpace(spaceId);
     }
 }
@@ -92,7 +70,7 @@ export async function generateRoutines(
     context: GenerateRoutinesProcessContext
 ): Promise<Array<Note>> {
 
-    const spaceToSaveNotesTo = await context.getSpaceToSaveNotesTo();
+    const spaceToSaveNotesTo = context.getSpaceToSaveNotesTo();
     if (!spaceToSaveNotesTo) {
         throw new Error(`Check your Generate Routines Process configuration. It appears to be pointing to non-existent spaces.`);
     }

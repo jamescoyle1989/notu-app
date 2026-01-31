@@ -6,9 +6,7 @@ import { DurationData } from "../common/DurationNoteTagData";
 import { FinishedData } from "../common/FinishedNoteTagData";
 import { RecurringData } from "../common/RecurringNoteTagData";
 import { ScheduledData } from "../common/ScheduledNoteTagData";
-import { ProcessesSpace } from "../processes/ProcessesSpace";
 import { CalendarSpace } from "./CalendarSpace";
-import { CalendarSpaceSetup } from "./CalendarSpaceSetup";
 import { RecurringEventsProcessData } from "./RecurringEventsProcessNoteTagData";
 
 export class RecurringEventsProcessContext {
@@ -20,14 +18,11 @@ export class RecurringEventsProcessContext {
     private _common: CommonSpace;
     get commonSpace(): CommonSpace { return this._common; }
 
-    private _processes: ProcessesSpace;
-    get processesSpace(): ProcessesSpace { return this._processes; }
-
-    constructor(notu: Notu) {
+    constructor(processData: RecurringEventsProcessData, notu: Notu) {
+        this._processData = processData;
         this._notu = notu;
         this._calendar = new CalendarSpace(notu);
         this._common = new CommonSpace(notu);
-        this._processes = new ProcessesSpace(notu);
     }
 
     async getRecurringEvents(): Promise<Array<Note>> {
@@ -43,26 +38,8 @@ export class RecurringEventsProcessContext {
     }
 
     private _processData: RecurringEventsProcessData;
-    private async _loadProcessData(): Promise<RecurringEventsProcessData> {
-        try {
-            if (!this._processData) {
-                const processNote = (await this._notu.getNotes(
-                    `@[${CalendarSpaceSetup.recurringEventsProcess}]`,
-                    this._calendar.space.id
-                ))[0];
-                this._processData = new RecurringEventsProcessData(
-                    processNote.getTag(this.processesSpace.process)
-                );
-            }
-            return this._processData;
-        }
-        catch {
-            throw new Error(`Failed to load Generate Celebration Events Process data`);
-        }
-    }
-    async getSpaceToSaveEventsTo(): Promise<Space> {
-        const spaceId = (await this._loadProcessData()).saveEventsToSpaceId;
-        return this._notu.getSpace(spaceId);
+    getSpaceToSaveEventsTo(): Space {
+        return this._notu.getSpace(this._processData.saveEventsToSpaceId);
     }
 }
 
@@ -71,7 +48,7 @@ export async function generateRecurringNotes(
     context: RecurringEventsProcessContext
 ): Promise<Array<Note>> {
 
-    const spaceToSaveEventsTo = await context.getSpaceToSaveEventsTo();
+    const spaceToSaveEventsTo = context.getSpaceToSaveEventsTo();
     if (!spaceToSaveEventsTo) {
         throw new Error(`Check your Generate Recurring Events Process configuration. It appears to be pointing to non-existent spaces.`)
     }
