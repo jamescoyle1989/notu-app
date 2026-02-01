@@ -1,10 +1,11 @@
 import { NotuSelect } from "@/components/NotuSelect";
 import { useManualRefresh } from "@/helpers/Hooks";
 import { NoteTagDataComponentFactory, NoteTagDataComponentProps } from "@/helpers/NotuRenderTools";
+import { NotuInput } from "@/helpers/NotuStyles";
 import { sortBy } from "es-toolkit";
 import { Note, NoteTag, Notu } from "notu";
 import { ReactNode } from "react";
-import { Label, XStack } from "tamagui";
+import { Label, XStack, YStack } from "tamagui";
 import { GenerateRoutinesProcessData } from "./GenerateRoutinesProcessNoteTagData";
 
 export default class GenerateRoutinesProcessNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
@@ -14,7 +15,7 @@ export default class GenerateRoutinesProcessNoteTagDataComponentFactory implemen
     }
 
     getEditorComponent(noteTag: NoteTag, note: Note, notu: Notu, refreshCallback: () => void): ReactNode {
-        return (<EditorComponent noteTag={noteTag} notu={notu} />);
+        return (<EditorComponent noteTag={noteTag} note={note} notu={notu} />);
     }
 
     validate(noteTag: NoteTag, note: Note, notu: Notu): Promise<boolean> {
@@ -23,7 +24,7 @@ export default class GenerateRoutinesProcessNoteTagDataComponentFactory implemen
 }
 
 
-function EditorComponent({ noteTag, notu }: NoteTagDataComponentProps) {
+function EditorComponent({ noteTag, note, notu }: NoteTagDataComponentProps) {
     const manualRefresh = useManualRefresh();
     const data = new GenerateRoutinesProcessData(noteTag);
     const spaces = sortBy(notu.cache.getSpaces(), [x => x.name]);
@@ -34,12 +35,27 @@ function EditorComponent({ noteTag, notu }: NoteTagDataComponentProps) {
         manualRefresh();
     }
 
+    function onNameChange(newValue: string) {
+        data.name = newValue;
+        manualRefresh();
+    }
+
     return (
-        <XStack style={{alignItems: 'center'}}>
-            <Label width={150}>Save Notes To</Label>
-            <NotuSelect options={selectOptions}
-                        value={data.saveNotesToSpaceId}
-                        onValueChange={onSaveEventsToSpaceChange} />
-        </XStack>
+        <YStack>
+            {data.requiresName(note) && (
+                <XStack style={{alignItems: 'center'}}>
+                    <Label width={150}>Name</Label>
+                    <NotuInput value={data.name} flex={1}
+                               onChangeText={onNameChange} />
+                </XStack>
+            )}
+            
+            <XStack style={{alignItems: 'center'}}>
+                <Label width={150}>Save Notes To</Label>
+                <NotuSelect options={selectOptions}
+                            value={data.saveNotesToSpaceId}
+                            onValueChange={onSaveEventsToSpaceChange} />
+            </XStack>
+        </YStack>
     )
 }

@@ -6,7 +6,7 @@ export class PeopleSpaceSetup {
     static get person(): string { return 'Person'; }
     static get circle(): string { return 'Circle'; }
     static get celebration(): string { return 'Celebration'; }
-    static get celebrationEventsProcess(): string { return 'Generate Celebration Events Process'; }
+    static get celebrationEventsProcess(): string { return 'Generate Celebration Events'; }
 
     static async setup(notu: Notu): Promise<void> {
         let peopleSpace = notu.getSpaceByInternalName(this.internalName);

@@ -1,0 +1,33 @@
+import { Note, NoteTag } from "notu";
+import { ProcessesSpaceSetup } from "./ProcessesSpaceSetup";
+
+export class ProcessDataBase {
+    protected _nt: NoteTag;
+    constructor(noteTag: NoteTag) {
+        this._nt = noteTag;
+        if (!noteTag.data)
+            noteTag.data = {};
+        this.name = this.name;
+    }
+
+    get name(): string {
+        if (this._nt.data.name == undefined)
+            return this._nt.tag.name;
+        return this._nt.data.name;
+    }
+    set name(value: string) {
+        value = value ?? '';
+        if (this._nt.data.name != value && this._nt.isClean)
+            this._nt.dirty();
+        this._nt.data.name = value;
+    }
+
+    requiresName(note: Note): boolean {
+        if (note.tags.find(x => 
+            x.tag.name == ProcessesSpaceSetup.process &&
+            x.tag.space.internalName == ProcessesSpaceSetup.internalName
+        ))
+            return false;
+        return true;
+    }
+}

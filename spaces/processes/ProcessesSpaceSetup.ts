@@ -4,9 +4,9 @@ export class ProcessesSpaceSetup {
     static get internalName(): string { return 'com.decoyspace.notu.processes'; }
     static get process(): string { return 'Process'; }
     static get processAvailability(): string { return 'Process Availability'; }
-    static get createNoteProcess(): string { return 'Create Note Process'; }
-    static get editNoteProcess(): string { return 'Update Note Process'; }
-    static get deleteNoteProcess(): string { return 'Delete Note Process'; }
+    static get createNoteProcess(): string { return 'Create Note'; }
+    static get editNoteProcess(): string { return 'Update Note'; }
+    static get deleteNoteProcess(): string { return 'Delete Note'; }
 
     static async setup(notu: Notu): Promise<void> {
         let processesSpace = notu.getSpaceByInternalName(this.internalName);

@@ -3,7 +3,7 @@ import TagBadge from "@/components/TagBadge";
 import TagFinder from "@/components/TagFinder";
 import { useManualRefresh } from "@/helpers/Hooks";
 import { NoteTagDataComponentFactory, NoteTagDataComponentProps } from "@/helpers/NotuRenderTools";
-import { NotuButton } from "@/helpers/NotuStyles";
+import { NotuButton, NotuInput } from "@/helpers/NotuStyles";
 import { Note, NoteTag, Notu, Tag } from "notu";
 import { ReactNode, useState } from "react";
 import { Dialog, Input, Label, XStack, YStack } from "tamagui";
@@ -16,7 +16,7 @@ export default class CreateNoteProcessNoteTagDataComponentFactory implements Not
     }
 
     getEditorComponent(noteTag: NoteTag, note: Note, notu: Notu, refreshCallback: () => void): ReactNode {
-        return (<EditorComponent noteTag={noteTag} notu={notu} />);
+        return (<EditorComponent noteTag={noteTag} note={note} notu={notu} />);
     }
 
     validate(noteTag: NoteTag, note: Note, notu: Notu): Promise<boolean> {
@@ -30,7 +30,7 @@ export default class CreateNoteProcessNoteTagDataComponentFactory implements Not
 }
 
 
-function EditorComponent({ noteTag, notu }: NoteTagDataComponentProps) {
+function EditorComponent({ noteTag, note, notu }: NoteTagDataComponentProps) {
     const data = new CreateNoteProcessData(noteTag);
     const manualRefresh = useManualRefresh();
     const labelWidth = 120;
@@ -61,8 +61,21 @@ function EditorComponent({ noteTag, notu }: NoteTagDataComponentProps) {
         manualRefresh();
     }
 
+    function onNameChange(newValue: string) {
+        data.name = newValue;
+        manualRefresh();
+    }
+
     return (
         <YStack>
+            {data.requiresName(note) && (
+                <XStack style={{alignItems: 'center'}}>
+                    <Label width={labelWidth}>Name</Label>
+                    <NotuInput value={data.name} flex={1}
+                               onChangeText={onNameChange} />
+                </XStack>
+            )}
+
             <XStack style={{alignItems: 'center'}}>
                 <Label width={labelWidth}>Space</Label>
                 <NotuSelect options={notu.getSpaces().map(x => ({ name: x.name, value: x.id }))}

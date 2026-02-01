@@ -1,9 +1,9 @@
 import { Note, NoteTag } from "notu";
+import { ProcessDataBase } from "../processes/ProcessNoteTagDataBaseClass";
 import { MoneySpace } from "./MoneySpace";
 import { MoneySpaceSetup } from "./MoneySpaceSetup";
 
-export class ImportTransactionsProcessData {
-    private _nt: NoteTag;
+export class ImportTransactionsProcessData extends ProcessDataBase {
     constructor(noteTag: NoteTag) {
         if (
             noteTag.tag.name != MoneySpaceSetup.importTransactionsProcess ||
@@ -11,9 +11,7 @@ export class ImportTransactionsProcessData {
         ) {
             throw Error(`Attempted to create a note tag data helper for a notetag that it does not support`);
         }
-        this._nt = noteTag;
-        if (!noteTag.data)
-            noteTag.data = {};
+        super(noteTag);
         this.saveTransactionsToSpaceId = this.saveTransactionsToSpaceId;
     }
     static new(noteTag: NoteTag) {

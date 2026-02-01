@@ -1,9 +1,9 @@
 import { Note, NoteTag } from "notu";
+import { ProcessDataBase } from "../processes/ProcessNoteTagDataBaseClass";
 import { RoutinesSpace } from "./RoutinesSpace";
 import { RoutinesSpaceSetup } from "./RoutinesSpaceSetup";
 
-export class CompressRoutinesProcessData {
-    private _nt: NoteTag;
+export class CompressRoutinesProcessData extends ProcessDataBase {
     constructor(noteTag: NoteTag) {
         if (
             noteTag.tag.name != RoutinesSpaceSetup.compressRoutinesProcess ||
@@ -11,9 +11,7 @@ export class CompressRoutinesProcessData {
         ) {
             throw Error('Attempted to create a note tag data helper for a notetag that it does not support.');
         }
-        this._nt = noteTag;
-        if (!noteTag.data)
-            noteTag.data = {};
+        super(noteTag);
         this.saveNotesToSpaceId = this.saveNotesToSpaceId;
     }
     static new(noteTag: NoteTag) {

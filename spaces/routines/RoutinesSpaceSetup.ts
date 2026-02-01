@@ -4,8 +4,8 @@ import { ProcessesSpace } from "../processes/ProcessesSpace";
 export class RoutinesSpaceSetup {
     static get internalName(): string { return 'com.decoyspace.notu.routines'; }
     static get routine(): string { return 'Routine'; }
-    static get generateRoutinesProcess(): string { return 'Generate Routines Process'; }
-    static get compressRoutinesProcess(): string { return 'Compress Routines Process'; }
+    static get generateRoutinesProcess(): string { return 'Generate Routines'; }
+    static get compressRoutinesProcess(): string { return 'Compress Historic Routines'; }
 
     static async setup(notu: Notu): Promise<void> {
         let routinesSpace = notu.getSpaceByInternalName(this.internalName);

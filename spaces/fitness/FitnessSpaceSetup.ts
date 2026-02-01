@@ -6,7 +6,7 @@ export class FitnessSpaceSetup {
     static get metric(): string { return 'Metric'; }
     static get workout(): string { return 'Workout'; }
     static get exercise(): string { return 'Exercise'; }
-    static get generateWorkoutProcess(): string { return 'Generate Workout Process'; }
+    static get generateWorkoutProcess(): string { return 'Generate Workout Exercises'; }
 
     static async setup(notu: Notu): Promise<void> {
         let fitnessSpace = notu.getSpaceByInternalName(this.internalName);

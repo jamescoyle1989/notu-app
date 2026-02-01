@@ -1,7 +1,6 @@
 import { Note, NoteTag } from "notu";
 import { ProcessesSpace } from "./ProcessesSpace";
 import { ProcessesSpaceSetup } from "./ProcessesSpaceSetup";
-import { ProcessData } from "./ProcessNoteTagData";
 
 export class ProcessAvailabilityData {
     private _nt: NoteTag;
@@ -22,8 +21,8 @@ export class ProcessAvailabilityData {
             return null;
         return new ProcessAvailabilityData(noteTag);
     }
-    static addTag(note: Note, processesSpace: ProcessesSpace): ProcessData {
-        return new ProcessData(note.addTag(processesSpace.processAvailability));
+    static addTag(note: Note, processesSpace: ProcessesSpace): ProcessAvailabilityData {
+        return new ProcessAvailabilityData(note.addTag(processesSpace.processAvailability));
     }
 
     get query(): string { return this._nt.data.query; }

@@ -2,9 +2,9 @@ import { areArraysDifferent } from "@/helpers/RenderHelpers";
 import { Note, NoteTag } from "notu";
 import { ProcessesSpace } from "./ProcessesSpace";
 import { ProcessesSpaceSetup } from "./ProcessesSpaceSetup";
+import { ProcessDataBase } from "./ProcessNoteTagDataBaseClass";
 
-export class CreateNoteProcessData {
-    private _nt: NoteTag;
+export class CreateNoteProcessData extends ProcessDataBase {
     constructor(noteTag: NoteTag) {
         if (
             noteTag.tag.name != ProcessesSpaceSetup.createNoteProcess ||
@@ -12,9 +12,7 @@ export class CreateNoteProcessData {
         ) {
             throw Error('Attempted to create a note tag data helper for a notetag that it does not support');
         }
-        this._nt = noteTag;
-        if (!noteTag.data)
-            noteTag.data = {};
+        super(noteTag);
         this.text = this.text;
         this.spaceId = this.spaceId;
         this.tagIds = this.tagIds;

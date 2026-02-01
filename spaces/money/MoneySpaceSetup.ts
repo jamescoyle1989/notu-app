@@ -8,7 +8,7 @@ export class MoneySpaceSetup {
     static get budgetCategory(): string { return 'Budget Category'; }
     static get budget(): string { return 'Budget'; }
     static get transaction(): string { return 'Transaction'; }
-    static get importTransactionsProcess(): string { return 'Import Transactions Process'; }
+    static get importTransactionsProcess(): string { return 'Import Transactions'; }
 
     static async setup(notu: Notu): Promise<void> {
         let moneySpace = notu.getSpaceByInternalName(this.internalName);

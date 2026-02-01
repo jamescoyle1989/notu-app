@@ -1,9 +1,9 @@
 import { Note, NoteTag } from "notu";
+import { ProcessDataBase } from "../processes/ProcessNoteTagDataBaseClass";
 import { FitnessSpace } from "./FitnessSpace";
 import { FitnessSpaceSetup } from "./FitnessSpaceSetup";
 
-export class GenerateWorkoutProcessData {
-    private _nt:NoteTag;
+export class GenerateWorkoutProcessData extends ProcessDataBase {
     constructor(noteTag: NoteTag) {
         if (
             noteTag.tag.name != FitnessSpaceSetup.generateWorkoutProcess ||
@@ -11,9 +11,7 @@ export class GenerateWorkoutProcessData {
         ) {
             throw Error(`Attempted to create a note tag data helper for a notetag that it does not support`);
         }
-        this._nt = noteTag;
-        if (!noteTag.data)
-            noteTag.data = {};
+        super(noteTag);
         this.saveExercisesToSpaceId = this.saveExercisesToSpaceId;
     }
     static new(noteTag: NoteTag) {

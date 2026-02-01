@@ -5,7 +5,7 @@ export class CalendarSpaceSetup {
     static get internalName(): string { return 'com.decoyspace.notu.calendar'; }
     static get event(): string { return 'Event'; }
     static get tentative(): string { return 'Tentative'; }
-    static get recurringEventsProcess(): string { return 'Generate Recurring Events Process'; }
+    static get recurringEventsProcess(): string { return 'Generate Recurring Events'; }
 
     static async setup(notu: Notu): Promise<void> {
         let calendarSpace = notu.getSpaceByInternalName(this.internalName);
