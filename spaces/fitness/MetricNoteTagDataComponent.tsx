@@ -28,4 +28,8 @@ export default class MetricNoteTagDataComponentFactory implements NoteTagDataCom
 
         return Promise.resolve(true);
     }
+
+    getDataObject(noteTag: NoteTag) {
+        return null;
+    }
 }

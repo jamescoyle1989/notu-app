@@ -1,5 +1,8 @@
-import { Note, NoteTag } from "notu";
+import { UIAction } from "@/helpers/NoteAction";
+import { Note, NoteTag, Notu } from "notu";
 import { ProcessDataBase } from "../processes/ProcessNoteTagDataBaseClass";
+import { ImportTransactionProcessContext, importTransactions } from "./ImportTransactionsProcess";
+import { showProcessOutputScreen } from "./ImportTransactionsProcessUI";
 import { MoneySpace } from "./MoneySpace";
 import { MoneySpaceSetup } from "./MoneySpaceSetup";
 
@@ -28,5 +31,17 @@ export class ImportTransactionsProcessData extends ProcessDataBase {
         if (this._nt.data.saveTransactionsToSpaceId != value && this._nt.isClean)
             this._nt.dirty();
         this._nt.data.saveTransactionsToSpaceId = value;
+    }
+
+    async runProcess(note: Note, notu: Notu): Promise<UIAction> {
+        const moneySpace = new MoneySpace(notu);
+        const newNoteOptions = await importTransactions(
+            note,
+            new ImportTransactionProcessContext(
+                note.getTagData(moneySpace.importTransactionsProcess, ImportTransactionsProcessData),
+                notu
+            )
+        );
+        return showProcessOutputScreen(note, newNoteOptions, notu);
     }
 }

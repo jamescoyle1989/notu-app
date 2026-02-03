@@ -26,6 +26,10 @@ export default class GeneratedExerciseNoteTagDataComponentFactory implements Not
     validate(noteTag: NoteTag, note: Note, notu: Notu): Promise<boolean> {
         return Promise.resolve(true);
     }
+
+    getDataObject(noteTag: NoteTag) {
+        return new GeneratedExerciseData(noteTag);
+    }
 }
 
 

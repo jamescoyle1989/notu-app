@@ -29,6 +29,10 @@ export default class TransactionNoteTagDataComponentFactory implements NoteTagDa
     validate(noteTag: NoteTag, note: Note, notu: Notu): Promise<boolean> {
         return Promise.resolve(true);
     }
+
+    getDataObject(noteTag: NoteTag) {
+        return new TransactionData(noteTag);
+    }
 }
 
 

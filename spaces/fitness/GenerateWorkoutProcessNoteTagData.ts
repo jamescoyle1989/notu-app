@@ -1,7 +1,10 @@
-import { Note, NoteTag } from "notu";
+import { UIAction } from "@/helpers/NoteAction";
+import { Note, NoteTag, Notu } from "notu";
 import { ProcessDataBase } from "../processes/ProcessNoteTagDataBaseClass";
 import { FitnessSpace } from "./FitnessSpace";
 import { FitnessSpaceSetup } from "./FitnessSpaceSetup";
+import { generateWorkout, GenerateWorkoutProcessContext } from "./GenerateWorkoutProcess";
+import { showProcessOutputScreen } from "./GenerateWorkoutProcessUI";
 
 export class GenerateWorkoutProcessData extends ProcessDataBase {
     constructor(noteTag: NoteTag) {
@@ -28,5 +31,17 @@ export class GenerateWorkoutProcessData extends ProcessDataBase {
         if (this._nt.data.saveExercisesToSpaceId != value && this._nt.isClean)
             this._nt.dirty();
         this._nt.data.saveExercisesToSpaceId = value;
+    }
+
+    async runProcess(note: Note, notu: Notu): Promise<UIAction> {
+        const fitnessSpace = new FitnessSpace(notu);
+        const newNoteOptions = await generateWorkout(
+            note,
+            new GenerateWorkoutProcessContext(
+                note.getTagData(fitnessSpace.generateWorkoutProcess, GenerateWorkoutProcessData),
+                notu
+            )
+        );
+        return showProcessOutputScreen(note, newNoteOptions, notu);
     }
 }

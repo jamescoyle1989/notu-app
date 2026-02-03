@@ -28,4 +28,8 @@ export default class ExerciseNoteTagDataComponentFactory implements NoteTagDataC
 
         return Promise.resolve(true);
     }
+
+    getDataObject(noteTag: NoteTag) {
+        return null;
+    }
 }

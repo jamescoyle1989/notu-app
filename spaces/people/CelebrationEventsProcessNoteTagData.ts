@@ -1,5 +1,7 @@
-import { Note, NoteTag } from "notu";
+import { RefreshAction, UIAction } from "@/helpers/NoteAction";
+import { Note, NoteTag, Notu } from "notu";
 import { ProcessDataBase } from "../processes/ProcessNoteTagDataBaseClass";
+import { CelebrationEventsProcessContext, generateCelebrationNotes } from "./CelebrationEventsProcess";
 import { PeopleSpace } from "./PeopleSpace";
 import { PeopleSpaceSetup } from "./PeopleSpaceSetup";
 
@@ -36,5 +38,17 @@ export class CelebrationEventsProcessData extends ProcessDataBase {
         if (this._nt.data.savePlanTasksToSpaceId != value && this._nt.isClean)
             this._nt.dirty();
         this._nt.data.savePlanTasksToSpaceId = value;
+    }
+
+    async runProcess(note: Note, notu: Notu): Promise<UIAction> {
+        const peopleSpace = new PeopleSpace(notu);
+        const newNotes = await generateCelebrationNotes(
+            new CelebrationEventsProcessContext(
+                note.getTagData(peopleSpace.celebrationEventsProcess, CelebrationEventsProcessData),
+                notu
+            )
+        );
+        await notu.saveNotes(newNotes);
+        return new RefreshAction();
     }
 }

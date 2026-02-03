@@ -1,5 +1,6 @@
+import { ShowEditorAction, UIAction } from "@/helpers/NoteAction";
 import { areArraysDifferent } from "@/helpers/RenderHelpers";
-import { Note, NoteTag } from "notu";
+import { Note, NoteTag, Notu } from "notu";
 import { ProcessesSpace } from "./ProcessesSpace";
 import { ProcessesSpaceSetup } from "./ProcessesSpaceSetup";
 import { ProcessDataBase } from "./ProcessNoteTagDataBaseClass";
@@ -48,5 +49,16 @@ export class CreateNoteProcessData extends ProcessDataBase {
         if (areArraysDifferent(value, this._nt.data.tagIds) && this._nt.isClean)
             this._nt.dirty();
         this._nt.data.tagIds = value;
+    }
+
+    async runProcess(note: Note, notu: Notu): Promise<UIAction> {
+        note.space = notu.getSpace(this.spaceId);
+        note.text = this.text;
+        for (const tagId of this.tagIds) {
+            const tag = notu.getTag(tagId);
+            if (!!tag)
+                note.addTag(tag);
+        }
+        return Promise.resolve(new ShowEditorAction(note));
     }
 }

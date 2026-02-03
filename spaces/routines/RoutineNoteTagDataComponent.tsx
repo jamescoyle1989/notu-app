@@ -29,6 +29,10 @@ export default class RoutineNoteTagDataComponentFactory implements NoteTagDataCo
 
         return Promise.resolve(true);
     }
+
+    getDataObject(noteTag: NoteTag) {
+        return new RoutineData(noteTag);
+    }
 }
 
 

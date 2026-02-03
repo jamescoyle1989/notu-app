@@ -45,6 +45,10 @@ export default class PersonCelebrationNoteTagDataComponentFactory implements Not
     ): Promise<boolean> {
         return Promise.resolve(true);
     }
+
+    getDataObject(noteTag: NoteTag) {
+        return new PersonCelebrationData(noteTag);
+    }
 }
 
 

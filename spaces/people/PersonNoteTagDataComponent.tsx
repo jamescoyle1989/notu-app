@@ -31,4 +31,8 @@ export default class PersonNoteTagDataComponentFactory implements NoteTagDataCom
         
         return Promise.resolve(true);
     }
+
+    getDataObject(noteTag: NoteTag) {
+        return null;
+    }
 }

@@ -79,6 +79,8 @@ export interface NoteTagDataComponentFactory {
 
     // Called when onConfirm has indicated that we want to proceed with saving the note
     validate(noteTag: NoteTag, note: Note, notu: Notu): Promise<boolean>;
+
+    getDataObject(noteTag: NoteTag): any;
 }
 
 

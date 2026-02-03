@@ -22,6 +22,10 @@ export default class DurationNoteTagDataComponentFactory implements NoteTagDataC
     validate(noteTag: NoteTag, note: Note, notu: Notu): Promise<boolean> {
         return Promise.resolve(true);
     }
+
+    getDataObject(noteTag: NoteTag) {
+        return new DurationData(noteTag);
+    }
 }
 
 

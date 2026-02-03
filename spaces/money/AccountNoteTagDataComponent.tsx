@@ -25,6 +25,10 @@ export default class AccountNoteTagDataComponentFactory implements NoteTagDataCo
 
         return Promise.resolve(true);
     }
+
+    getDataObject(noteTag: NoteTag) {
+        return new AccountData(noteTag);
+    }
 }
 
 

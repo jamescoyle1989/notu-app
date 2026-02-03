@@ -20,6 +20,10 @@ export default class WorkoutExerciseNoteTagDataComponentFactory implements NoteT
     validate(noteTag: NoteTag, note: Note, notu: Notu): Promise<boolean> {
         return Promise.resolve(true);
     }
+
+    getDataObject(noteTag: NoteTag) {
+        return new WorkoutExerciseData(noteTag);
+    }
 }
 
 

@@ -1,4 +1,5 @@
-import { Note, NoteTag } from "notu";
+import { UIAction } from "@/helpers/NoteAction";
+import { Note, NoteTag, Notu } from "notu";
 import { ProcessesSpaceSetup } from "./ProcessesSpaceSetup";
 
 export class ProcessDataBase {
@@ -29,5 +30,9 @@ export class ProcessDataBase {
         ))
             return false;
         return true;
+    }
+
+    async runProcess(note: Note, notu: Notu): Promise<UIAction> {
+        throw Error('You should have implemented this method in your child class.');
     }
 }

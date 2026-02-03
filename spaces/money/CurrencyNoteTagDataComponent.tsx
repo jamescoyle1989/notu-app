@@ -25,7 +25,11 @@ export default class CurrencyNoteTagDataComponentFactory implements NoteTagDataC
             throw new Error('The Currency tag requires that the note has its own tag set.');
 
         return Promise.resolve(true);
-    }   
+    }
+    
+    getDataObject(noteTag: NoteTag) {
+        return new CurrencyData(noteTag);
+    }
 }
 
 

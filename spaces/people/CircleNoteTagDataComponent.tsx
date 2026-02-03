@@ -40,4 +40,8 @@ export default class CircleNoteTagDataComponentFactory implements NoteTagDataCom
 
         return Promise.resolve(true);
     }
+
+    getDataObject(noteTag: NoteTag) {
+        return null;
+    }
 }

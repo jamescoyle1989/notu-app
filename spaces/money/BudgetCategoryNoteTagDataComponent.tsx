@@ -18,4 +18,8 @@ export default class BudgetCategoryNoteTagDataComponentFactory implements NoteTa
 
         return Promise.resolve(true);
     }
+
+    getDataObject(noteTag: NoteTag) {
+        return null;
+    }
 }

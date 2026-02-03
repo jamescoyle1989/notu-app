@@ -1,7 +1,9 @@
-import { Note, NoteTag } from "notu";
+import { RefreshAction, UIAction } from "@/helpers/NoteAction";
+import { Note, NoteTag, Notu } from "notu";
 import { ProcessDataBase } from "../processes/ProcessNoteTagDataBaseClass";
 import { CalendarSpace } from "./CalendarSpace";
 import { CalendarSpaceSetup } from "./CalendarSpaceSetup";
+import { generateRecurringNotes, RecurringEventsProcessContext } from "./RecurringEventsProcess";
 
 export class RecurringEventsProcessData extends ProcessDataBase {
     constructor(noteTag: NoteTag) {
@@ -28,5 +30,17 @@ export class RecurringEventsProcessData extends ProcessDataBase {
         if (this._nt.data.saveEventsToSpaceId != value && this._nt.isClean)
             this._nt.dirty();
         this._nt.data.saveEventsToSpaceId = value;
+    }
+
+    async runProcess(note: Note, notu: Notu): Promise<UIAction> {
+        const calendarSpace = new CalendarSpace(notu);
+        const newNotes = await generateRecurringNotes(
+            new RecurringEventsProcessContext(
+                note.getTagData(calendarSpace.recurringEventsProcess, RecurringEventsProcessData),
+                notu
+            )
+        );
+        await notu.saveNotes(newNotes);
+        return new RefreshAction();
     }
 }

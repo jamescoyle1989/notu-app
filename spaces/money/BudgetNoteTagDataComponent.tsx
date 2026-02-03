@@ -21,6 +21,10 @@ export default class BudgetNoteTagDataComponentFactory implements NoteTagDataCom
     validate(noteTag: NoteTag, note: Note, notu: Notu): Promise<boolean> {
         return Promise.resolve(true);
     }
+
+    getDataObject(noteTag: NoteTag) {
+        return new BudgetData(noteTag);
+    }
 }
 
 

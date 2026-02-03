@@ -31,4 +31,8 @@ export default class CelebrationNoteTagDataComponentFactory implements NoteTagDa
         
         return Promise.resolve(true);
     }
+
+    getDataObject(noteTag: NoteTag) {
+        return null;
+    }
 }

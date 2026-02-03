@@ -31,6 +31,10 @@ export default class AddressNoteTagDataComponentFactory implements NoteTagDataCo
     ): Promise<boolean> {
         return Promise.resolve(true);
     }
+
+    getDataObject(noteTag: NoteTag) {
+        return new AddressData(noteTag);
+    }
 }
 
 

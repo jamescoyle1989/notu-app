@@ -1,11 +1,13 @@
-import { setupNotu } from "@/helpers/NotuSetup";
+import { getNotu, setupNotu } from "@/helpers/NotuSetup";
 import { NotuText } from "@/helpers/NotuStyles";
+import { CommonSpace } from "@/spaces/common/CommonSpace";
+import { PageData } from "@/spaces/common/PageNoteTagData";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DrawerContentComponentProps, DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Href, useRouter } from "expo-router";
 import { Drawer } from "expo-router/drawer";
-import { Page } from "notu";
+import { Note, Page } from "notu";
 import { ReactNode, useEffect, useState } from "react";
 import { useColorScheme } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -17,6 +19,7 @@ export default function RootLayout() {
 
     const [isLoaded, setIsLoaded] = useState(false);
     const [customPages, setCustomPages] = useState<Array<Page>>(null);
+    const [pageNotes, setPageNotes] = useState<Array<Note>>([]);
     const [error, setError] = useState(null);
     const router = useRouter();
 
@@ -39,6 +42,7 @@ export default function RootLayout() {
                 if (!!fetchedColorScheme)
                     setColorScheme(fetchedColorScheme);
                 setCustomPages(await notu.getPages());
+                setPageNotes(await notu.getNotes(`#Common.Page`));
                 setIsLoaded(true);
             }
             catch (err) {
@@ -82,6 +86,8 @@ export default function RootLayout() {
     }
 
     function customDrawerContent(props: DrawerContentComponentProps) {
+        const renderTools = getNotu();
+        const commonSpace = new CommonSpace(renderTools.notu);
         return (
             <DrawerContentScrollView {...props}>
                 <DrawerItem label="Home" onPress={() => navigateToPage(`/`)} />
@@ -89,6 +95,14 @@ export default function RootLayout() {
                     return (
                         <DrawerItem key={page.id}
                                     label={page.name}
+                                    onPress={() => navigateToPage(`/${-page.id}`)} />
+                    )
+                })}
+                {pageNotes.map(page => {
+
+                    return (
+                        <DrawerItem key={page.id}
+                                    label={page.getTagData(commonSpace.page, PageData).name}
                                     onPress={() => navigateToPage(`/${page.id}`)} />
                     )
                 })}

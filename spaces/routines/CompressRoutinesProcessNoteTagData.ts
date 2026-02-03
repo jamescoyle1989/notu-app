@@ -1,5 +1,7 @@
-import { Note, NoteTag } from "notu";
+import { RefreshAction, UIAction } from "@/helpers/NoteAction";
+import { Note, NoteTag, Notu } from "notu";
 import { ProcessDataBase } from "../processes/ProcessNoteTagDataBaseClass";
+import { CompressRoutinesProcessContext, compressRoutineTasks } from "./CompressRoutinesProcess";
 import { RoutinesSpace } from "./RoutinesSpace";
 import { RoutinesSpaceSetup } from "./RoutinesSpaceSetup";
 
@@ -28,5 +30,17 @@ export class CompressRoutinesProcessData extends ProcessDataBase {
         if (this._nt.data.saveNotesToSpaceId != value && this._nt.isClean)
             this._nt.dirty();
         this._nt.data.saveNotesToSpaceId = value;
+    }
+
+    async runProcess(note: Note, notu: Notu): Promise<UIAction> {
+        const routinesSpace = new RoutinesSpace(notu);
+        const newNotes = await compressRoutineTasks(
+            new CompressRoutinesProcessContext(
+                note.getTagData(routinesSpace.compressRoutinesProcess, CompressRoutinesProcessData),
+                notu
+            )
+        );
+        await notu.saveNotes(newNotes);
+        return new RefreshAction();
     }
 }

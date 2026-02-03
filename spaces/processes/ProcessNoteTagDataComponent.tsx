@@ -18,4 +18,8 @@ export default class ProcessNoteTagDataComponentFactory implements NoteTagDataCo
         
         return Promise.resolve(true);
     }
+
+    getDataObject(noteTag: NoteTag) {
+        return null;
+    }
 }

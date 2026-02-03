@@ -20,6 +20,10 @@ export default class StartedNoteTagDataComponentFactory implements NoteTagDataCo
     validate(noteTag: NoteTag, note: Note, notu: Notu): Promise<boolean> {
         return Promise.resolve(true);
     }
+
+    getDataObject(noteTag: NoteTag) {
+        return new StartedData(noteTag);
+    }
 }
 
 

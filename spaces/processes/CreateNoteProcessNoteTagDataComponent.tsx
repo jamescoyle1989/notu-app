@@ -27,6 +27,10 @@ export default class CreateNoteProcessNoteTagDataComponentFactory implements Not
         data.tagIds = data.tagIds.map(x => notu.getTag(x)).filter(x => !!x).map(x => x.id);
         return Promise.resolve(true);
     }
+
+    getDataObject(noteTag: NoteTag) {
+        return new CreateNoteProcessData(noteTag);
+    }
 }
 
 
