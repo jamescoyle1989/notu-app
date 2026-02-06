@@ -1,4 +1,4 @@
-import { Note, Notu, Page, Space } from "notu";
+import { Note, Notu, Space } from "notu";
 import { ProcessesSpace } from "../processes/ProcessesSpace";
 
 export class MoneySpaceSetup {
@@ -71,54 +71,6 @@ Transactions also allow you to add categories to them. Each category that you ad
             importTransactionsProcess.ownTag.asInternal();
             importTransactionsProcess.addTag(processesSpace.process);
             await notu.saveNotes([importTransactionsProcess]);
-
-            const internalsPage = new Page();
-            internalsPage.name = 'Money Space Setup';
-            internalsPage.order = 60;
-            internalsPage.group = 'Money';
-            internalsPage.space = moneySpace;
-            internalsPage.query = `t.isInternal OR #Processes.Process`;
-            await notu.savePage(internalsPage);
-
-            const currenciesPage = new Page();
-            currenciesPage.name = 'Currencies';
-            currenciesPage.order = 61;
-            currenciesPage.group = 'Money';
-            currenciesPage.space = moneySpace;
-            currenciesPage.query = `#Money.Currency`;
-            await notu.savePage(currenciesPage);
-
-            const accountsPage = new Page();
-            accountsPage.name = 'Accounts';
-            accountsPage.order = 62;
-            accountsPage.group = 'Money';
-            accountsPage.space = moneySpace;
-            accountsPage.query = `#Money.Account`;
-            await notu.savePage(accountsPage);
-
-            const categoriesPage = new Page();
-            categoriesPage.name = 'Budget Categories';
-            categoriesPage.order = 63;
-            categoriesPage.group = 'Money';
-            categoriesPage.space = moneySpace;
-            categoriesPage.query = `#[Money.Budget Category]`;
-            await notu.savePage(categoriesPage);
-
-            const budgetsPage = new Page();
-            budgetsPage.name = 'Budgets';
-            budgetsPage.order = 64;
-            budgetsPage.group = 'Money';
-            budgetsPage.space = moneySpace;
-            budgetsPage.query = `#Money.Budget`;
-            await notu.savePage(budgetsPage);
-
-            const transactionsPage = new Page();
-            transactionsPage.name = 'Transactions';
-            transactionsPage.order = 65;
-            transactionsPage.group = 'Money';
-            transactionsPage.space = moneySpace;
-            transactionsPage.query = `#Money.Transaction`;
-            await notu.savePage(transactionsPage);
         }
     }
 }

@@ -1,4 +1,6 @@
 import { Note, Notu, Space } from "notu";
+import { CommonSpace } from "../common/CommonSpace";
+import { PageData } from "../common/PageNoteTagData";
 
 export class ProcessesSpaceSetup {
     static get internalName(): string { return 'com.decoyspace.notu.processes'; }
@@ -47,6 +49,20 @@ export class ProcessesSpaceSetup {
                 editNoteProcess,
                 deleteNoteProcess
             ]);
+
+            const commonSpaceObj = new CommonSpace(notu);
+
+            const processesPage = new Note(`This page will display all processes that have been configured within the system.`)
+                .in(processesSpace).setOwnTag('Processes Page');
+            processesPage.ownTag.asInternal();
+            const processesPageData = PageData.addTag(processesPage, commonSpaceObj);
+            processesPageData.name = 'Processes';
+            processesPageData.group = 'Setup';
+            processesPageData.order = 3;
+            processesPageData.query = `#Processes.Process`;
+            processesPageData.searchAllSpaces = true;
+
+            await notu.saveNotes([processesPage]);
         }
     }
 }

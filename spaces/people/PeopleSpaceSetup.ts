@@ -1,4 +1,4 @@
-import { Note, Notu, Page, Space } from "notu";
+import { Note, Notu, Space } from "notu";
 import { ProcessesSpace } from "../processes/ProcessesSpace";
 
 export class PeopleSpaceSetup {
@@ -47,38 +47,6 @@ This process will automatically generate calendar events out of celebrations for
             celebrationEventsProcess.ownTag.asInternal();
             celebrationEventsProcess.addTag(processesSpace.process);
             await notu.saveNotes([celebrationEventsProcess]);
-
-            const internalsPage = new Page();
-            internalsPage.name = 'People Space Setup';
-            internalsPage.order = 4;
-            internalsPage.group = 'People';
-            internalsPage.space = peopleSpace;
-            internalsPage.query = `t.isInternal OR #Common.Process`;
-            await notu.savePage(internalsPage);
-
-            const celPage = new Page();
-            celPage.name = 'Celebrations';
-            celPage.order = 4;
-            celPage.group = 'People';
-            celPage.space = peopleSpace;
-            celPage.query = `#People.Celebration`;
-            await notu.savePage(celPage);
-
-            const peoplePage = new Page();
-            peoplePage.name = 'People';
-            peoplePage.order = 5;
-            peoplePage.group = 'People';
-            peoplePage.space = peopleSpace;
-            peoplePage.query = `#People.Person`;
-            await notu.savePage(peoplePage);
-
-            const circlePage = new Page();
-            circlePage.name = 'Circles';
-            circlePage.order = 6;
-            circlePage.group = 'People';
-            circlePage.space = peopleSpace;
-            circlePage.query = `#People.Circle`;
-            await notu.savePage(circlePage);
         }
     }
 }

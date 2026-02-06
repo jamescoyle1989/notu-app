@@ -1,4 +1,4 @@
-import { Note, Notu, Page, Space } from "notu";
+import { Note, Notu, Space } from "notu";
 import { ProcessesSpace } from "../processes/ProcessesSpace";
 
 export class RoutinesSpaceSetup {
@@ -40,30 +40,6 @@ This process will automatically compress finished notes that were generated from
                 generateRoutinesProcess,
                 compressRoutinesProcess
             ]);
-            
-            const internalsPage = new Page();
-            internalsPage.name = 'Routines Space Setup';
-            internalsPage.order = 20;
-            internalsPage.group = 'Routines';
-            internalsPage.space = routinesSpace;
-            internalsPage.query = `t.isInternal OR #Processes.Process`;
-            await notu.savePage(internalsPage);
-            
-            const routinesPage = new Page();
-            routinesPage.name = 'Routines';
-            routinesPage.order = 21;
-            routinesPage.group = 'Routines';
-            routinesPage.space = routinesSpace;
-            routinesPage.query = `#Routine ORDER BY name`;
-            await notu.savePage(routinesPage);
-            
-            const routineTasksPage = new Page();
-            routineTasksPage.name = 'Routine Tasks';
-            routineTasksPage.order = 22;
-            routineTasksPage.group = 'Routines';
-            routineTasksPage.space = routinesSpace;
-            routineTasksPage.query = `_#Routines.Routine AND #Common.Generated AND #Common.Scheduled ORDER BY #Common.Scheduled{.start}`;
-            await notu.savePage(routineTasksPage);
         }
     }
 }

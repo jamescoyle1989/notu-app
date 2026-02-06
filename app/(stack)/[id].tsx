@@ -8,7 +8,7 @@ import { ProcessDataBase } from "@/spaces/processes/ProcessNoteTagDataBaseClass"
 import { DrawerActions } from "@react-navigation/native";
 import { Menu } from '@tamagui/lucide-icons';
 import { Stack, useLocalSearchParams, useNavigation, usePathname, useRouter } from "expo-router";
-import { Note, NoteTag, Page } from "notu";
+import { Note, NoteTag } from "notu";
 import { useEffect, useRef, useState } from "react";
 import { Button, Text, View, YStack } from "tamagui";
 import { setNoteBeingEdited } from "./editnote";
@@ -17,7 +17,6 @@ import { setActiveNoteListAction } from "./listnoteobjects";
 export default function CustomPage() {
     const { id } = useLocalSearchParams();
     const pathName = usePathname();
-    const [page, setPage] = useState<Page>(null);
     const [pageNote, setPageNote] = useState<Note>(null);
     const renderTools = getNotu();
     const notu = renderTools.notu;
@@ -26,30 +25,22 @@ export default function CustomPage() {
     const searchListRef = useRef(null);
 
     useEffect(() => {
-        setPage(null);
         setPageNote(null);
         async function loadPage() {
             //I hate that I've had to put this line here, but otherwise the drawer just stays open when switching between screens
             nav.dispatch(DrawerActions.closeDrawer());
             const idn = Number(id);
-            if (idn < 0)
-                setPage(await notu.getPage(-Number(id)));
-            else
-                setPageNote((await notu.getNotes(`n.id = ${idn}`))[0]);
+            setPageNote((await notu.getNotes(`n.id = ${idn}`))[0]);
         }
         loadPage();
     }, [pathName]);
 
-    if (!page && !pageNote) {
+    if (!pageNote) {
         return (
             <View flex={1}>
                 <Text>Loading...</Text>
             </View>
         )
-    }
-
-    function addNote() {
-        startEditingNote(new Note().in(page.space));
     }
 
     function startEditingNote(note: Note) {
@@ -69,31 +60,6 @@ export default function CustomPage() {
             setActiveNoteListAction(showNoteListAction);
             router.push('/listnoteobjects');
         }
-    }
-
-    if (!!page) {
-        return (
-            <View flex={1}>
-                <Stack.Screen options={{
-                    title: page.name,
-                    headerLeft: () => {
-                        return (
-                            <Menu onPress={() => {
-                                nav.dispatch(DrawerActions.openDrawer());
-                            }}/>
-                        )
-                    }
-                }} />
-                <GroupedSearchList ref={searchListRef}
-                                query={page.query}
-                                searchSpace={page.space}
-                                notuRenderTools={renderTools}
-                                onUIAction={onUIAction}
-                                actionsBar={() => (
-                                    <Button theme="highlight" onPress={addNote}>Add Note</Button>
-                                )} />
-            </View>
-        )
     }
 
     async function handleProcessPress(noteTag: NoteTag) {

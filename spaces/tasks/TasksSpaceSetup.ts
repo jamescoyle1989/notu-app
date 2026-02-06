@@ -1,4 +1,4 @@
-import { Note, Notu, Page, Space } from "notu";
+import { Note, Notu, Space } from "notu";
 
 export class TasksSpaceSetup {
     static get internalName(): string { return 'com.decoyspace.notu.tasks'; }
@@ -36,38 +36,6 @@ export class TasksSpaceSetup {
                 goal,
                 deadline
             ]);
-
-            const setupPage = new Page();
-            setupPage.name = 'Tasks Space Setup';
-            setupPage.order = 7;
-            setupPage.group = 'Tasks';
-            setupPage.space = tasksSpace;
-            setupPage.query = `t.isInternal`;
-            await notu.savePage(setupPage);
-
-            const tasksPage = new Page();
-            tasksPage.name = 'Tasks';
-            tasksPage.order = 8;
-            tasksPage.group = 'Tasks';
-            tasksPage.space = tasksSpace;
-            tasksPage.query = `#Tasks.Task`;
-            await notu.savePage(tasksPage);
-
-            const projectsPage = new Page();
-            projectsPage.name = 'Projects';
-            projectsPage.order = 9;
-            projectsPage.group = 'Tasks';
-            projectsPage.space = tasksSpace;
-            projectsPage.query = `#Tasks.Project`;
-            await notu.savePage(projectsPage);
-
-            const goalsPage = new Page();
-            goalsPage.name = 'Goals';
-            goalsPage.order = 10;
-            goalsPage.group = 'Tasks';
-            goalsPage.space = tasksSpace;
-            goalsPage.query = `#Tasks.Goal`;
-            await notu.savePage(goalsPage);
         }
     }
 }

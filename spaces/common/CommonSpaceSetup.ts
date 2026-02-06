@@ -1,4 +1,6 @@
-import { Note, Notu, Page, Space } from "notu";
+import { Note, Notu, Space } from "notu";
+import { CommonSpace } from "./CommonSpace";
+import { PageData } from "./PageNoteTagData";
 
 export class CommonSpaceSetup {
     static get internalName(): string { return 'com.decoyspace.notu.common'; }
@@ -113,30 +115,30 @@ export class CommonSpaceSetup {
                 started,
                 thought
             ]);
-            
-            const page1 = new Page();
-            page1.name = 'Common Space Setup';
-            page1.order = 1;
-            page1.group = 'Pages';
-            page1.space = commonSpace;
-            page1.query = `t.isInternal`;
-            await notu.savePage(page1);
-            
-            const page2 = new Page();
-            page2.name = 'Info';
-            page2.order = 2;
-            page2.group = 'Pages';
-            page2.space = commonSpace;
-            page2.query = `#Info`;
-            await notu.savePage(page2);
-            
-            const page3 = new Page();
-            page3.name = 'Thoughts';
-            page3.order = 3;
-            page3.group = null;
-            page3.space = commonSpace;
-            page3.query = `#Thought`;
-            await notu.savePage(page3);
+
+            const commonSpaceObj = new CommonSpace(notu);
+
+            const pagesPage = new Note(`This page will display all pages set up in the system.`)
+                .in(commonSpace).setOwnTag('Pages Page');
+            pagesPage.ownTag.asInternal();
+            const pagePageData = PageData.addTag(pagesPage, commonSpaceObj);
+            pagePageData.name = 'Pages';
+            pagePageData.group = 'Setup';
+            pagePageData.order = 1;
+            pagePageData.query = `#Common.Page ORDER BY #Common.Page{.order}`;
+            pagePageData.searchAllSpaces = true;
+
+            const setupPage = new Note(`This page will display the notes that make up the Common space setup.`)
+                .in(commonSpace).setOwnTag('Common Space Setup Page');
+            setupPage.ownTag.asInternal();
+            const setupPageData = PageData.addTag(setupPage, commonSpaceObj);
+            setupPageData.name = 'Common Space Setup';
+            setupPageData.group = 'Setup';
+            setupPageData.order = 2;
+            setupPageData.query = `t.isInternal AND NOT #Common.Page`;
+            setupPageData.searchAllSpaces = false;
+
+            await notu.saveNotes([pagesPage, setupPage]);
         }
     }
 }

@@ -1,4 +1,4 @@
-import { Note, Notu, Page, Space } from "notu";
+import { Note, Notu, Space } from "notu";
 import { ProcessesSpace } from "../processes/ProcessesSpace";
 
 export class CalendarSpaceSetup {
@@ -38,22 +38,6 @@ This process will find any definitions for recurring events (notes that define t
             recurringEventsProcess.ownTag.asInternal();
             recurringEventsProcess.addTag(processesSpace.process);
             await notu.saveNotes([recurringEventsProcess]);
-        
-            const internalsPage = new Page();
-            internalsPage.name = 'Calendar Space Setup';
-            internalsPage.order = 10;
-            internalsPage.group = 'Calendar';
-            internalsPage.space = calendarSpace;
-            internalsPage.query = `t.isInternal OR #Processes.Process`;
-            await notu.savePage(internalsPage);
-            
-            const eventsPage = new Page();
-            eventsPage.name = 'Events';
-            eventsPage.order = 11;
-            eventsPage.group = 'Calendar';
-            eventsPage.space = calendarSpace;
-            eventsPage.query = `#Calendar.Event`;
-            await notu.savePage(eventsPage);
         }
     }
 }

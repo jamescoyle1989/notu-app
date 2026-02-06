@@ -1,4 +1,4 @@
-import { Note, Notu, Page, Space } from "notu";
+import { Note, Notu, Space } from "notu";
 import { ProcessesSpace } from "../processes/ProcessesSpace";
 
 export class FitnessSpaceSetup {
@@ -40,46 +40,6 @@ export class FitnessSpaceSetup {
             generateWorkoutProcess.ownTag.asInternal();
             generateWorkoutProcess.addTag(processesSpace.process);
             await notu.saveNotes([generateWorkoutProcess]);
-
-            const internalsPage = new Page();
-            internalsPage.name = 'Fitness Space Setup';
-            internalsPage.order = 50;
-            internalsPage.group = 'Fitness';
-            internalsPage.space = fitnessSpace;
-            internalsPage.query = `t.isInternal OR #Processes.Process`;
-            await notu.savePage(internalsPage);
-
-            const metricsPage = new Page();
-            metricsPage.name = 'Metrics';
-            metricsPage.order = 51;
-            metricsPage.group = 'Fitness';
-            metricsPage.space = fitnessSpace;
-            metricsPage.query = `#Fitness.Metric`;
-            await notu.savePage(metricsPage);
-
-            const exercisesPage = new Page();
-            exercisesPage.name = 'Exercise Definitions';
-            exercisesPage.order = 52;
-            exercisesPage.group = 'Fitness';
-            exercisesPage.space = fitnessSpace;
-            exercisesPage.query = `#Fitness.Exercise`;
-            await notu.savePage(exercisesPage);
-
-            const workoutsPage = new Page();
-            workoutsPage.name = 'Workouts';
-            workoutsPage.order = 53;
-            workoutsPage.group = 'Fitness';
-            workoutsPage.space = fitnessSpace;
-            workoutsPage.query = `#Fitness.Workout`;
-            await notu.savePage(workoutsPage);
-
-            const genExercisesPage = new Page();
-            genExercisesPage.name = 'Generated Exercises';
-            genExercisesPage.order = 54;
-            genExercisesPage.group = 'Fitness';
-            genExercisesPage.space = fitnessSpace;
-            genExercisesPage.query = `_#Fitness.Exercise AND #Common.Generated AND _#Fitness.Workout`;
-            await notu.savePage(genExercisesPage);
         }
     }
 }

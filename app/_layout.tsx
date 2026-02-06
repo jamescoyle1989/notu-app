@@ -7,7 +7,7 @@ import { DrawerContentComponentProps, DrawerContentScrollView, DrawerItem } from
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Href, useRouter } from "expo-router";
 import { Drawer } from "expo-router/drawer";
-import { Note, Page } from "notu";
+import { Note } from "notu";
 import { ReactNode, useEffect, useState } from "react";
 import { useColorScheme } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -18,7 +18,6 @@ import { tamaguiConfig } from '../tamagui.config';
 export default function RootLayout() {
 
     const [isLoaded, setIsLoaded] = useState(false);
-    const [customPages, setCustomPages] = useState<Array<Page>>(null);
     const [pageNotes, setPageNotes] = useState<Array<Note>>([]);
     const [error, setError] = useState(null);
     const router = useRouter();
@@ -41,7 +40,6 @@ export default function RootLayout() {
                 const fetchedColorScheme = await AsyncStorage.getItem('color-scheme');
                 if (!!fetchedColorScheme)
                     setColorScheme(fetchedColorScheme);
-                setCustomPages(await notu.getPages());
                 setPageNotes(await notu.getNotes(`#Common.Page`));
                 setIsLoaded(true);
             }
@@ -91,13 +89,6 @@ export default function RootLayout() {
         return (
             <DrawerContentScrollView {...props}>
                 <DrawerItem label="Home" onPress={() => navigateToPage(`/`)} />
-                {customPages.map(page => {
-                    return (
-                        <DrawerItem key={page.id}
-                                    label={page.name}
-                                    onPress={() => navigateToPage(`/${-page.id}`)} />
-                    )
-                })}
                 {pageNotes.map(page => {
 
                     return (
