@@ -1,13 +1,13 @@
 import { Note, NoteTag } from "notu";
-import { CommonSpace } from "./CommonSpace";
-import { CommonSpaceSetup } from "./CommonSpaceSetup";
+import { SystemSpace } from "./SystemSpace";
+import { SystemSpaceSetup } from "./SystemSpaceSetup";
 
 export class PageData {
     private _nt: NoteTag;
     constructor(noteTag: NoteTag) {
         if (
-            noteTag.tag.name != CommonSpaceSetup.page ||
-            noteTag.tag.space.internalName != CommonSpaceSetup.internalName
+            noteTag.tag.name != SystemSpaceSetup.page ||
+            noteTag.tag.space.internalName != SystemSpaceSetup.internalName
         ) {
             throw Error('Attempted to create a note tag data helper for a notetag that it does not support');
         }
@@ -25,8 +25,8 @@ export class PageData {
             return null;
         return new PageData(noteTag);
     }
-    static addTag(note: Note, commonSpace: CommonSpace): PageData {
-        return new PageData(note.addTag(commonSpace.page));
+    static addTag(note: Note, systemSpace: SystemSpace): PageData {
+        return new PageData(note.addTag(systemSpace.page));
     }
 
     get name(): string { return this._nt.data.name; }

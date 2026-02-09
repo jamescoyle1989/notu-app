@@ -1,6 +1,6 @@
 import { UIAction } from "@/helpers/NoteAction";
 import { Note, NoteTag, Notu } from "notu";
-import { ProcessDataBase } from "../processes/ProcessNoteTagDataBaseClass";
+import { ProcessDataBase } from "../system/ProcessNoteTagDataBaseClass";
 import { ImportTransactionProcessContext, importTransactions } from "./ImportTransactionsProcess";
 import { showProcessOutputScreen } from "./ImportTransactionsProcessUI";
 import { MoneySpace } from "./MoneySpace";

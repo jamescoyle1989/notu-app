@@ -1,6 +1,6 @@
 import { UIAction } from "@/helpers/NoteAction";
 import { Note, NoteTag, Notu } from "notu";
-import { ProcessDataBase } from "../processes/ProcessNoteTagDataBaseClass";
+import { ProcessDataBase } from "../system/ProcessNoteTagDataBaseClass";
 import { FitnessSpace } from "./FitnessSpace";
 import { FitnessSpaceSetup } from "./FitnessSpaceSetup";
 import { generateWorkout, GenerateWorkoutProcessContext } from "./GenerateWorkoutProcess";

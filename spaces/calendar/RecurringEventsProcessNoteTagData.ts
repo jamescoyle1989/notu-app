@@ -1,6 +1,6 @@
 import { RefreshAction, UIAction } from "@/helpers/NoteAction";
 import { Note, NoteTag, Notu } from "notu";
-import { ProcessDataBase } from "../processes/ProcessNoteTagDataBaseClass";
+import { ProcessDataBase } from "../system/ProcessNoteTagDataBaseClass";
 import { CalendarSpace } from "./CalendarSpace";
 import { CalendarSpaceSetup } from "./CalendarSpaceSetup";
 import { generateRecurringNotes, RecurringEventsProcessContext } from "./RecurringEventsProcess";

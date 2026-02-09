@@ -1,5 +1,5 @@
 import { Note, Notu, Space } from "notu";
-import { ProcessesSpace } from "../processes/ProcessesSpace";
+import { SystemSpace } from "../system/SystemSpace";
 
 export class FitnessSpaceSetup {
     static get internalName(): string { return 'com.decoyspace.notu.fitness'; }
@@ -33,12 +33,12 @@ export class FitnessSpaceSetup {
                 exercise
             ]);
 
-            const processesSpace = new ProcessesSpace(notu);
+            const systemSpace = new SystemSpace(notu);
 
             const generateWorkoutProcess = new Note(`This process will automatically generate exercises for the selected workout. Once exercise suggestions have been generated, they will be displayed on screen so the user can confirm which exercise options they want to go with.`)
                 .in(fitnessSpace).setOwnTag(this.generateWorkoutProcess);
             generateWorkoutProcess.ownTag.asInternal();
-            generateWorkoutProcess.addTag(processesSpace.process);
+            generateWorkoutProcess.addTag(systemSpace.process);
             await notu.saveNotes([generateWorkoutProcess]);
         }
     }

@@ -2,7 +2,7 @@ import { NoteAction, NoteActionsMenuBuilder, RefreshAction } from "@/helpers/Not
 import { NoteTagDataComponentFactory } from "@/helpers/NotuRenderTools";
 import { Note, Notu, Space, Tag } from "notu";
 import { LogicalSpace } from "../LogicalSpace";
-import { ProcessesSpace } from "../processes/ProcessesSpace";
+import { SystemSpace } from "../system/SystemSpace";
 import { CalendarSpaceSetup } from "./CalendarSpaceSetup";
 import { generateRecurringNotes, RecurringEventsProcessContext } from "./RecurringEventsProcess";
 import { RecurringEventsProcessData } from "./RecurringEventsProcessNoteTagData";
@@ -46,8 +46,8 @@ export class CalendarSpace implements LogicalSpace {
         menuBuilder: NoteActionsMenuBuilder,
         notu: Notu
     ) {
-        const processesSpace = new ProcessesSpace(notu);
-        if (!!note.getTag(processesSpace.process) && !!note.getTag(this.recurringEventsProcess)) {
+        const systemSpace = new SystemSpace(notu);
+        if (!!note.getTag(systemSpace.process) && !!note.getTag(this.recurringEventsProcess)) {
             menuBuilder.addToTopOfEnd(
                 new NoteAction('Run',
                     async () => {

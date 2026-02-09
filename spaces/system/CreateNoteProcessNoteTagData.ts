@@ -1,15 +1,15 @@
 import { ShowEditorAction, UIAction } from "@/helpers/NoteAction";
 import { areArraysDifferent } from "@/helpers/RenderHelpers";
 import { Note, NoteTag, Notu } from "notu";
-import { ProcessesSpace } from "./ProcessesSpace";
-import { ProcessesSpaceSetup } from "./ProcessesSpaceSetup";
 import { ProcessDataBase } from "./ProcessNoteTagDataBaseClass";
+import { SystemSpace } from "./SystemSpace";
+import { SystemSpaceSetup } from "./SystemSpaceSetup";
 
 export class CreateNoteProcessData extends ProcessDataBase {
     constructor(noteTag: NoteTag) {
         if (
-            noteTag.tag.name != ProcessesSpaceSetup.createNoteProcess ||
-            noteTag.tag.space.internalName != ProcessesSpaceSetup.internalName
+            noteTag.tag.name != SystemSpaceSetup.createNoteProcess ||
+            noteTag.tag.space.internalName != SystemSpaceSetup.internalName
         ) {
             throw Error('Attempted to create a note tag data helper for a notetag that it does not support');
         }
@@ -23,8 +23,8 @@ export class CreateNoteProcessData extends ProcessDataBase {
             return null;
         return new CreateNoteProcessData(noteTag);
     }
-    static addTag(note: Note, processesSpace: ProcessesSpace): CreateNoteProcessData {
-        return new CreateNoteProcessData(note.addTag(processesSpace.createNoteProcess));
+    static addTag(note: Note, systemSpace: SystemSpace): CreateNoteProcessData {
+        return new CreateNoteProcessData(note.addTag(systemSpace.createNoteProcess));
     }
 
     get text(): string { return this._nt.data.text; }

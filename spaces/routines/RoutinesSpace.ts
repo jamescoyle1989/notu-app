@@ -2,7 +2,7 @@ import { NoteAction, NoteActionsMenuBuilder, RefreshAction } from "@/helpers/Not
 import { NoteTagDataComponentFactory } from "@/helpers/NotuRenderTools";
 import { Note, Notu, Space, Tag } from "notu";
 import { LogicalSpace } from "../LogicalSpace";
-import { ProcessesSpace } from "../processes/ProcessesSpace";
+import { SystemSpace } from "../system/SystemSpace";
 import { CompressRoutinesProcessContext, compressRoutineTasks } from "./CompressRoutinesProcess";
 import { CompressRoutinesProcessData } from "./CompressRoutinesProcessNoteTagData";
 import CompressRoutinesProcessNoteTagDataComponentFactory from "./CompressRoutinesProcessNoteTagDataComponent";
@@ -47,8 +47,8 @@ export class RoutinesSpace implements LogicalSpace {
 
     
     buildNoteActionsMenu(note: Note, menuBuilder: NoteActionsMenuBuilder, notu: Notu) {
-        const processesSpace = new ProcessesSpace(notu);
-        if (!!note.getTag(processesSpace.process) && !!note.getTag(this.generateRooutinesProcess)) {
+        const systemSpace = new SystemSpace(notu);
+        if (!!note.getTag(systemSpace.process) && !!note.getTag(this.generateRooutinesProcess)) {
             menuBuilder.addToTopOfEnd(
                 new NoteAction('Run',
                     async () => {
@@ -69,7 +69,7 @@ export class RoutinesSpace implements LogicalSpace {
                 )
             );
         }
-        else if (!!note.getTag(processesSpace.process) && !!note.getTag(this.compressRoutinesProcess)) {
+        else if (!!note.getTag(systemSpace.process) && !!note.getTag(this.compressRoutinesProcess)) {
             menuBuilder.addToTopOfEnd(
                 new NoteAction('Run',
                     async () => {

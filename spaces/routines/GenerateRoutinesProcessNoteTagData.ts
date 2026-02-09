@@ -1,6 +1,6 @@
 import { RefreshAction, UIAction } from "@/helpers/NoteAction";
 import { Note, NoteTag, Notu } from "notu";
-import { ProcessDataBase } from "../processes/ProcessNoteTagDataBaseClass";
+import { ProcessDataBase } from "../system/ProcessNoteTagDataBaseClass";
 import { generateRoutines, GenerateRoutinesProcessContext } from "./GenerateRoutinesProcess";
 import { RoutinesSpace } from "./RoutinesSpace";
 import { RoutinesSpaceSetup } from "./RoutinesSpaceSetup";

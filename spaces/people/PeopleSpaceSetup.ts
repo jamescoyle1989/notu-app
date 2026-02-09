@@ -1,5 +1,5 @@
 import { Note, Notu, Space } from "notu";
-import { ProcessesSpace } from "../processes/ProcessesSpace";
+import { SystemSpace } from "../system/SystemSpace";
 
 export class PeopleSpaceSetup {
     static get internalName(): string { return 'com.decoyspace.notu.people'; }
@@ -38,14 +38,14 @@ Others, like birthdays, happen throughout the year on different days for differe
                 celebration
             ]);
 
-            const processesSpace = new ProcessesSpace(notu);
+            const systemSpace = new SystemSpace(notu);
 
             const celebrationEventsProcess = new Note(`
 This process will automatically generate calendar events out of celebrations for any people or social circles who have been linked to those celebrations. It will also optionally set up tasks in advance of the events to help you plan for those events. After all, what's the benefit of knowing it's your partner's birthday if you only remember the day of?
                 `)
                 .in(peopleSpace).setOwnTag(this.celebrationEventsProcess);
             celebrationEventsProcess.ownTag.asInternal();
-            celebrationEventsProcess.addTag(processesSpace.process);
+            celebrationEventsProcess.addTag(systemSpace.process);
             await notu.saveNotes([celebrationEventsProcess]);
         }
     }

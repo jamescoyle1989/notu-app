@@ -1,6 +1,6 @@
 import { Note, Notu, Space } from "notu";
-import { CommonSpace } from "./CommonSpace";
-import { PageData } from "./PageNoteTagData";
+import { PageData } from "../system/PageNoteTagData";
+import { SystemSpace } from "../system/SystemSpace";
 
 export class CommonSpaceSetup {
     static get internalName(): string { return 'com.decoyspace.notu.common'; }
@@ -15,7 +15,6 @@ export class CommonSpaceSetup {
     static get journal(): string { return 'Journal'; }
     static get log(): string { return 'Log'; }
     static get memory(): string { return 'Memory'; }
-    static get page(): string { return 'Page'; }
     static get pinned(): string { return 'Pinned'; }
     static get recurring(): string { return 'Recurring'; }
     static get scheduled(): string { return 'Scheduled'; }
@@ -73,16 +72,13 @@ export class CommonSpaceSetup {
                 .in(commonSpace).setOwnTag(this.memory);
             memory.ownTag.asInternal();
 
-            const page = new Note(`Adding this tag to a note marks it as being a page which can be displayed.`)
-                .in(commonSpace).setOwnTag(this.page);
-            page.ownTag.asInternal();
-
             const pinned = new Note('Adding this tag to a note is an easy way to highlight that the note is important and should remain on top of your mind.')
                 .in(commonSpace).setOwnTag(this.pinned);
             pinned.ownTag.asInternal();
 
             const recurring = new Note(`When added to a note, this tag defines a schedule for some recurring action to happen. This tag is generally only useful when added to notes that are operated on by some process. A good example of this would be routine definitions, where each one is expected to have a Recurring tag added to it to define how often that routine happens.`)
                 .in(commonSpace).setOwnTag(this.recurring);
+            recurring.ownTag.asInternal();
 
             const scheduled = new Note('When added to a note, this tag stores scheduling data. It indicates that the note has set start and end times.')
                 .in(commonSpace).setOwnTag(this.scheduled);
@@ -108,7 +104,6 @@ export class CommonSpaceSetup {
                 journal,
                 log,
                 memory,
-                page,
                 pinned,
                 recurring,
                 scheduled,
@@ -116,29 +111,19 @@ export class CommonSpaceSetup {
                 thought
             ]);
 
-            const commonSpaceObj = new CommonSpace(notu);
-
-            const pagesPage = new Note(`This page will display all pages set up in the system.`)
-                .in(commonSpace).setOwnTag('Pages Page');
-            pagesPage.ownTag.asInternal();
-            const pagePageData = PageData.addTag(pagesPage, commonSpaceObj);
-            pagePageData.name = 'Pages';
-            pagePageData.group = 'Setup';
-            pagePageData.order = 1;
-            pagePageData.query = `#Common.Page ORDER BY #Common.Page{.order}`;
-            pagePageData.searchAllSpaces = true;
+            const systemSpaceObj = new SystemSpace(notu);
 
             const setupPage = new Note(`This page will display the notes that make up the Common space setup.`)
                 .in(commonSpace).setOwnTag('Common Space Setup Page');
             setupPage.ownTag.asInternal();
-            const setupPageData = PageData.addTag(setupPage, commonSpaceObj);
+            const setupPageData = PageData.addTag(setupPage, systemSpaceObj);
             setupPageData.name = 'Common Space Setup';
-            setupPageData.group = 'Setup';
+            setupPageData.group = 'System';
             setupPageData.order = 2;
-            setupPageData.query = `t.isInternal AND NOT #Common.Page`;
+            setupPageData.query = `t.isInternal`;
             setupPageData.searchAllSpaces = false;
 
-            await notu.saveNotes([pagesPage, setupPage]);
+            await notu.saveNotes([setupPage]);
         }
     }
 }

@@ -1,6 +1,6 @@
 import { RefreshAction, UIAction } from "@/helpers/NoteAction";
 import { Note, NoteTag, Notu } from "notu";
-import { ProcessDataBase } from "../processes/ProcessNoteTagDataBaseClass";
+import { ProcessDataBase } from "../system/ProcessNoteTagDataBaseClass";
 import { CelebrationEventsProcessContext, generateCelebrationNotes } from "./CelebrationEventsProcess";
 import { PeopleSpace } from "./PeopleSpace";
 import { PeopleSpaceSetup } from "./PeopleSpaceSetup";

@@ -1,7 +1,7 @@
 import { getNotu, setupNotu } from "@/helpers/NotuSetup";
 import { NotuText } from "@/helpers/NotuStyles";
-import { CommonSpace } from "@/spaces/common/CommonSpace";
-import { PageData } from "@/spaces/common/PageNoteTagData";
+import { PageData } from "@/spaces/system/PageNoteTagData";
+import { SystemSpace } from "@/spaces/system/SystemSpace";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DrawerContentComponentProps, DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
@@ -40,7 +40,7 @@ export default function RootLayout() {
                 const fetchedColorScheme = await AsyncStorage.getItem('color-scheme');
                 if (!!fetchedColorScheme)
                     setColorScheme(fetchedColorScheme);
-                setPageNotes(await notu.getNotes(`#Common.Page`));
+                setPageNotes(await notu.getNotes(`#System.Page`));
                 setIsLoaded(true);
             }
             catch (err) {
@@ -65,7 +65,8 @@ export default function RootLayout() {
     if (error != null) {
         return renderInTamagui(() => (
             <View bg="$background" flex={1}>
-                <NotuText>{error.message}</NotuText>
+                <NotuText>Error: {error.message}</NotuText>
+
             </View>
         ));
     }
@@ -85,7 +86,7 @@ export default function RootLayout() {
 
     function customDrawerContent(props: DrawerContentComponentProps) {
         const renderTools = getNotu();
-        const commonSpace = new CommonSpace(renderTools.notu);
+        const systemSpace = new SystemSpace(renderTools.notu);
         return (
             <DrawerContentScrollView {...props}>
                 <DrawerItem label="Home" onPress={() => navigateToPage(`/`)} />
@@ -93,7 +94,7 @@ export default function RootLayout() {
 
                     return (
                         <DrawerItem key={page.id}
-                                    label={page.getTagData(commonSpace.page, PageData).name}
+                                    label={page.getTagData(systemSpace.page, PageData).name}
                                     onPress={() => navigateToPage(`/${page.id}`)} />
                     )
                 })}

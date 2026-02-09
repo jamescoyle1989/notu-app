@@ -2,9 +2,9 @@ import { GroupedSearchList } from "@/components/GroupedSearchList";
 import { ShowEditorAction, ShowNoteListAction, UIAction } from "@/helpers/NoteAction";
 import { getNotu } from "@/helpers/NotuSetup";
 import { CommonSpace } from "@/spaces/common/CommonSpace";
-import { PageData } from "@/spaces/common/PageNoteTagData";
-import { ProcessesSpace } from "@/spaces/processes/ProcessesSpace";
-import { ProcessDataBase } from "@/spaces/processes/ProcessNoteTagDataBaseClass";
+import { PageData } from "@/spaces/system/PageNoteTagData";
+import { ProcessDataBase } from "@/spaces/system/ProcessNoteTagDataBaseClass";
+import { SystemSpace } from "@/spaces/system/SystemSpace";
 import { DrawerActions } from "@react-navigation/native";
 import { Menu } from '@tamagui/lucide-icons';
 import { Stack, useLocalSearchParams, useNavigation, usePathname, useRouter } from "expo-router";
@@ -73,8 +73,8 @@ export default function CustomPage() {
     }
 
     const commonSpace = new CommonSpace(renderTools.notu);
-    const processesSpace = new ProcessesSpace(renderTools.notu);
-    const pageData = pageNote.getTagData(commonSpace.page, PageData);
+    const systemSpace = new SystemSpace(renderTools.notu);
+    const pageData = pageNote.getTagData(systemSpace.page, PageData);
     return (
         <View flex={1}>
             <Stack.Screen options={{
@@ -94,7 +94,7 @@ export default function CustomPage() {
                                onUIAction={onUIAction}
                                actionsBar={() => (
                                 <YStack>
-                                    {pageNote.tags.filter(nt => nt.tag.linksTo(processesSpace.process)).map((nt, index) => {
+                                    {pageNote.tags.filter(nt => nt.tag.linksTo(systemSpace.process)).map((nt, index) => {
                                         const baseData = new ProcessDataBase(nt);
                                         return (
                                             <Button theme="highlight" key={index}
