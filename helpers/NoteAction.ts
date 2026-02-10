@@ -51,10 +51,30 @@ export class ShowEditorAction extends UIAction {
     private _note: Note;
     get note(): Note { return this._note; }
 
+    private _canEditSpace: boolean = true;
+    get canEditSpace(): boolean { return this._canEditSpace; }
+
+    private _canEditText: boolean = true;
+    get canEditText(): boolean { return this._canEditText; }
+
+    private _canEditOwnTag: boolean = true;
+    get canEditOwnTag(): boolean { return this._canEditOwnTag; }
+
+    private _canEditTags: boolean = true;
+    get canEditTags(): boolean { return this._canEditTags; }
+
     constructor(note: Note) {
         super('Edit');
         this._note = note;
-    } 
+    }
+
+    withPermissions(canEditSpace: boolean, canEditOwnTag: boolean, canEditText: boolean, canEditTags: boolean): ShowEditorAction {
+        this._canEditSpace = canEditSpace;
+        this._canEditOwnTag = canEditOwnTag;
+        this._canEditText = canEditText;
+        this._canEditTags = canEditTags;
+        return this;
+    }
 }
 
 export class ShowNoteListAction extends UIAction {

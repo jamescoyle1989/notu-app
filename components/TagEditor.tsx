@@ -14,6 +14,7 @@ import TagFinder from "./TagFinder";
 interface TagEditorProps {
     notuRenderTools: NotuRenderTools,
     note: Note,
+    readonly?: boolean,
     /** The collection of tags that the note editor has access to */
     tags: Array<Tag>
 }
@@ -22,6 +23,7 @@ interface TagEditorProps {
 export default function TagEditor({
     notuRenderTools,
     note,
+    readonly = false,
     tags
 }: TagEditorProps) {
 
@@ -115,6 +117,7 @@ export default function TagEditor({
                 <NotuInput value={showNoteOptions ? note.ownTag.name : ''}
                            onChangeText={onNameChange}
                            flex={1}
+                           disabled={readonly}
                            joinedRight={showNoteOptions}
                            backgroundColor={backgroundColor}
                            color={textColor} />

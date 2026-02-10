@@ -14,6 +14,10 @@ import TagFinder from "./TagFinder";
 interface NoteEditorProps {
     notuRenderTools: NotuRenderTools,
     note: Note,
+    canEditSpace?: boolean,
+    canEditOwnTag?: boolean,
+    canEditText?: boolean,
+    canEditTags?: boolean,
     /** Called when the save has gone through successfully */
     onSave: (note: Note) => void
 }
@@ -22,6 +26,10 @@ interface NoteEditorProps {
 export default function NoteEditor({
     notuRenderTools,
     note,
+    canEditSpace = true,
+    canEditOwnTag = true,
+    canEditText = true,
+    canEditTags = true,
     onSave
 }: NoteEditorProps) {
 
@@ -126,12 +134,14 @@ export default function NoteEditor({
                 <NotuSelect options={notu.getSpaces().map(x => {return {name: x.name, value: x}})}
                             value={note.space}
                             onValueChange={onSpaceChange}
+                            disabled={!canEditSpace}
                             placeholderText='Select Space' />
 
-                <TagEditor notuRenderTools={notuRenderTools} note={note} tags={notu.getTags()}/>
+                <TagEditor notuRenderTools={notuRenderTools} readonly={!canEditOwnTag} note={note} tags={notu.getTags()}/>
 
                 <NoteTextEditor ref={textEditorRef}
                                 notuRenderTools={notuRenderTools}
+                                readonly={!canEditText}
                                 note={note} />
 
                 <NotuText bold marginTop={10}>Tags</NotuText>
@@ -144,18 +154,20 @@ export default function NoteEditor({
                                         note={note}
                                         notuRenderTools={notuRenderTools}
                                         contextSpace={note.space}
-                                        onDelete={() => removeTagFromNote(nt)}
+                                        onDelete={canEditTags ? () => removeTagFromNote(nt) : null}
                                         marginInlineEnd={2}
                                         marginBlock={1} />
                         ))}
                     </XStack>
                 )}
 
-                <Button theme="highlight"
-                        marginBlockStart={10}
-                        onPress={handleAddTagPress}>
-                    Add Tag
-                </Button>
+                {canEditTags && (
+                    <Button theme="highlight"
+                            marginBlockStart={10}
+                            onPress={handleAddTagPress}>
+                        Add Tag
+                    </Button>
+                )}
                 <Dialog modal open={showTagSelector}>
                     <Dialog.Portal>
                         <Dialog.Overlay key="noteeditortagselectoroverlay" onPress={() => setShowTagSelector(false)} />

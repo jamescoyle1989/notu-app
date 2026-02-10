@@ -6,7 +6,8 @@ interface NotuSelectProps {
     options: Array<{name: string, value: any}>,
     value: any,
     onValueChange: (value: any) => void,
-    placeholderText?: string
+    placeholderText?: string,
+    disabled?: boolean
 }
 
 
@@ -14,7 +15,8 @@ export const NotuSelect = ({
     options,
     value,
     onValueChange,
-    placeholderText = "Choose..."
+    placeholderText = "Choose...",
+    disabled = false
 }: NotuSelectProps) => {
 
     let selectedName = null;
@@ -34,8 +36,11 @@ export const NotuSelect = ({
     //See this for buggy behaviour with the select component on android
     //https://github.com/tamagui/tamagui/issues/3436#issuecomment-3133812014
     return (
-        <Select value={selectedName} onValueChange={handleValueChange} disablePreventBodyScroll onOpenChange={handleOpenChange}>
-            <Select.Trigger flex={1}>
+        <Select value={selectedName}
+                onValueChange={handleValueChange}
+                disablePreventBodyScroll
+                onOpenChange={handleOpenChange}>
+            <Select.Trigger flex={1} disabled={disabled}>
                 <Select.Value placeholder={placeholderText} />
             </Select.Trigger>
 

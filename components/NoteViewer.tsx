@@ -38,7 +38,7 @@ export const NoteViewer = ({
     async function showNoteActions() {
         const systemSpace = new SystemSpace(notuRenderTools.notu);
         const actionsList = new Array<NoteAction>();
-        for (const process of (await notuRenderTools.notu.getNotes(`#System.Process AND _#System.Process AND #[System.Process Availability]`))) {
+        for (const process of (await notuRenderTools.notu.getNotes(`_#System.Process AND #[System.Process Availability]`))) {
             const procAvailData = new ProcessAvailabilityData(process.getTag(systemSpace.processAvailability));
             const query = `n.id = ${note.id} AND (${procAvailData.query})`;
             try {

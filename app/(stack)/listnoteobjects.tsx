@@ -3,7 +3,6 @@ import { ShowEditorAction, ShowNoteListAction, UIAction } from "@/helpers/NoteAc
 import { getNotu } from "@/helpers/NotuSetup";
 import { last } from "es-toolkit";
 import { Stack, useFocusEffect, useNavigation, useRouter } from "expo-router";
-import { Note } from "notu";
 import { useCallback } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { View } from "tamagui";
@@ -33,8 +32,8 @@ export default function Index() {
         }, [navigation])
     );
 
-    function startEditingNote(note: Note) {
-        setNoteBeingEdited(note);
+    function startEditingNote(action: ShowEditorAction) {
+        setNoteBeingEdited(action);
         router.push('/editnote');
     }
 
@@ -43,7 +42,7 @@ export default function Index() {
             manualRefresh();
         else if (action.name == 'Edit') {
             const editAction = action as ShowEditorAction;
-            startEditingNote(editAction.note);
+            startEditingNote(editAction);
         }
         else if (action.name == 'ShowNoteList') {
             const showNoteListAction = action as ShowNoteListAction;

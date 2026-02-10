@@ -43,8 +43,8 @@ export default function CustomPage() {
         )
     }
 
-    function startEditingNote(note: Note) {
-        setNoteBeingEdited(note);
+    function startEditingNote(action: ShowEditorAction) {
+        setNoteBeingEdited(action);
         router.push('/editnote');
     }
 
@@ -53,7 +53,7 @@ export default function CustomPage() {
             searchListRef.current.refresh();
         else if (action.name == 'Edit') {
             const editAction = action as ShowEditorAction;
-            startEditingNote(editAction.note);
+            startEditingNote(editAction);
         }
         else if (action.name == 'ShowNoteList') {
             const showNoteListAction = action as ShowNoteListAction;

@@ -12,6 +12,7 @@ import { NotuCustomSelect } from "./NotuCustomSelect";
 interface NoteTextEditorProps {
     notuRenderTools: NotuRenderTools,
     note: Note,
+    readonly?: boolean,
     onTextChange?: () => void
 }
 
@@ -24,6 +25,7 @@ export const NoteTextEditor = React.forwardRef((
     {
         notuRenderTools,
         note,
+        readonly = false,
         onTextChange
     }: NoteTextEditorProps,
     ref: React.ForwardedRef<NoteTextEditorCommands>
@@ -92,6 +94,7 @@ export const NoteTextEditor = React.forwardRef((
         return (
             <Input value={note.text}
                    multiline={true}
+                   disabled={readonly}
                    onChangeText={handleTextChange}
                    onSelectionChange={e => {
                         const selection = e.nativeEvent.selection;
@@ -131,10 +134,12 @@ export const NoteTextEditor = React.forwardRef((
         <YStack>
             <XStack marginBlockStart={10}>
                 <NotuText bold>Text </NotuText>
-                <NotuText pressable onPress={() => toggleMode()}>
-                    {`${mode} View`}
-                </NotuText>
-                {mode == 'Raw' && (
+                {!readonly && (
+                    <NotuText pressable onPress={() => toggleMode()}>
+                        {`${mode} View`}
+                    </NotuText>
+                )}
+                {!readonly && mode == 'Raw' && (
                     <NotuText marginLeft={10} pressable onPress={() => handleAddTextComponentPress()}>
                         Add Text Component
                     </NotuText>

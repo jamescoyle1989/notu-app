@@ -1,4 +1,4 @@
-import { ShowEditorAction, UIAction } from "@/helpers/NoteAction";
+import { RefreshAction, ShowEditorAction, UIAction } from "@/helpers/NoteAction";
 import { areArraysDifferent } from "@/helpers/RenderHelpers";
 import { Note, NoteTag, Notu } from "notu";
 import { ProcessDataBase } from "./ProcessNoteTagDataBaseClass";
@@ -87,7 +87,13 @@ export class EditNoteProcessData extends ProcessDataBase {
             if (!!tag)
                 note.addTag(tag);
         }
-        return Promise.resolve(new ShowEditorAction(note));
+        if (!this.hasEditorSettings) {
+            await notu.saveNotes([note]);
+            new RefreshAction();
+        }
+        const editSet = this.editorSettings;
+        return new ShowEditorAction(note)
+            .withPermissions(editSet.canEditSpace, editSet.canEditOwnTag, editSet.canEditText, editSet.canEditTags);
     }
 }
 
@@ -109,7 +115,7 @@ export class EditNoteEditorSettings {
         value = value ?? true;
         if (this.data.canEditText != value && this._nt.isClean)
             this._nt.dirty();
-        this._nt.data.canEditText = value;
+        this.data.canEditText = value;
     }
 
     get canEditTags(): boolean { return this.data.canEditTags; }
@@ -117,7 +123,7 @@ export class EditNoteEditorSettings {
         value = value ?? true;
         if (this.data.canEditTags != value && this._nt.isClean)
             this._nt.dirty();
-        this._nt.data.canEditTags = value;
+        this.data.canEditTags = value;
     }
 
     get canEditOwnTag(): boolean { return this.data.canEditOwnTag; }
@@ -125,7 +131,7 @@ export class EditNoteEditorSettings {
         value = value ?? true;
         if (this.data.canEditOwnTag != value && this._nt.isClean)
             this._nt.dirty();
-        this._nt.data.canEditOwnTag = value;
+        this.data.canEditOwnTag = value;
     }
 
     get canEditSpace(): boolean { return this.data.canEditSpace; }
@@ -133,6 +139,6 @@ export class EditNoteEditorSettings {
         value = value ?? true;
         if (this.data.canEditSpace != value && this._nt.isClean)
             this._nt.dirty();
-        this._nt.data.canEditSpace = value;
+        this.data.canEditSpace = value;
     }
 }

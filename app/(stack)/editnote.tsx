@@ -1,14 +1,14 @@
+import { ShowEditorAction } from '@/helpers/NoteAction';
 import { getNotu } from '@/helpers/NotuSetup';
 import { Stack, useRouter } from 'expo-router';
-import { Note } from "notu";
 import { KeyboardAvoidingView } from 'react-native';
 import { View } from 'tamagui';
 import NoteEditor from '../../components/NoteEditor';
 
 
-let _noteBeingEdited: Note;
-export function setNoteBeingEdited(note: Note) {
-    _noteBeingEdited = note;
+let _action: ShowEditorAction;
+export function setNoteBeingEdited(action: ShowEditorAction) {
+    _action = action;
 }
 
 
@@ -25,8 +25,12 @@ export default function Index() {
                 }} />
                 
                 <NoteEditor notuRenderTools={renderTools}
-                            note={_noteBeingEdited}
-                            onSave={n => router.back()}/>
+                            note={_action.note}
+                            onSave={n => router.back()}
+                            canEditSpace={_action.canEditSpace}
+                            canEditOwnTag={_action.canEditOwnTag}
+                            canEditText={_action.canEditText}
+                            canEditTags={_action.canEditTags} />
             </View>
         </KeyboardAvoidingView>
     )

@@ -67,23 +67,23 @@ export class SystemSpaceSetup {
             pagePageData.query = `#System.Page ORDER BY #System.Page{.order}`;
             pagePageData.searchAllSpaces = true;
 
-            const processesPage = new Note(`This page will display all processes that have been configured within the system.`)
+            const processesPage = new Note(`This page will display all processes that are callable from within the system, as well as all availabilities of them.`)
                 .in(systemSpace).setOwnTag('Processes Page');
             processesPage.ownTag.asInternal();
             const processesPageData = PageData.addTag(processesPage, systemSpaceObj);
             processesPageData.name = 'Processes';
             processesPageData.group = 'System';
             processesPageData.order = 3;
-            processesPageData.query = `#System.Process`;
+            processesPageData.query = `#System.Process OR #[System.Process Definition] GROUP BY #System.Process AS 'Definitions', 1 AS 'Availabilities'`;
             processesPageData.searchAllSpaces = true;
 
             const editPageProcess = new Note(`Options for editing page notes`)
                 .in(systemSpace);
-            editPageProcess.addTag(process.ownTag);
             const editPageProcAvailability = ProcessAvailabilityData.addTag(editPageProcess, systemSpaceObj);
             editPageProcAvailability.query = `#System.Page`;
             const editPageProcData = EditNoteProcessData.addTag(editPageProcess, systemSpaceObj);
             editPageProcData.name = 'Edit Page';
+            editPageProcData.hasEditorSettings = true;
 
             await notu.saveNotes([pagesPage, processesPage, editPageProcess]);
         }

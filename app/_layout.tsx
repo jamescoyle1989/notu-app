@@ -7,7 +7,7 @@ import { DrawerContentComponentProps, DrawerContentScrollView, DrawerItem } from
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Href, useRouter } from "expo-router";
 import { Drawer } from "expo-router/drawer";
-import { Note } from "notu";
+import { Note, Notu } from "notu";
 import { ReactNode, useEffect, useState } from "react";
 import { useColorScheme } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -40,7 +40,7 @@ export default function RootLayout() {
                 const fetchedColorScheme = await AsyncStorage.getItem('color-scheme');
                 if (!!fetchedColorScheme)
                     setColorScheme(fetchedColorScheme);
-                setPageNotes(await notu.getNotes(`#System.Page`));
+                await reloadPages(notu);
                 setIsLoaded(true);
             }
             catch (err) {
@@ -84,8 +84,13 @@ export default function RootLayout() {
         router.replace(href as Href);
     }
 
+    async function reloadPages(notu: Notu) {
+        setPageNotes(await notu.getNotes(`#System.Page`));
+    }
+
     function customDrawerContent(props: DrawerContentComponentProps) {
         const renderTools = getNotu();
+        reloadPages(renderTools.notu);
         const systemSpace = new SystemSpace(renderTools.notu);
         return (
             <DrawerContentScrollView {...props}>

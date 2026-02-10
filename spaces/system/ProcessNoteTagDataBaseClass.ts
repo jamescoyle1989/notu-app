@@ -25,11 +25,14 @@ export class ProcessDataBase {
 
     requiresName(note: Note): boolean {
         if (note.tags.find(x => 
-            x.tag.name == SystemSpaceSetup.process &&
+            (
+                x.tag.name == SystemSpaceSetup.processAvailability ||
+                x.tag.name == SystemSpaceSetup.page
+            ) &&
             x.tag.space.internalName == SystemSpaceSetup.internalName
         ))
-            return false;
-        return true;
+            return true;
+        return false;
     }
 
     async runProcess(note: Note, notu: Notu): Promise<UIAction> {
