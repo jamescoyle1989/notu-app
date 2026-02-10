@@ -65,10 +65,7 @@ export default function CustomPage() {
     async function handleProcessPress(noteTag: NoteTag) {
         const componentFactory = renderTools.getComponentFactoryForNoteTag(noteTag.tag, pageNote);
         const processData = componentFactory.getDataObject(noteTag) as ProcessDataBase;
-        console.log('BOO');
         const result = await processData.runProcess(new Note(), notu);
-        console.log('HEY!');
-        console.log(result);
         onUIAction(result);
     }
 

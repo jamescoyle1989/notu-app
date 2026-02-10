@@ -1,5 +1,7 @@
 import { Note, Notu, Space } from "notu";
+import { EditNoteProcessData } from "./EditNoteProcessNoteTagData";
 import { PageData } from "./PageNoteTagData";
+import { ProcessAvailabilityData } from "./ProcessAvailabilityNoteTagData";
 import { SystemSpace } from "./SystemSpace";
 
 export class SystemSpaceSetup {
@@ -8,7 +10,7 @@ export class SystemSpaceSetup {
     static get process(): string { return 'Process'; }
     static get processAvailability(): string { return 'Process Availability'; }
     static get createNoteProcess(): string { return 'Create Note'; }
-    static get editNoteProcess(): string { return 'Update Note'; }
+    static get editNoteProcess(): string { return 'Edit Note'; }
     static get deleteNoteProcess(): string { return 'Delete Note'; }
 
     static async setup(notu: Notu): Promise<void> {
@@ -53,15 +55,6 @@ export class SystemSpaceSetup {
                 deleteNoteProcess
             ]);
 
-            const editNoteChild = new Note().in(systemSpace);
-            editNoteChild.addTag(process.ownTag);
-            editNoteChild.addTag(editNoteProcess.ownTag);
-            editNoteChild.addTag(processAvailability.ownTag);
-
-            await notu.saveNotes([
-                editNoteChild
-            ]);
-
             const systemSpaceObj = new SystemSpace(notu);
 
             const pagesPage = new Note(`This page will display all pages set up in the system.`)
@@ -84,7 +77,15 @@ export class SystemSpaceSetup {
             processesPageData.query = `#System.Process`;
             processesPageData.searchAllSpaces = true;
 
-            await notu.saveNotes([pagesPage, processesPage]);
+            const editPageProcess = new Note(`Options for editing page notes`)
+                .in(systemSpace);
+            editPageProcess.addTag(process.ownTag);
+            const editPageProcAvailability = ProcessAvailabilityData.addTag(editPageProcess, systemSpaceObj);
+            editPageProcAvailability.query = `#System.Page`;
+            const editPageProcData = EditNoteProcessData.addTag(editPageProcess, systemSpaceObj);
+            editPageProcData.name = 'Edit Page';
+
+            await notu.saveNotes([pagesPage, processesPage, editPageProcess]);
         }
     }
 }

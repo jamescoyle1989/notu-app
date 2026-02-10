@@ -202,7 +202,9 @@ export class NotuSQLiteClient {
         if (space instanceof Space)
             space = space.id;
 
-        query = 'SELECT COUNT(*) AS cnt' + this._prepareQuery(query, space).substring(query.indexOf(' FROM '));
+        const parsedQuery = parseQuery(query);
+        query = buildNotesQuery(parsedQuery, space, this._cache);
+        query = 'SELECT COUNT(*) AS cnt' + query.substring(query.indexOf(' FROM '));
 
         const connection = await this._connectionFactory();
         try {

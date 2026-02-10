@@ -38,13 +38,13 @@ export const NoteViewer = ({
     async function showNoteActions() {
         const systemSpace = new SystemSpace(notuRenderTools.notu);
         const actionsList = new Array<NoteAction>();
-        for (const process of (await notuRenderTools.notu.getNotes(`#Processes.Process AND _#Processes.Process AND #[Processes.Process Availability]`))) {
+        for (const process of (await notuRenderTools.notu.getNotes(`#System.Process AND _#System.Process AND #[System.Process Availability]`))) {
             const procAvailData = new ProcessAvailabilityData(process.getTag(systemSpace.processAvailability));
-            const query = `n.id = ${process.id} AND (${procAvailData.query})`;
+            const query = `n.id = ${note.id} AND (${procAvailData.query})`;
             try {
                 if (procAvailData.query.trim() == '' || (await notuRenderTools.notu.getNoteCount(query)) > 0) {
-                    for (const nt of note.tags.filter(x => x.tag.linksTo(systemSpace.process))) {
-                        const factory = notuRenderTools.getComponentFactoryForNoteTag(nt.tag, note);
+                    for (const nt of process.tags.filter(x => x.tag.linksTo(systemSpace.process))) {
+                        const factory = notuRenderTools.getComponentFactoryForNoteTag(nt.tag, process);
                         const dataObj = factory.getDataObject(nt) as ProcessDataBase;
                         actionsList.push(new NoteAction(dataObj.name, n => dataObj.runProcess(note, notuRenderTools.notu), false));
                     }

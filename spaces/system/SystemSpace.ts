@@ -3,6 +3,7 @@ import { NoteTagDataComponentFactory } from "@/helpers/NotuRenderTools";
 import { Note, Notu, Space, Tag } from "notu";
 import { LogicalSpace } from "../LogicalSpace";
 import CreateNoteProcessNoteTagDataComponentFactory from "./CreateNoteProcessNoteTagDataComponent";
+import EditNoteProcessNoteTagDataComponentFactory from "./EditNoteProcessNoteTagDataComponent";
 import PageNoteTagDataComponentFactory from "./PageNoteTagDataComponent";
 import ProcessAvailabilityNoteTagDataComponentFactory from "./ProcessAvailabilityNoteTagDataComponent";
 import ProcessNoteTagDataComponentFactory from "./ProcessNoteTagDataComponent";
@@ -64,6 +65,9 @@ export class SystemSpace implements LogicalSpace {
             
             if (tag.name == SystemSpaceSetup.createNoteProcess)
                 return new CreateNoteProcessNoteTagDataComponentFactory();
+
+            if (tag.name == SystemSpaceSetup.editNoteProcess)
+                return new EditNoteProcessNoteTagDataComponentFactory();
 
             if (tag.name == SystemSpaceSetup.process)
                 return new ProcessNoteTagDataComponentFactory();
