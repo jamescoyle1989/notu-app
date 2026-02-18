@@ -20,6 +20,12 @@ export default class ProcessNoteTagDataComponentFactory implements NoteTagDataCo
         const systemSpace = new SystemSpace(notu);
         if (!!note.getTag(systemSpace.page))
             throw Error(`A note cannot have both Process & Page tags added to it.`);
+        if (!!note.getTag(systemSpace.processAvailability))
+            throw Error(`A note cannot have both Process & Process Availability tags added to it.`);
+
+        const otherProcessTags = note.tags.filter(x => x.tag.linksTo(systemSpace.process));
+        if (otherProcessTags.length > 1)
+            throw Error(`A note with the Process tag added to it can contain at most 1 other process on it.`);
         
         return Promise.resolve(true);
     }

@@ -7,6 +7,7 @@ import { Note, NoteTag, Notu } from "notu";
 import { ReactNode } from "react";
 import { Checkbox, CheckedState, Label, XStack, YStack } from "tamagui";
 import { PageData } from "./PageNoteTagData";
+import { SystemSpace } from "./SystemSpace";
 
 export default class PageNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
 
@@ -22,6 +23,10 @@ export default class PageNoteTagDataComponentFactory implements NoteTagDataCompo
     }
 
     validate(noteTag: NoteTag, note: Note, notu: Notu): Promise<boolean> {
+        const systemSpace = new SystemSpace(notu);
+        if (!!note.getTag(systemSpace.processAvailability))
+            throw Error(`A note cannot have both Page & Process Availability tags added to it.`);
+
         return Promise.resolve(true);
     }
 

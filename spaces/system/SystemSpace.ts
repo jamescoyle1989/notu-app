@@ -2,6 +2,7 @@ import { NoteActionsMenuBuilder } from "@/helpers/NoteAction";
 import { NoteTagDataComponentFactory } from "@/helpers/NotuRenderTools";
 import { Note, Notu, Space, Tag } from "notu";
 import { LogicalSpace } from "../LogicalSpace";
+import CloneNoteProcessNoteTagDataComponentFactory from "./CloneNoteProcessNoteTagDataComponent";
 import CreateNoteProcessNoteTagDataComponentFactory from "./CreateNoteProcessNoteTagDataComponent";
 import EditNoteProcessNoteTagDataComponentFactory from "./EditNoteProcessNoteTagDataComponent";
 import PageNoteTagDataComponentFactory from "./PageNoteTagDataComponent";
@@ -32,6 +33,9 @@ export class SystemSpace implements LogicalSpace {
     private _deleteNoteProcess: Tag;
     get deleteNoteProcess(): Tag { return this._deleteNoteProcess; }
 
+    private _cloneNoteProcess: Tag;
+    get cloneNoteProcess(): Tag { return this._cloneNoteProcess; }
+
 
     constructor(notu: Notu) {
         this._load(notu);
@@ -45,6 +49,7 @@ export class SystemSpace implements LogicalSpace {
         this._createNoteProcess = notu.getTagByName(SystemSpaceSetup.createNoteProcess, this._space);
         this._editNoteProcess = notu.getTagByName(SystemSpaceSetup.editNoteProcess, this._space);
         this._deleteNoteProcess = notu.getTagByName(SystemSpaceSetup.deleteNoteProcess, this._space);
+        this._cloneNoteProcess = notu.getTagByName(SystemSpaceSetup.cloneNoteProcess, this._space);
     }
 
     
@@ -74,6 +79,9 @@ export class SystemSpace implements LogicalSpace {
 
             if (tag.name == SystemSpaceSetup.processAvailability)
                 return new ProcessAvailabilityNoteTagDataComponentFactory();
+
+            if (tag.name == SystemSpaceSetup.cloneNoteProcess)
+                return new CloneNoteProcessNoteTagDataComponentFactory();
         }
         return null;
     }

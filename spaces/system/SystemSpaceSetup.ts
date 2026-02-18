@@ -12,6 +12,7 @@ export class SystemSpaceSetup {
     static get createNoteProcess(): string { return 'Create Note'; }
     static get editNoteProcess(): string { return 'Edit Note'; }
     static get deleteNoteProcess(): string { return 'Delete Note'; }
+    static get cloneNoteProcess(): string { return 'Clone Note'; }
 
     static async setup(notu: Notu): Promise<void> {
         let systemSpace = notu.getSpaceByInternalName(this.internalName);
@@ -34,7 +35,7 @@ export class SystemSpaceSetup {
 
             await notu.saveNotes([page, process, processAvailability]);
 
-            const createNoteProcess = new Note(`Process for creating a new note. This can act as both a Page Process and a Note Process. As a Page Process it will create a new note with the configured tags added to it. As a Note Process it will add a new note related to the note that the process was called from (so long as it has its own tag).`)
+            const createNoteProcess = new Note(`Process for creating a new note. It will create a new note with the configured tags, text & space, then display the new note for further editing and saving.`)
                 .in(systemSpace).setOwnTag(this.createNoteProcess);
             createNoteProcess.ownTag.asInternal();
             createNoteProcess.addTag(process.ownTag);
@@ -49,10 +50,16 @@ export class SystemSpaceSetup {
             deleteNoteProcess.ownTag.asInternal();
             deleteNoteProcess.addTag(process.ownTag);
 
+            const cloneNoteProcess = new Note(`Process for cloning an existing note. This will add/remove the configured tags to the cloned note and then either auto-save it, or display a note editor for you to configure additional changes before manually saving yourself.`)
+                .in(systemSpace).setOwnTag(this.cloneNoteProcess);
+            cloneNoteProcess.ownTag.asInternal();
+            cloneNoteProcess.addTag(process.ownTag);
+
             await notu.saveNotes([
                 createNoteProcess,
                 editNoteProcess,
-                deleteNoteProcess
+                deleteNoteProcess,
+                cloneNoteProcess
             ]);
 
             const systemSpaceObj = new SystemSpace(notu);
@@ -74,7 +81,7 @@ export class SystemSpaceSetup {
             processesPageData.name = 'Processes';
             processesPageData.group = 'System';
             processesPageData.order = 3;
-            processesPageData.query = `#System.Process OR #[System.Process Definition] GROUP BY #System.Process AS 'Definitions', 1 AS 'Availabilities'`;
+            processesPageData.query = `#System.Process OR #[System.Process Availability] GROUP BY #System.Process AS 'Definitions', 1 AS 'Availabilities'`;
             processesPageData.searchAllSpaces = true;
 
             const editPageProcess = new Note(`Options for editing page notes`)
