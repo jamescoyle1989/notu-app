@@ -52,13 +52,12 @@ export class CreateNoteProcessData extends ProcessDataBase {
     }
 
     async runProcess(note: Note, notu: Notu): Promise<UIAction> {
-        note.space = notu.getSpace(this.spaceId);
-        note.text = this.text;
+        const newNote = new Note(this.text).in(notu.getSpace(this.spaceId));
         for (const tagId of this.tagIds) {
             const tag = notu.getTag(tagId);
             if (!!tag)
-                note.addTag(tag);
+                newNote.addTag(tag);
         }
-        return Promise.resolve(new ShowEditorAction(note));
+        return Promise.resolve(new ShowEditorAction(newNote));
     }
 }

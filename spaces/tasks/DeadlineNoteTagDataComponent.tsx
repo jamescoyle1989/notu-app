@@ -10,8 +10,20 @@ import { DeadlineData } from "./DeadlineNoteTagData";
 
 export default class DeadlineNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
 
-    getBadgeComponent(noteTag: NoteTag, note: Note, notu: Notu): ReactNode {
-        return (<BadgeComponent noteTag={noteTag} />);
+    getBadgeComponent(noteTag: NoteTag, note: Note, notu: Notu, textColor: string): ReactNode {
+        const data = new DeadlineData(noteTag);
+
+        function getDisplayText(): string {
+            if (data.date < new Date())
+                return 'OVERDUE!';
+            return `Due in ${timespanToText(dayjs(data.date).diff(new Date(), 'milliseconds'))}`;
+        }
+
+        return (
+            <View>
+                <NotuText color={textColor} small>{getDisplayText()}</NotuText>
+            </View>
+        );
     }
 
     getEditorComponent(noteTag: NoteTag, note: Note, notu: Notu, refreshCallback: () => void): ReactNode {
@@ -25,23 +37,6 @@ export default class DeadlineNoteTagDataComponentFactory implements NoteTagDataC
     getDataObject(noteTag: NoteTag) {
         return new DeadlineData(noteTag);
     }
-}
-
-
-function BadgeComponent({ noteTag }: NoteTagDataComponentProps) {
-    const data = new DeadlineData(noteTag);
-
-    function getDisplayText(): string {
-        if (data.date < new Date())
-            return 'OVERDUE!';
-        return `Due in ${timespanToText(dayjs(data.date).diff(new Date(), 'milliseconds'))}`;
-    }
-
-    return (
-        <View>
-            <NotuText>{getDisplayText()}</NotuText>
-        </View>
-    );
 }
 
 
