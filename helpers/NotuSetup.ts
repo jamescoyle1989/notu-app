@@ -5,6 +5,7 @@ import { NoteLinkProcessor } from '@/notecomponents/NoteLink';
 import { CalendarSpace } from '@/spaces/calendar/CalendarSpace';
 import { CommonSpace } from '@/spaces/common/CommonSpace';
 import { FitnessSpace } from '@/spaces/fitness/FitnessSpace';
+import { FoodSpace } from '@/spaces/food/FoodSpace';
 import { MoneySpace } from '@/spaces/money/MoneySpace';
 import { PeopleSpace } from '@/spaces/people/PeopleSpace';
 import { RoutinesSpace } from '@/spaces/routines/RoutinesSpace';
@@ -60,7 +61,8 @@ export async function setupNotu(): Promise<NotuRenderTools> {
             new CalendarSpace(notuVal),
             new RoutinesSpace(notuVal),
             new FitnessSpace(notuVal),
-            new MoneySpace(notuVal)
+            new MoneySpace(notuVal),
+            new FoodSpace(notuVal)
         ]
     );
     for (const space of renderToolsVal.logicalSpaces)
