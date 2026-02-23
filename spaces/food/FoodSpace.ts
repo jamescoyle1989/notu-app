@@ -3,6 +3,7 @@ import { NoteTagDataComponentFactory } from "@/helpers/NotuRenderTools";
 import { Note, Notu, Space, Tag } from "notu";
 import { LogicalSpace } from "../LogicalSpace";
 import { FoodSpaceSetup } from "./FoodSpaceSetup";
+import MealNoteTagDataComponentFactory from "./MealNoteTagDataComponent";
 import RecipeNoteTagDataComponentFactory from "./RecipeNoteTagDataComponent";
 
 export class FoodSpace implements LogicalSpace {
@@ -42,6 +43,8 @@ export class FoodSpace implements LogicalSpace {
         if (tag.space.internalName == FoodSpaceSetup.internalName) {
             if (tag.name == FoodSpaceSetup.recipe)
                 return new RecipeNoteTagDataComponentFactory();
+            if (tag.name == FoodSpaceSetup.meal)
+                return new MealNoteTagDataComponentFactory();
         }
         return null;
     }

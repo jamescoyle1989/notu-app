@@ -31,6 +31,11 @@ export const NotuText = styled(Text, {
                 textDecorationLine: 'underline'
             }
         },
+        strikethrough: {
+            true: {
+                textDecorationLine: 'line-through'
+            }
+        },
         big: {
             true: {
                 fontSize: 18
