@@ -1,5 +1,5 @@
 import { GroupedSearchList } from "@/components/GroupedSearchList";
-import { ShowEditorAction, ShowNoteListAction, UIAction } from "@/helpers/NoteAction";
+import { ShowCustomPageAction, ShowEditorAction, ShowNoteListAction, UIAction } from "@/helpers/NoteAction";
 import { getNotu } from "@/helpers/NotuSetup";
 import { CommonSpace } from "@/spaces/common/CommonSpace";
 import { PageData } from "@/spaces/system/PageNoteTagData";
@@ -11,6 +11,7 @@ import { Stack, useLocalSearchParams, useNavigation, usePathname, useRouter } fr
 import { Note, NoteTag } from "notu";
 import { useEffect, useRef, useState } from "react";
 import { Button, Text, View, YStack } from "tamagui";
+import { setActiveCustomPage } from "./custompage";
 import { setNoteBeingEdited } from "./editnote";
 import { setActiveNoteListAction } from "./listnoteobjects";
 
@@ -59,6 +60,11 @@ export default function CustomPage() {
             const showNoteListAction = action as ShowNoteListAction;
             setActiveNoteListAction(showNoteListAction);
             router.push('/listnoteobjects');
+        }
+        else if (action.name == 'ShowCustomPage') {
+            const showCustomPageAction = action as ShowCustomPageAction;
+            setActiveCustomPage(showCustomPageAction);
+            router.push('/custompage');
         }
     }
 

@@ -209,6 +209,7 @@ function EditorComponent({ noteTag, refreshCallback }: NoteTagDataComponentProps
             <NotuView bg="$background"
                       borderRadius={10}
                       marginBlockStart={10}
+                      key={ingredient.id}
                       padding={5}>
 
                 <Theme reset={resetTheme}>
@@ -277,6 +278,7 @@ function EditorComponent({ noteTag, refreshCallback }: NoteTagDataComponentProps
                         <NotuView bg="$background"
                                   borderRadius={10}
                                   marginBlockStart={10}
+                                  key={group.id}
                                   padding={5}>
 
                             <XStack style={{alignItems: 'center'}}>
@@ -344,6 +346,7 @@ function EditorComponent({ noteTag, refreshCallback }: NoteTagDataComponentProps
                         <NotuView bg="$background"
                                   borderRadius={10}
                                   marginBlockStart={10}
+                                  key={index}
                                   padding={5}>
 
                             <Input value={step.text}
@@ -363,7 +366,7 @@ function EditorComponent({ noteTag, refreshCallback }: NoteTagDataComponentProps
                             </NotuText>
                             
                             {step.condition.map(conditionId => (
-                                <XStack>
+                                <XStack key={conditionId}>
                                     <NotuView flex={1}>
                                         <NotuText>{getStepConditionText(conditionId)}</NotuText>
                                     </NotuView>

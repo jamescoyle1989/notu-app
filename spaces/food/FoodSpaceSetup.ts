@@ -1,9 +1,12 @@
 import { Note, Notu, Space } from "notu";
+import { SystemSpace } from "../system/SystemSpace";
 
 export class FoodSpaceSetup {
     static get internalName(): string { return 'com.decoyspace.notu.food'; }
     static get recipe(): string { return 'Recipe'; }
     static get meal(): string { return 'Meal'; }
+    static get generateMealProcess(): string { return 'Generate Meal Process'; }
+    static get generateShoppingListProcess(): string { return 'Generate Shopping List Process'; }
 
     static async setup(notu: Notu): Promise<void> {
         let foodSpace = notu.getSpaceByInternalName(this.internalName);
@@ -21,6 +24,20 @@ export class FoodSpaceSetup {
             meal.ownTag.asInternal();
 
             await notu.saveNotes([recipe, meal]);
+        
+            const systemSpace = new SystemSpace(notu);
+
+            const generateMealProcess = new Note(`This process will run against a recipe note and use it to generate a meal note from it. It will display a UI where you can select when the meal will be scheduled and also any optional ingredients that you want to include.`)
+                .in(foodSpace).setOwnTag(this.generateMealProcess);
+            generateMealProcess.ownTag.asInternal();
+            generateMealProcess.addTag(systemSpace.process);
+
+            const generateShoppingListProcess = new Note(`This process will run against a collection of scheduled meals. It displays a UI where you can choose which meals you would like to include in the list. The process allows you to configure what tags the shopping list note should be set up with, also what criteria to look for if you want it to append to an existing note.`)
+                .in(foodSpace).setOwnTag(this.generateShoppingListProcess);
+            generateShoppingListProcess.ownTag.asInternal();
+            generateShoppingListProcess.addTag(systemSpace.process);
+
+            await notu.saveNotes([generateMealProcess, generateShoppingListProcess]);
         }
     }
 }

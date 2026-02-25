@@ -1,10 +1,11 @@
 import { useManualRefresh } from "@/helpers/Hooks";
 import { NoteTagDataComponentFactory, NoteTagDataComponentProps } from "@/helpers/NotuRenderTools";
 import { NotuText, NotuView } from "@/helpers/NotuStyles";
+import { Check } from "@tamagui/lucide-icons";
 import { Note, NoteTag, Notu } from "notu";
 import { ReactNode } from "react";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import { Label, XStack, YStack } from "tamagui";
+import { Checkbox, XStack, YStack } from "tamagui";
 import { MealData, MealGroupData, MealIngredientData, MealStepData } from "./MealNoteTagData";
 
 export default class MealNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
@@ -37,16 +38,21 @@ function EditorComponent({ noteTag }: NoteTagDataComponentProps) {
     const groups = data.groups;
     const steps = data.steps;
 
+    function handleHideDoneItemsToggle() {
+        data.hideDoneItems = !data.hideDoneItems;
+        manualRefresh();
+    }
+
     function renderIngredient(ingredient: MealIngredientData) {
         if (ingredient.done && data.hideDoneItems)
             return;
         
-        const doubleTap = Gesture.Tap().numberOfTaps(2).onStart(() => {
+        const doubleTap = Gesture.Tap().numberOfTaps(2).onEnd(() => {
             ingredient.done = !ingredient.done;
             manualRefresh();
-        });
+        }).runOnJS(true);
         return (
-            <GestureDetector gesture={doubleTap}>
+            <GestureDetector gesture={doubleTap} key={ingredient.id}>
                 <NotuText strikethrough={ingredient.done}>{ingredient.quantity} {ingredient.name}</NotuText>
             </GestureDetector>
         );
@@ -57,23 +63,26 @@ function EditorComponent({ noteTag }: NoteTagDataComponentProps) {
         if (groupIngredients.filter(x => !x.done).length == 0 && data.hideDoneItems)
             return;
 
-        <NotuView>
-            <NotuText bold>{group.name}</NotuText>
+        return (
+            <NotuView key={group.id} marginBlockStart={10}>
+                <NotuText bold>{group.name}</NotuText>
 
-            {groupIngredients.map(renderIngredient)}
-        </NotuView>
+                {groupIngredients.map(renderIngredient)}
+            </NotuView>
+        );
     }
 
-    function renderStep(step: MealStepData) {
+    function renderStep(step: MealStepData, index: number) {
         if (step.done && data.hideDoneItems)
             return;
 
-        const doubleTap = Gesture.Tap().numberOfTaps(2).onStart(() => {
-            step.done = !step.done;
+        const stepData = step.data;
+        const doubleTap = Gesture.Tap().numberOfTaps(2).onEnd(() => {
+            stepData.done = !stepData.done;
             manualRefresh();
-        });
+        }).runOnJS(true);
         return (
-            <GestureDetector gesture={doubleTap}>
+            <GestureDetector gesture={doubleTap} key={index}>
                 <NotuText strikethrough={step.done}>{step.text}</NotuText>
             </GestureDetector>
         );
@@ -82,22 +91,32 @@ function EditorComponent({ noteTag }: NoteTagDataComponentProps) {
     return (
         <YStack>
             <XStack style={{alignItems: 'center'}}>
-                <Label width={labelWidth}>Name</Label>
+                <NotuText width={labelWidth}>Name</NotuText>
                 <NotuText bold>{data.name}</NotuText>
             </XStack>
 
             <XStack style={{alignItems: 'center'}}>
-                <Label width={labelWidth}>Servings</Label>
+                <NotuText width={labelWidth}>Servings</NotuText>
                 <NotuText bold>{data.servings}</NotuText>
             </XStack>
 
-            <NotuText bold underline big>Ingredients</NotuText>
+            <XStack style={{alignItems: 'center'}}>
+                <NotuText width={labelWidth}>Hide done items</NotuText>
+                <Checkbox checked={data.hideDoneItems}
+                          onCheckedChange={() => handleHideDoneItemsToggle()}>
+                    <Checkbox.Indicator>
+                        <Check />
+                    </Checkbox.Indicator>
+                </Checkbox>
+            </XStack>
+
+            <NotuText bold underline big marginBlockStart={10}>Ingredients</NotuText>
 
             {ingredients.filter(x => x.groupId == null).map(renderIngredient)}
 
             {groups.map(renderGroup)}
 
-            <NotuText bold underline big>Steps</NotuText>
+            <NotuText bold underline big marginBlockStart={10}>Steps</NotuText>
 
             {steps.map(renderStep)}
         </YStack>

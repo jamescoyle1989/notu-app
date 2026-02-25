@@ -77,6 +77,22 @@ export class ShowEditorAction extends UIAction {
     }
 }
 
+export class ShowCustomPageAction extends UIAction {
+    private _title: string;
+    get title(): string { return this._title; }
+
+    private _render: (onUIAction: (action: UIAction) => void) => React.JSX.Element;
+    get render(): (onUIAction: (action: UIAction) => void) => React.JSX.Element {
+        return this._render;
+    }
+
+    constructor(title: string, render: (onUIAction: (action: UIAction) => void) => React.JSX.Element) {
+        super('ShowCustomPage');
+        this._title = title;
+        this._render = render;
+    }
+}
+
 export class ShowNoteListAction extends UIAction {
     private _notes: Array<Note>;
     get notes(): Array<Note> { return this._notes; }
