@@ -4,6 +4,7 @@ import { Note, Notu, Space, Tag } from "notu";
 import { LogicalSpace } from "../LogicalSpace";
 import { FoodSpaceSetup } from "./FoodSpaceSetup";
 import GenerateMealProcessNoteTagDataComponentFactory from "./GenerateMealProcessNoteTagDataComponent";
+import GenerateShoppingListProcessNoteTagDataComponentFactory from "./GenerateShoppingListProcessNoteTagDataComponent";
 import MealNoteTagDataComponentFactory from "./MealNoteTagDataComponent";
 import RecipeNoteTagDataComponentFactory from "./RecipeNoteTagDataComponent";
 
@@ -56,6 +57,8 @@ export class FoodSpace implements LogicalSpace {
                 return new MealNoteTagDataComponentFactory();
             if (tag.name == FoodSpaceSetup.generateMealProcess)
                 return new GenerateMealProcessNoteTagDataComponentFactory();
+            if (tag.name == FoodSpaceSetup.generateShoppingListProcess)
+                return new GenerateShoppingListProcessNoteTagDataComponentFactory();
         }
         return null;
     }

@@ -9,7 +9,7 @@ import { useManualRefresh } from "../helpers/Hooks";
 import { NoteText } from "./NoteText";
 
 
-class NoteChecklistLine {
+export class NoteChecklistLine {
     private _content: Array<any>;
     get content(): Array<any> { return this._content; }
 
