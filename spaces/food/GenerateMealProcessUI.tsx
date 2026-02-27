@@ -50,6 +50,20 @@ export function showCustomiseMealScreen(
                     setSelectedItems([...selectedItems, itemId]);
             }
 
+            const canConfirmMeal = (() => {
+                //Make sure each selected/required group has at least one ingredient required/selected in it
+                for (const group of groups) {
+                    if (group.optional && !selectedItemsMap.has(group.id))
+                        continue;
+                    if (!!groupRequiredIngredients.find(x => x.groupId == group.id))
+                        continue;
+                    const optionals = optionalIngredients.filter(x => x.groupId == group.id);
+                    if (!optionals.find(x => selectedItemsMap.has(x.id)))
+                        return false;
+                }
+                return true;
+            })();
+
             function confirmMeal() {
                 const finalInclusions = [
                     ...selectedItems,
@@ -100,8 +114,9 @@ export function showCustomiseMealScreen(
                         </YStack>
                     ))}
 
-                    <Button theme="highlight"
+                    <Button theme={canConfirmMeal ? 'highlight' : 'danger'}
                             marginBlockStart={10}
+                            disabled={!canConfirmMeal}
                             onPress={confirmMeal}>
                         Generate
                     </Button>

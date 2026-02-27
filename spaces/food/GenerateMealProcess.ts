@@ -109,7 +109,6 @@ export function generateMeal(
         else
             aliasReplacements.set(alias, ingredients.slice(0, ingredients.length - 1).join(', ') + ' & ' + ingredients[ingredients.length - 1]);
     }
-    console.log({aliasReplacements});
 
     for (const recipeStep of steps) {
         let stepText = recipeStep.text;
