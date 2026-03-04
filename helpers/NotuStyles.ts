@@ -2,6 +2,7 @@ import { Text, View, styled } from '@tamagui/core';
 import { Button, Input } from 'tamagui';
 
 export const NotuText = styled(Text, {
+    name: 'NotuText',
     color: '$color',
 
     variants: {
@@ -51,6 +52,8 @@ export const NotuText = styled(Text, {
 
 
 export const NotuButton = styled(Button, {
+    name: 'NotuButton',
+
     variants: {
         joinedLeft: {
             true: {
@@ -71,6 +74,8 @@ export const NotuButton = styled(Button, {
 
 
 export const NotuInput = styled(Input, {
+    name: 'NotuInput',
+
     variants: {
         joinedLeft: {
             true: {
@@ -96,6 +101,8 @@ export const NotuInput = styled(Input, {
 
 
 export const NotuView = styled(View, {
+    name: 'NotuView',
+
     variants: {
         borderRadius: {
             ':number': (value) => {
