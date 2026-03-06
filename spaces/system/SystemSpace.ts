@@ -4,6 +4,7 @@ import { Note, Notu, Space, Tag } from "notu";
 import { LogicalSpace } from "../LogicalSpace";
 import CloneNoteProcessNoteTagDataComponentFactory from "./CloneNoteProcessNoteTagDataComponent";
 import CreateNoteProcessNoteTagDataComponentFactory from "./CreateNoteProcessNoteTagDataComponent";
+import CustomProcessNoteTagDataComponentFactory from "./CustomProcessNoteTagDataComponent";
 import EditNoteProcessNoteTagDataComponentFactory from "./EditNoteProcessNoteTagDataComponent";
 import PageNoteTagDataComponentFactory from "./PageNoteTagDataComponent";
 import ProcessAvailabilityNoteTagDataComponentFactory from "./ProcessAvailabilityNoteTagDataComponent";
@@ -83,6 +84,14 @@ export class SystemSpace implements LogicalSpace {
             if (tag.name == SystemSpaceSetup.cloneNoteProcess)
                 return new CloneNoteProcessNoteTagDataComponentFactory();
         }
+
+        if (
+            tag.linksTo(this.process) &&
+            !tag.isInternal &&
+            !!tag.links.find(x => x.linksTo(this.process))
+        )
+            return new CustomProcessNoteTagDataComponentFactory();
+
         return null;
     }
 }
