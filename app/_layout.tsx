@@ -5,6 +5,7 @@ import { SystemSpace } from "@/spaces/system/SystemSpace";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DrawerContentComponentProps, DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { orderBy } from "es-toolkit";
 import { Href, useRouter } from "expo-router";
 import { Drawer } from "expo-router/drawer";
 import { Note, Notu } from "notu";
@@ -21,6 +22,7 @@ export default function RootLayout() {
     const [isLoaded, setIsLoaded] = useState(false);
     const [pageNotes, setPageNotes] = useState<Array<Note>>([]);
     const [error, setError] = useState(null);
+    const [expandedGroups, setExpandedGroups] = useState(new Set<string>());
     const router = useRouter();
 
     const defaultColorScheme = useColorScheme().toString();
@@ -67,7 +69,6 @@ export default function RootLayout() {
         return renderInTamagui(() => (
             <View bg="$background" flex={1}>
                 <NotuText>Error: {error.message}</NotuText>
-
             </View>
         ));
     }
@@ -89,6 +90,39 @@ export default function RootLayout() {
         setPageNotes(await notu.getNotes(`#System.Page`));
     }
 
+    function toggleGroupExpanded(groupName: string) {
+        if (expandedGroups.has(groupName))
+            expandedGroups.delete(groupName);
+        else
+            expandedGroups.add(groupName);
+        setExpandedGroups(expandedGroups);
+    }
+
+    function getPageGroups(systemSpace: SystemSpace): Array<Array<{id: number, data: PageData}>> {
+        const output = new Array<Array<{id: number, data: PageData}>>();
+        
+        orderBy(
+            pageNotes.map(page => {
+                const pageData = page.getTagData(systemSpace.page, PageData);
+                return { id: page.id, data: pageData };
+            }),
+            [x => x.data.order],
+            ['asc']
+        ).forEach(x => {
+            if (x.data.group == '')
+                output.push([x]);
+            else {
+                const existingGroup = output.find(y => !!y.find(z => z.data.group == x.data.group));
+                if (!!existingGroup)
+                    existingGroup.push(x);
+                else
+                    output.push([x]);
+            }
+        });
+
+        return output;
+    }
+
     function customDrawerContent(props: DrawerContentComponentProps) {
         const renderTools = getNotu();
         reloadPages(renderTools.notu);
@@ -96,17 +130,30 @@ export default function RootLayout() {
         return (
             <DrawerContentScrollView {...props}>
                 <DrawerItem label="Home" onPress={() => navigateToPage(`/`)} />
-                {pageNotes.map(page => {
-
-                    return (
-                        <DrawerItem key={page.id}
-                                    label={page.getTagData(systemSpace.page, PageData).name}
-                                    onPress={() => navigateToPage(`/${page.id}`)} />
-                    )
-                })}
+                {getPageGroups(systemSpace).map(renderGroup)}
                 <DrawerItem label="Toggle Theme" onPress={() => switchColorScheme()} />
             </DrawerContentScrollView>
         )
+    }
+
+    function renderGroup(group: Array<{id: number, data: PageData}>): Array<React.JSX.Element> {
+        const groupName = group[0].data.group;
+        const isSoloItem = groupName.length == 0;
+        const render = [];
+        if (!isSoloItem) {
+            render.push(
+                <DrawerItem key={-group[0].id} label={group[0].data.group}
+                            labelStyle={{textDecorationLine: 'underline'}}
+                            onPress={() => {toggleGroupExpanded(group[0].data.group)}} />
+            );
+        }
+        if (isSoloItem || !expandedGroups.has(groupName))
+        render.push(...group.map(page => (
+            <DrawerItem key={page.id} label={page.data.name}
+                        labelStyle={{marginInlineStart: isSoloItem ? 0 : 30}}
+                        onPress={() => navigateToPage(`/${page.id}`)} />
+        )));
+        return render;
     }
 
     return renderInTamagui(() => (
