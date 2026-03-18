@@ -152,7 +152,6 @@ export class RecipeIngredientData {
         this.name = this.name;
         this.optional = this.optional;
         this.quantity = this.quantity;
-        this.alias = this.alias;
     }
 
     get data(): any { return this._ingredientData; }
@@ -187,16 +186,6 @@ export class RecipeIngredientData {
         if (this._ingredientData.name != value && this._nt.isClean)
             this._nt.dirty();
         this._ingredientData.quantity = value;
-    }
-
-    get alias(): string | null { return this._ingredientData.alias; }
-    set alias(value: string | null) {
-        value = value ?? '';
-        if (value.trim() == '')
-            value = null;
-        if (this._ingredientData.alias != value && this._nt.isClean)
-            this._nt.dirty();
-        this._ingredientData.alias = value;
     }
 
     get groupId(): number | null { return this._ingredientData.groupId; }

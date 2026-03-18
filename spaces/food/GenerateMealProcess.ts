@@ -87,33 +87,17 @@ export function generateMeal(
         groupIdMap.set(recipeGroup.id, mealGroup.id);
     }
 
-    const aliasIngredientsMap = new Map<string, Array<string>>();
     for (const recipeIngredient of ingredients) {
         const mealIngredient = new MealIngredientData(meal.getTag(context.foodSpace.meal));
         mealIngredient.name = recipeIngredient.name;
         mealIngredient.quantity = recipeIngredient.quantity;
         if (!!recipeIngredient.groupId)
             mealIngredient.groupId = groupIdMap.get(recipeIngredient.groupId);
-        if (!!recipeIngredient.alias) {
-            const aliasIngredients = aliasIngredientsMap.get(recipeIngredient.alias) ?? [];
-            aliasIngredients.push(recipeIngredient.name);
-            aliasIngredientsMap.set(recipeIngredient.alias, aliasIngredients);
-        }
         mealData.addIngredient(mealIngredient);
-    }
-
-    const aliasReplacements = new Map<string, string>();
-    for (const [alias, ingredients] of aliasIngredientsMap) {
-        if (ingredients.length == 1)
-            aliasReplacements.set(alias, ingredients[0]);
-        else
-            aliasReplacements.set(alias, ingredients.slice(0, ingredients.length - 1).join(', ') + ' & ' + ingredients[ingredients.length - 1]);
     }
 
     for (const recipeStep of steps) {
         let stepText = recipeStep.text;
-        for (const [alias, replacement] of aliasReplacements)
-            stepText = stepText.replaceAll(alias, replacement);
         const mealStep = new MealStepData(meal.getTag(context.foodSpace.meal));
         mealStep.text = stepText;
         mealData.addStep(mealStep);

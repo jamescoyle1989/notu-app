@@ -83,11 +83,6 @@ function EditorComponent({ noteTag, refreshCallback }: NoteTagDataComponentProps
         manualRefresh();
     }
 
-    function handleIngredientAliasChange(ingredient: RecipeIngredientData, value: string) {
-        ingredient.alias = value;
-        manualRefresh();
-    }
-
     function handleRemoveIngredient(ingredient: RecipeIngredientData) {
         data.removeIngredient(ingredient.id);
         deselectAll();
@@ -235,13 +230,6 @@ function EditorComponent({ noteTag, refreshCallback }: NoteTagDataComponentProps
                             <Check />
                         </Checkbox.Indicator>
                     </Checkbox>
-                </XStack>
-
-                <XStack style={{alignItems: 'center'}}>
-                    <Label width={labelWidth}>Alias</Label>
-                    <Input value={ingredient.alias ?? ''}
-                           onChangeText={value => handleIngredientAliasChange(ingredient, value)}
-                           flex={1} />
                 </XStack>
             </NotuView>
         );
