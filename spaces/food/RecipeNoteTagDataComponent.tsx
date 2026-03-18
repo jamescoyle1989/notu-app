@@ -6,7 +6,7 @@ import { NotuText, NotuView } from "@/helpers/NotuStyles";
 import { Check, X } from "@tamagui/lucide-icons";
 import { Note, NoteTag, Notu } from "notu";
 import { ReactNode, useState } from "react";
-import { Checkbox, Input, Label, Theme, XStack, YStack } from "tamagui";
+import { Checkbox, Input, Label, XStack, YStack } from "tamagui";
 import { RecipeData, RecipeGroupData, RecipeIngredientData, RecipeStepData } from "./RecipeNoteTagData";
 
 export default class RecipeNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
@@ -188,9 +188,10 @@ function EditorComponent({ noteTag, refreshCallback }: NoteTagDataComponentProps
         manualRefresh();
     }
 
-    function renderIngredientLine(ingredient: RecipeIngredientData) {
+    function renderIngredientLine(ingredient: RecipeIngredientData, asBox: boolean) {
         return (
             <NotuView bg="$background"
+                      box={asBox}
                       key={ingredient.id}
                       borderRadius={10}
                       marginBlockStart={10}
@@ -204,7 +205,7 @@ function EditorComponent({ noteTag, refreshCallback }: NoteTagDataComponentProps
         );
     }
 
-    function renderIngredientEditor(ingredient: RecipeIngredientData, resetTheme: boolean) {
+    function renderIngredientEditor(ingredient: RecipeIngredientData) {
         return (
             <NotuView bg="$background"
                       borderRadius={10}
@@ -212,38 +213,36 @@ function EditorComponent({ noteTag, refreshCallback }: NoteTagDataComponentProps
                       key={ingredient.id}
                       padding={5}>
 
-                <Theme reset={resetTheme}>
-                    <XStack style={{alignItems: 'center'}}>
-                        <Label width={labelWidth}>Name</Label>
-                        <Input value={ingredient.name}
-                               onChangeText={value => handleIngredientNameChange(ingredient, value)}
-                               flex={1} />
-                    </XStack>
+                <XStack style={{alignItems: 'center'}}>
+                    <Label width={labelWidth}>Name</Label>
+                    <Input value={ingredient.name}
+                           onChangeText={value => handleIngredientNameChange(ingredient, value)}
+                           flex={1} />
+                </XStack>
 
-                    <XStack style={{alignItems: 'center'}}>
-                        <Label width={labelWidth}>Quantity</Label>
-                        <Input value={ingredient.quantity}
-                               onChangeText={value => handleIngredientQuantityChange(ingredient, value)}
-                               flex={1} />
-                    </XStack>
+                <XStack style={{alignItems: 'center'}}>
+                    <Label width={labelWidth}>Quantity</Label>
+                    <Input value={ingredient.quantity}
+                           onChangeText={value => handleIngredientQuantityChange(ingredient, value)}
+                           flex={1} />
+                </XStack>
 
-                    <XStack style={{alignItems: 'center'}}>
-                        <Label width={labelWidth}>Optional</Label>
-                        <Checkbox checked={ingredient.optional}
-                                  onCheckedChange={() => onIngredientOptionalChange(ingredient)}>
-                            <Checkbox.Indicator>
-                                <Check />
-                            </Checkbox.Indicator>
-                        </Checkbox>
-                    </XStack>
+                <XStack style={{alignItems: 'center'}}>
+                    <Label width={labelWidth}>Optional</Label>
+                    <Checkbox checked={ingredient.optional}
+                              onCheckedChange={() => onIngredientOptionalChange(ingredient)}>
+                        <Checkbox.Indicator>
+                            <Check />
+                        </Checkbox.Indicator>
+                    </Checkbox>
+                </XStack>
 
-                    <XStack style={{alignItems: 'center'}}>
-                        <Label width={labelWidth}>Alias</Label>
-                        <Input value={ingredient.alias ?? ''}
-                               onChangeText={value => handleIngredientAliasChange(ingredient, value)}
-                               flex={1} />
-                    </XStack>
-                </Theme>
+                <XStack style={{alignItems: 'center'}}>
+                    <Label width={labelWidth}>Alias</Label>
+                    <Input value={ingredient.alias ?? ''}
+                           onChangeText={value => handleIngredientAliasChange(ingredient, value)}
+                           flex={1} />
+                </XStack>
             </NotuView>
         );
     }
@@ -265,9 +264,9 @@ function EditorComponent({ noteTag, refreshCallback }: NoteTagDataComponentProps
 
             {ingredients.filter(x => x.groupId == null).map(ingredient => {
                 if (ingredient.id == selectedId && ingredient.groupId == null)
-                    return renderIngredientEditor(ingredient, false);
+                    return renderIngredientEditor(ingredient);
                 else
-                    return renderIngredientLine(ingredient);
+                    return renderIngredientLine(ingredient, false);
             })}
 
             <NotuText pressable onPress={handleAddIngredient}>Add Ingredient</NotuText>
@@ -298,11 +297,9 @@ function EditorComponent({ noteTag, refreshCallback }: NoteTagDataComponentProps
                                 </Checkbox>
                             </XStack>
 
-                            {ingredients.filter(x => x.groupId == group.id).map(ingredient => (
-                                <Theme name="box">
-                                    {renderIngredientLine(ingredient)}
-                                </Theme>
-                            ))}
+                            {ingredients.filter(x => x.groupId == group.id).map(ingredient => 
+                                {renderIngredientLine(ingredient, true)}
+                            )}
 
                             <NotuText pressable onPress={() => handleAddGroupIngredient(group)}>Add Ingredient</NotuText>
 
@@ -311,8 +308,7 @@ function EditorComponent({ noteTag, refreshCallback }: NoteTagDataComponentProps
                 }
                 else {
                     return (
-                        <NotuView bg="$background"
-                                  key={group.id}
+                        <NotuView key={group.id}
                                   borderRadius={10}
                                   marginBlockStart={10}
                                   padding={5}
@@ -324,10 +320,10 @@ function EditorComponent({ noteTag, refreshCallback }: NoteTagDataComponentProps
                             </XStack>
 
                             {ingredients.filter(x => x.groupId == group.id).map(ingredient => (
-                                <Theme name="box" key={ingredient.id}>
-                                    {ingredient.id == selectedId && renderIngredientEditor(ingredient, true)}
-                                    {ingredient.id != selectedId && renderIngredientLine(ingredient)}
-                                </Theme>
+                                <NotuView box key={ingredient.id}>
+                                    {ingredient.id == selectedId && renderIngredientEditor(ingredient)}
+                                    {ingredient.id != selectedId && renderIngredientLine(ingredient, false)}
+                                </NotuView>
                             ))}
 
                             <NotuText pressable onPress={() => handleAddGroupIngredient(group)}>Add Ingredient</NotuText>

@@ -2,7 +2,7 @@ import { NotuText, NotuView } from "@/helpers/NotuStyles";
 import { Note, NoteTag, Space, Tag } from "notu";
 import { useRef, useState } from "react";
 import { Keyboard } from "react-native";
-import { Button, Dialog, ScrollView, Theme, XStack, YStack } from "tamagui";
+import { Button, Dialog, ScrollView, XStack, YStack } from "tamagui";
 import { useManualRefresh } from "../helpers/Hooks";
 import { NotuRenderTools } from "../helpers/NotuRenderTools";
 import NoteTagBadge from "./NoteTagBadge";
@@ -104,18 +104,15 @@ export default function NoteEditor({
             return;
 
         return (
-            <Theme name="box" key={noteTag.tag.id}>
-                <NotuView bg="$background"
-                          borderRadius={10}
-                          marginBlockStart={10}
-                          padding={5}>
+            <NotuView key={noteTag.tag.id}
+                      box
+                      borderRadius={10}
+                      marginBlockStart={10}
+                      padding={5}>
                     
-                    <Theme reset>
-                        <NotuText bold>{noteTag.tag.getQualifiedName(note.space.id)}</NotuText>
-                        {editorComponent}
-                    </Theme>
-                </NotuView>
-            </Theme>
+                <NotuText bold>{noteTag.tag.getQualifiedName(note.space.id)}</NotuText>
+                {editorComponent}
+            </NotuView>
         );
     }
 

@@ -121,6 +121,11 @@ export const NotuView = styled(View, {
                     paddingInline: value
                 }
             }
+        },
+        box: {
+            true: {
+                bg: "$backgroundPress"
+            }
         }
     }
 })
