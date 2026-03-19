@@ -9,6 +9,7 @@ import EditNoteProcessNoteTagDataComponentFactory from "./EditNoteProcessNoteTag
 import PageNoteTagDataComponentFactory from "./PageNoteTagDataComponent";
 import ProcessAvailabilityNoteTagDataComponentFactory from "./ProcessAvailabilityNoteTagDataComponent";
 import ProcessNoteTagDataComponentFactory from "./ProcessNoteTagDataComponent";
+import defs from "./SystemSpaceDefs";
 import { SystemSpaceSetup } from "./SystemSpaceSetup";
 
 export class SystemSpace implements LogicalSpace {
@@ -43,14 +44,14 @@ export class SystemSpace implements LogicalSpace {
     }
 
     private _load(notu: Notu) {
-        this._space = notu.getSpaceByInternalName(SystemSpaceSetup.internalName);
-        this._page = notu.getTagByName(SystemSpaceSetup.page, this._space);
-        this._process = notu.getTagByName(SystemSpaceSetup.process, this._space);
-        this._processAvailability = notu.getTagByName(SystemSpaceSetup.processAvailability, this._space);
-        this._createNoteProcess = notu.getTagByName(SystemSpaceSetup.createNoteProcess, this._space);
-        this._editNoteProcess = notu.getTagByName(SystemSpaceSetup.editNoteProcess, this._space);
-        this._deleteNoteProcess = notu.getTagByName(SystemSpaceSetup.deleteNoteProcess, this._space);
-        this._cloneNoteProcess = notu.getTagByName(SystemSpaceSetup.cloneNoteProcess, this._space);
+        this._space = notu.getSpaceByInternalName(defs.internalName);
+        this._page = notu.getTagByName(defs.page, this._space);
+        this._process = notu.getTagByName(defs.process, this._space);
+        this._processAvailability = notu.getTagByName(defs.processAvailability, this._space);
+        this._createNoteProcess = notu.getTagByName(defs.createNoteProcess, this._space);
+        this._editNoteProcess = notu.getTagByName(defs.editNoteProcess, this._space);
+        this._deleteNoteProcess = notu.getTagByName(defs.deleteNoteProcess, this._space);
+        this._cloneNoteProcess = notu.getTagByName(defs.cloneNoteProcess, this._space);
     }
 
     
@@ -65,23 +66,23 @@ export class SystemSpace implements LogicalSpace {
 
 
     resolveNoteTagDataComponentFactory(tag: Tag, note: Note): NoteTagDataComponentFactory | null {
-        if (tag.space.internalName == SystemSpaceSetup.internalName) {
-            if (tag.name == SystemSpaceSetup.page)
+        if (tag.space.internalName == defs.internalName) {
+            if (tag.name == defs.page)
                 return new PageNoteTagDataComponentFactory();
             
-            if (tag.name == SystemSpaceSetup.createNoteProcess)
+            if (tag.name == defs.createNoteProcess)
                 return new CreateNoteProcessNoteTagDataComponentFactory();
 
-            if (tag.name == SystemSpaceSetup.editNoteProcess)
+            if (tag.name == defs.editNoteProcess)
                 return new EditNoteProcessNoteTagDataComponentFactory();
 
-            if (tag.name == SystemSpaceSetup.process)
+            if (tag.name == defs.process)
                 return new ProcessNoteTagDataComponentFactory();
 
-            if (tag.name == SystemSpaceSetup.processAvailability)
+            if (tag.name == defs.processAvailability)
                 return new ProcessAvailabilityNoteTagDataComponentFactory();
 
-            if (tag.name == SystemSpaceSetup.cloneNoteProcess)
+            if (tag.name == defs.cloneNoteProcess)
                 return new CloneNoteProcessNoteTagDataComponentFactory();
         }
 

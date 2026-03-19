@@ -3,13 +3,13 @@ import { areArraysDifferent } from "@/helpers/RenderHelpers";
 import { Note, NoteTag, Notu } from "notu";
 import { ProcessDataBase } from "./ProcessNoteTagDataBaseClass";
 import { SystemSpace } from "./SystemSpace";
-import { SystemSpaceSetup } from "./SystemSpaceSetup";
+import defs from "./SystemSpaceDefs";
 
 export class CloneNoteProcessData extends ProcessDataBase {
     constructor(noteTag: NoteTag) {
         if (
-            noteTag.tag.name != SystemSpaceSetup.cloneNoteProcess ||
-            noteTag.tag.space.internalName != SystemSpaceSetup.internalName
+            noteTag.tag.name != defs.cloneNoteProcess ||
+            noteTag.tag.space.internalName != defs.internalName
         ) {
             throw Error('Attempted to create a note tag data helper for a notetag that it does not support');
         }

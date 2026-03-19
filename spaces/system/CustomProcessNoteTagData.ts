@@ -3,15 +3,15 @@ import { getNotu } from "@/helpers/NotuSetup";
 import { Note, NoteTag, Notu, Tag } from "notu";
 import { ProcessDataBase } from "./ProcessNoteTagDataBaseClass";
 import { SystemSpace } from "./SystemSpace";
-import { SystemSpaceSetup } from "./SystemSpaceSetup";
+import defs from "./SystemSpaceDefs";
 
 export class CustomProcessData extends ProcessDataBase {
     constructor(noteTag: NoteTag) {
         if (
             noteTag.tag.isInternal ||
             !noteTag.tag.links.find(x => 
-                x.name == SystemSpaceSetup.process &&
-                x.space.internalName == SystemSpaceSetup.internalName
+                x.name == defs.process &&
+                x.space.internalName == defs.internalName
             )
         ) {
             throw Error('Attempted to create a note tag data helper for a notetag that it does not support');

@@ -1,6 +1,6 @@
 import { UIAction } from "@/helpers/NoteAction";
 import { Note, NoteTag, Notu } from "notu";
-import { SystemSpaceSetup } from "./SystemSpaceSetup";
+import defs from "./SystemSpaceDefs";
 
 export class ProcessDataBase {
     protected _nt: NoteTag;
@@ -26,10 +26,10 @@ export class ProcessDataBase {
     requiresName(note: Note): boolean {
         if (note.tags.find(x => 
             (
-                x.tag.name == SystemSpaceSetup.processAvailability ||
-                x.tag.name == SystemSpaceSetup.page
+                x.tag.name == defs.processAvailability ||
+                x.tag.name == defs.page
             ) &&
-            x.tag.space.internalName == SystemSpaceSetup.internalName
+            x.tag.space.internalName == defs.internalName
         ))
             return true;
         return false;

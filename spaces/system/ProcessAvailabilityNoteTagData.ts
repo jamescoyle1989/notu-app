@@ -1,13 +1,13 @@
 import { Note, NoteTag } from "notu";
 import { SystemSpace } from "./SystemSpace";
-import { SystemSpaceSetup } from "./SystemSpaceSetup";
+import defs from "./SystemSpaceDefs";
 
 export class ProcessAvailabilityData {
     private _nt: NoteTag;
     constructor(noteTag: NoteTag) {
         if (
-            noteTag.tag.name != SystemSpaceSetup.processAvailability ||
-            noteTag.tag.space.internalName != SystemSpaceSetup.internalName
+            noteTag.tag.name != defs.processAvailability ||
+            noteTag.tag.space.internalName != defs.internalName
         ) {
             throw Error('Attempted to create a note tag data helper for a notetag that it does not support');
         }
