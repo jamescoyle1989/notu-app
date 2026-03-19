@@ -31,10 +31,4 @@ export class PeopleSpace implements LogicalSpace {
         this._celebration = notu.getTagByName(PeopleSpaceSetup.celebration, this._space);
         this._celebrationEventsProcess = notu.getTagByName(PeopleSpaceSetup.celebrationEventsProcess, this._space);
     }
-
-
-    async setup(notu: Notu): Promise<void> {
-        await PeopleSpaceSetup.setup(notu);
-        this._load(notu);
-    }
 }

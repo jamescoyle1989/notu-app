@@ -26,9 +26,4 @@ export class ContentSpace implements LogicalSpace {
         this._genre = notu.getTagByName(ContentSpaceSetup.genre, this._space);
         this._rating = notu.getTagByName(ContentSpaceSetup.rating, this._space);
     }
-
-    async setup(notu: Notu): Promise<void> {
-        await ContentSpaceSetup.setup(notu);
-        this._load(notu);
-    }
 }

@@ -1,4 +1,3 @@
-import { LogicalSpace } from "@/spaces/LogicalSpace";
 import { Note, NoteTag, Notu, splitNoteTextIntoComponents, Tag } from "notu";
 import { NoteComponent, NoteComponentProcessor } from "notu/dist/types/notecomponents/NoteComponent";
 import { ReactNode } from "react";
@@ -19,18 +18,12 @@ export class NotuRenderTools {
     private _noteTagDataComponentFactories: Array<NoteTagDataComponentFactory>;
     get noteTagDataComponentFactories() { return this._noteTagDataComponentFactories; }
 
-    private _logicalSpaces: Array<LogicalSpace>;
-    get logicalSpaces() { return this._logicalSpaces; }
-
     constructor(
         notu: Notu,
         noteComponentProcessors: Array<NoteComponentProcessor>,
-        noteTagDataComponentFactories: Array<NoteTagDataComponentFactory>,
-        logicalSpaces: Array<LogicalSpace>
+        noteTagDataComponentFactories: Array<NoteTagDataComponentFactory>
     ) {
         this._notu = notu;
-        this._logicalSpaces = logicalSpaces;
-
         this._noteComponentProcessors = noteComponentProcessors;
         this._noteTagDataComponentFactories = noteTagDataComponentFactories;
         this._noteTextSplitter = (note: Note, forEdit: boolean = false) => splitNoteTextIntoComponents(

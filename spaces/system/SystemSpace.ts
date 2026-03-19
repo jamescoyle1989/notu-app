@@ -1,7 +1,6 @@
 import { Notu, Space, Tag } from "notu";
 import { LogicalSpace } from "../LogicalSpace";
 import defs from "./SystemSpaceDefs";
-import { SystemSpaceSetup } from "./SystemSpaceSetup";
 
 export class SystemSpace implements LogicalSpace {
 
@@ -43,11 +42,5 @@ export class SystemSpace implements LogicalSpace {
         this._editNoteProcess = notu.getTagByName(defs.editNoteProcess, this._space);
         this._deleteNoteProcess = notu.getTagByName(defs.deleteNoteProcess, this._space);
         this._cloneNoteProcess = notu.getTagByName(defs.cloneNoteProcess, this._space);
-    }
-
-    
-    async setup(notu: Notu): Promise<void> {
-        await SystemSpaceSetup.setup(notu);
-        this._load(notu);
     }
 }

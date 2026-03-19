@@ -30,10 +30,4 @@ export class TasksSpace implements LogicalSpace {
         this._goal = notu.getTagByName(TasksSpaceSetup.goal, this._space);
         this._deadline = notu.getTagByName(TasksSpaceSetup.deadline, this._space);
     }
-
-
-    async setup(notu: Notu): Promise<void> {
-        await TasksSpaceSetup.setup(notu);
-        this._load(notu);
-    }
 }

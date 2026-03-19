@@ -33,12 +33,6 @@ export class FitnessSpace implements LogicalSpace {
     }
 
 
-    async setup(notu: Notu): Promise<void> {
-        await FitnessSpaceSetup.setup(notu);
-        this._load(notu);
-    }
-
-
     getMetrics(note: Note): Array<NoteTag> {
         const output = new Array<NoteTag>();
         for (const nt of note.tags) {

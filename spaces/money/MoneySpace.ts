@@ -39,10 +39,4 @@ export class MoneySpace implements LogicalSpace {
         this._transaction = notu.getTagByName(MoneySpaceSetup.transaction, this._space);
         this._importTransactionsProcess = notu.getTagByName(MoneySpaceSetup.importTransactionsProcess, this._space);
     }
-
-
-    async setup(notu: Notu): Promise<void> {
-        await MoneySpaceSetup.setup(notu);
-        this._load(notu);
-    }
 }

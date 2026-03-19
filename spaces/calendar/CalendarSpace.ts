@@ -27,10 +27,4 @@ export class CalendarSpace implements LogicalSpace {
         this._tentative = notu.getTagByName(CalendarSpaceSetup.tentative, this._space);
         this._recurringEventsProcess = notu.getTagByName(CalendarSpaceSetup.recurringEventsProcess, this._space);
     }
-
-
-    async setup(notu: Notu): Promise<void> {
-        await CalendarSpaceSetup.setup(notu);
-        this._load(notu);
-    }
 }

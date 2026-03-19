@@ -79,10 +79,4 @@ export class CommonSpace implements LogicalSpace {
         this._started = notu.getTagByName(CommonSpaceSetup.started, this._space);
         this._thought = notu.getTagByName(CommonSpaceSetup.thought, this._space);
     }
-
-
-    async setup(notu: Notu): Promise<void> {
-        await CommonSpaceSetup.setup(notu);
-        this._load(notu);
-    }
 }

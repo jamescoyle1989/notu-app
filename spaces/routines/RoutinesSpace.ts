@@ -27,10 +27,4 @@ export class RoutinesSpace implements LogicalSpace {
         this._generateRoutinesProcess = notu.getTagByName(RoutinesSpaceSetup.generateRoutinesProcess, this._space);
         this._compressRoutinesProcess = notu.getTagByName(RoutinesSpaceSetup.compressRoutinesProcess, this._space);
     }
-
-
-    async setup(notu: Notu): Promise<void> {
-        await RoutinesSpaceSetup.setup(notu);
-        this._load(notu);
-    }
 }

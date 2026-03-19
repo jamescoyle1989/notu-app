@@ -31,10 +31,4 @@ export class FoodSpace implements LogicalSpace {
         this._generateMealProcess = notu.getTagByName(FoodSpaceSetup.generateMealProcess, this._space);
         this._generateShoppingListProcess = notu.getTagByName(FoodSpaceSetup.generateShoppingListProcess, this._space);
     }
-
-
-    async setup(notu: Notu): Promise<void> {
-        await FoodSpaceSetup.setup(notu);
-        this._load(notu);
-    }
 }
