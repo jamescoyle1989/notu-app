@@ -4,7 +4,6 @@ import { SystemSpace } from "../system/SystemSpace";
 export class CalendarSpaceSetup {
     static get internalName(): string { return 'com.decoyspace.notu.calendar'; }
     static get event(): string { return 'Event'; }
-    static get tentative(): string { return 'Tentative'; }
     static get recurringEventsProcess(): string { return 'Generate Recurring Events'; }
 
     static async setup(notu: Notu): Promise<void> {
@@ -18,15 +17,6 @@ export class CalendarSpaceSetup {
                 .in(calendarSpace).setOwnTag(this.event);
             event.ownTag.asInternal();
 
-            const tentative = new Note(`Add this tag to any note to flag it as being unclear whether it will happen.`)
-                .in(calendarSpace).setOwnTag(this.tentative);
-            tentative.ownTag.asInternal();
-
-            await notu.saveNotes([
-                event,
-                tentative
-            ]);
-
             const systemSpace = new SystemSpace(notu);
 
             const recurringEventsProcess = new Note(`
@@ -37,7 +27,11 @@ This process will find any definitions for recurring events (notes that define t
                 .in(calendarSpace).setOwnTag(this.recurringEventsProcess);
             recurringEventsProcess.ownTag.asInternal();
             recurringEventsProcess.addTag(systemSpace.process);
-            await notu.saveNotes([recurringEventsProcess]);
+
+            await notu.saveNotes([
+                event,
+                recurringEventsProcess
+            ]);
         }
     }
 }

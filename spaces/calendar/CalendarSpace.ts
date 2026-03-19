@@ -10,9 +10,6 @@ export class CalendarSpace implements LogicalSpace {
     private _event: Tag;
     get event(): Tag { return this._event; }
 
-    private _tentative: Tag;
-    get tentative(): Tag { return this._tentative; }
-
     private _recurringEventsProcess: Tag;
     get recurringEventsProcess(): Tag { return this._recurringEventsProcess; }
 
@@ -24,7 +21,6 @@ export class CalendarSpace implements LogicalSpace {
     private _load(notu: Notu) {
         this._space = notu.getSpaceByInternalName(CalendarSpaceSetup.internalName);
         this._event = notu.getTagByName(CalendarSpaceSetup.event, this._space);
-        this._tentative = notu.getTagByName(CalendarSpaceSetup.tentative, this._space);
         this._recurringEventsProcess = notu.getTagByName(CalendarSpaceSetup.recurringEventsProcess, this._space);
     }
 }
