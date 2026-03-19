@@ -4,9 +4,10 @@ import { NoteTagDataComponentFactory, NoteTagDataComponentProps } from "@/helper
 import { NotuText } from "@/helpers/NotuStyles";
 import { datetimeToText, dateToText, timespanToText } from "@/helpers/RenderHelpers";
 import { Check } from "@tamagui/lucide-icons";
-import { Note, NoteTag, Notu } from "notu";
+import { Note, NoteTag, Notu, Tag } from "notu";
 import { ReactNode } from "react";
 import { Checkbox, CheckedState, Label, Paragraph, Popover, XStack, YStack } from "tamagui";
+import { CommonSpaceSetup } from "./CommonSpaceSetup";
 import { ScheduledData } from "./ScheduledNoteTagData";
 
 export default class ScheduledNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
@@ -25,6 +26,11 @@ export default class ScheduledNoteTagDataComponentFactory implements NoteTagData
 
     getDataObject(noteTag: NoteTag) {
         return new ScheduledData(noteTag);
+    }
+
+    isForNoteTag(note: Note, tag: Tag): boolean {
+        return tag.space.internalName == CommonSpaceSetup.internalName &&
+            tag.name == CommonSpaceSetup.scheduled;
     }
 }
 

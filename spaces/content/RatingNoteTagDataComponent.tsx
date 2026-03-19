@@ -2,10 +2,11 @@ import { NotuSelect } from "@/components/NotuSelect";
 import { NumberInput } from "@/components/NumberInput";
 import { NoteTagDataComponentFactory, NoteTagDataComponentProps } from "@/helpers/NotuRenderTools";
 import { NotuText } from "@/helpers/NotuStyles";
-import { Note, NoteTag, Notu } from "notu";
+import { Note, NoteTag, Notu, Tag } from "notu";
 import { ReactNode, useEffect } from "react";
 import { Label, XStack, YStack } from "tamagui";
 import { ContentSpace } from "./ContentSpace";
+import { ContentSpaceSetup } from "./ContentSpaceSetup";
 import { RatingData } from "./RatingNoteTagData";
 
 export default class RatingNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
@@ -31,6 +32,11 @@ export default class RatingNoteTagDataComponentFactory implements NoteTagDataCom
 
     getDataObject(noteTag: NoteTag) {
         return new RatingData(noteTag);
+    }
+
+    isForNoteTag(note: Note, tag: Tag): boolean {
+        return tag.space.internalName == ContentSpaceSetup.internalName &&
+            tag.name == ContentSpaceSetup.rating;
     }
 }
 

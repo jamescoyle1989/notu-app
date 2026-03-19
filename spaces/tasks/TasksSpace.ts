@@ -1,9 +1,5 @@
-import { NoteAction, NoteActionsMenuBuilder, RefreshAction, ShowEditorAction } from "@/helpers/NoteAction";
-import { NoteTagDataComponentFactory } from "@/helpers/NotuRenderTools";
-import { Note, Notu, Space, Tag } from "notu";
-import { CommonSpace } from "../common/CommonSpace";
+import { Notu, Space, Tag } from "notu";
 import { LogicalSpace } from "../LogicalSpace";
-import DeadlineNoteTagDataComponentFactory from "./DeadlineNoteTagDataComponent";
 import { TasksSpaceSetup } from "./TasksSpaceSetup";
 
 export class TasksSpace implements LogicalSpace {
@@ -39,56 +35,5 @@ export class TasksSpace implements LogicalSpace {
     async setup(notu: Notu): Promise<void> {
         await TasksSpaceSetup.setup(notu);
         this._load(notu);
-    }
-
-
-    buildNoteActionsMenu(note: Note, menuBuilder: NoteActionsMenuBuilder, notu: Notu) {
-        const commonSpace = new CommonSpace(notu);
-        
-        if (!!note.getTag(this.task) || !!note.getTag(this.project) || !!note.getTag(this.goal)) {
-            if (!note.getTag(commonSpace.scheduled)) {
-                menuBuilder.addToBottomOfMiddle(
-                    new NoteAction('Schedule',
-                        () => {
-                            note.addTag(commonSpace.scheduled);
-                            return Promise.resolve(new ShowEditorAction(note));
-                        }
-                    )
-                )
-            }
-            if (!note.getTag(commonSpace.finished) && !note.getTag(commonSpace.cancelled)) {
-                menuBuilder.addToBottomOfMiddle(
-                    new NoteAction('Finish',
-                        async () => {
-                            note.addTag(commonSpace.finished);
-                            note.removeTag(commonSpace.scheduled);
-                            note.removeTag(this.deadline);
-                            await notu.saveNotes([note]);
-                            return new RefreshAction();
-                        }
-                    )
-                )
-                menuBuilder.addToBottomOfMiddle(
-                    new NoteAction('Cancel',
-                        async () => {
-                            note.addTag(commonSpace.cancelled);
-                            note.removeTag(commonSpace.scheduled);
-                            note.removeTag(this.deadline);
-                            await notu.saveNotes([note]);
-                            return new RefreshAction();
-                        }
-                    )
-                )
-            }
-        }
-    }
-
-
-    resolveNoteTagDataComponentFactory(tag: Tag, note: Note): NoteTagDataComponentFactory | null {
-        if (tag.space.internalName == TasksSpaceSetup.internalName) {
-            if (tag.name == TasksSpaceSetup.deadline)
-                return new DeadlineNoteTagDataComponentFactory();
-        }
-        return null;
     }
 }

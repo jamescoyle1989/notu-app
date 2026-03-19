@@ -3,9 +3,10 @@ import { useManualRefresh } from "@/helpers/Hooks";
 import { NoteTagDataComponentFactory, NoteTagDataComponentProps } from "@/helpers/NotuRenderTools";
 import { NotuInput } from "@/helpers/NotuStyles";
 import { sortBy } from "es-toolkit";
-import { Note, NoteTag, Notu } from "notu";
+import { Note, NoteTag, Notu, Tag } from "notu";
 import { ReactNode } from "react";
 import { Label, XStack, YStack } from "tamagui";
+import { FitnessSpaceSetup } from "./FitnessSpaceSetup";
 import { GenerateWorkoutProcessData } from "./GenerateWorkoutProcessNoteTagData";
 
 export default class GenerateWorkoutProcessNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
@@ -24,6 +25,11 @@ export default class GenerateWorkoutProcessNoteTagDataComponentFactory implement
 
     getDataObject(noteTag: NoteTag) {
         return new GenerateWorkoutProcessData(noteTag);
+    }
+
+    isForNoteTag(note: Note, tag: Tag): boolean {
+        return tag.space.internalName == FitnessSpaceSetup.internalName &&
+            tag.name == FitnessSpaceSetup.generateWorkoutProcess;
     }
 }
 

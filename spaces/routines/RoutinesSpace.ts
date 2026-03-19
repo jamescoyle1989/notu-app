@@ -1,16 +1,5 @@
-import { NoteAction, NoteActionsMenuBuilder, RefreshAction } from "@/helpers/NoteAction";
-import { NoteTagDataComponentFactory } from "@/helpers/NotuRenderTools";
-import { Note, Notu, Space, Tag } from "notu";
+import { Notu, Space, Tag } from "notu";
 import { LogicalSpace } from "../LogicalSpace";
-import { SystemSpace } from "../system/SystemSpace";
-import { CompressRoutinesProcessContext, compressRoutineTasks } from "./CompressRoutinesProcess";
-import { CompressRoutinesProcessData } from "./CompressRoutinesProcessNoteTagData";
-import CompressRoutinesProcessNoteTagDataComponentFactory from "./CompressRoutinesProcessNoteTagDataComponent";
-import { generateRoutines, GenerateRoutinesProcessContext } from "./GenerateRoutinesProcess";
-import { GenerateRoutinesProcessData } from "./GenerateRoutinesProcessNoteTagData";
-import GenerateRoutinesProcessNoteTagDataComponentFactory from "./GenerateRoutinesProcessNoteTagDataComponent";
-import LinkedRoutineNoteTagDataComponentFactory from "./LinkedRoutineNoteTagDataComponent";
-import RoutineNoteTagDataComponentFactory from "./RoutineNoteTagDataComponent";
 import { RoutinesSpaceSetup } from "./RoutinesSpaceSetup";
 
 export class RoutinesSpace implements LogicalSpace {
@@ -43,74 +32,5 @@ export class RoutinesSpace implements LogicalSpace {
     async setup(notu: Notu): Promise<void> {
         await RoutinesSpaceSetup.setup(notu);
         this._load(notu);
-    }
-
-    
-    buildNoteActionsMenu(note: Note, menuBuilder: NoteActionsMenuBuilder, notu: Notu) {
-        const systemSpace = new SystemSpace(notu);
-        if (!!note.getTag(systemSpace.process) && !!note.getTag(this.generateRooutinesProcess)) {
-            menuBuilder.addToTopOfEnd(
-                new NoteAction('Run',
-                    async () => {
-                        try {
-                            const newNotes = await generateRoutines(
-                                new GenerateRoutinesProcessContext(
-                                    note.getTagData(this.generateRooutinesProcess, GenerateRoutinesProcessData),
-                                    notu
-                                )
-                            );
-                            await notu.saveNotes(newNotes);
-                            return new RefreshAction();
-                        }
-                        catch (err) {
-                            console.log(err);
-                        }
-                    }
-                )
-            );
-        }
-        else if (!!note.getTag(systemSpace.process) && !!note.getTag(this.compressRoutinesProcess)) {
-            menuBuilder.addToTopOfEnd(
-                new NoteAction('Run',
-                    async () => {
-                        try {
-                            const newNotes = await compressRoutineTasks(
-                                new CompressRoutinesProcessContext(
-                                    note.getTagData(this.compressRoutinesProcess, CompressRoutinesProcessData),
-                                    notu
-                                )
-                            );
-                            await notu.saveNotes(newNotes);
-                            return new RefreshAction();
-                        }
-                        catch (err) {
-                            console.log(err);
-                        }
-                    }
-                )
-            );
-        }
-    }
-
-
-    resolveNoteTagDataComponentFactory(tag: Tag, note: Note): NoteTagDataComponentFactory | null {
-        if (tag.space.internalName == RoutinesSpaceSetup.internalName) {
-            if (tag.name == RoutinesSpaceSetup.routine)
-                return new RoutineNoteTagDataComponentFactory();
-
-            if (tag.name == RoutinesSpaceSetup.generateRoutinesProcess)
-                return new GenerateRoutinesProcessNoteTagDataComponentFactory();
-
-            if (tag.name == RoutinesSpaceSetup.compressRoutinesProcess)
-                return new CompressRoutinesProcessNoteTagDataComponentFactory();
-        }
-
-        if (
-            tag.linksTo(this.routine) &&
-            !!note.getTag(this.routine)
-        )
-            return new LinkedRoutineNoteTagDataComponentFactory();
-
-        return null;
     }
 }

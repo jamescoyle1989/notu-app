@@ -9,6 +9,7 @@ import { Note, NoteTag, Notu, Tag } from "notu";
 import { ReactNode, useState } from "react";
 import { Checkbox, CheckedState, Dialog, Label, XStack, YStack } from "tamagui";
 import { EditNoteProcessData } from "./EditNoteProcessNoteTagData";
+import defs from "./SystemSpaceDefs";
 
 export default class EditNoteProcessNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
     
@@ -36,6 +37,11 @@ export default class EditNoteProcessNoteTagDataComponentFactory implements NoteT
 
     getDataObject(noteTag: NoteTag) {
         return new EditNoteProcessData(noteTag);
+    }
+
+    isForNoteTag(note: Note, tag: Tag): boolean {
+        return tag.space.internalName == defs.internalName &&
+            tag.name == defs.editNoteProcess;
     }
 }
 

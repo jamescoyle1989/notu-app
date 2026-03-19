@@ -4,9 +4,10 @@ import { useManualRefresh } from "@/helpers/Hooks";
 import { NoteTagDataComponentFactory, NoteTagDataComponentProps } from "@/helpers/NotuRenderTools";
 import { NotuButton, NotuText } from "@/helpers/NotuStyles";
 import { Check } from "@tamagui/lucide-icons";
-import { Note, NoteTag, Notu } from "notu";
+import { Note, NoteTag, Notu, Tag } from "notu";
 import { ReactNode } from "react";
 import { Checkbox, CheckedState, Label, XStack, YStack } from "tamagui";
+import { CommonSpaceSetup } from "./CommonSpaceSetup";
 import { RecurringData } from "./RecurringNoteTagData";
 
 export default class RecurringNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
@@ -25,6 +26,11 @@ export default class RecurringNoteTagDataComponentFactory implements NoteTagData
 
     getDataObject(noteTag: NoteTag) {
         return new RecurringData(noteTag);
+    }
+
+    isForNoteTag(note: Note, tag: Tag): boolean {
+        return tag.space.internalName == CommonSpaceSetup.internalName &&
+            tag.name == CommonSpaceSetup.recurring;
     }
 }
 

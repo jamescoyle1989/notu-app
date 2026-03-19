@@ -1,6 +1,7 @@
 import { NoteTagDataComponentFactory } from "@/helpers/NotuRenderTools";
-import { Note, NoteTag, Notu } from "notu";
+import { Note, NoteTag, Notu, Tag } from "notu";
 import { ReactNode } from "react";
+import { PeopleSpaceSetup } from "./PeopleSpaceSetup";
 
 export default class CelebrationNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
     
@@ -34,5 +35,10 @@ export default class CelebrationNoteTagDataComponentFactory implements NoteTagDa
 
     getDataObject(noteTag: NoteTag) {
         return null;
+    }
+
+    isForNoteTag(note: Note, tag: Tag): boolean {
+        return tag.space.internalName == PeopleSpaceSetup.internalName &&
+            tag.name == PeopleSpaceSetup.celebration;
     }
 }

@@ -2,8 +2,9 @@ import { TimespanPicker } from "@/components/TimeSpanPicker";
 import { NoteTagDataComponentFactory, NoteTagDataComponentProps } from "@/helpers/NotuRenderTools";
 import { NotuText } from "@/helpers/NotuStyles";
 import { timespanToText } from "@/helpers/RenderHelpers";
-import { Note, NoteTag, Notu } from "notu";
+import { Note, NoteTag, Notu, Tag } from "notu";
 import { ReactNode } from "react";
+import { CommonSpaceSetup } from "./CommonSpaceSetup";
 import { DurationData } from "./DurationNoteTagData";
 
 export default class DurationNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
@@ -25,6 +26,11 @@ export default class DurationNoteTagDataComponentFactory implements NoteTagDataC
 
     getDataObject(noteTag: NoteTag) {
         return new DurationData(noteTag);
+    }
+
+    isForNoteTag(note: Note, tag: Tag): boolean {
+        return tag.space.internalName == CommonSpaceSetup.internalName &&
+            tag.name == CommonSpaceSetup.duration;
     }
 }
 

@@ -1,19 +1,6 @@
-import { NoteAction, NoteActionsMenuBuilder } from "@/helpers/NoteAction";
-import { NoteTagDataComponentFactory } from "@/helpers/NotuRenderTools";
 import { Note, NoteTag, Notu, Space, Tag } from "notu";
 import { LogicalSpace } from "../LogicalSpace";
-import ExerciseMetricDefNoteTagDataComponentFactory from "./ExerciseMetricDefNoteTagDataComponent";
-import ExerciseMetricNoteTagDataComponentFactory from "./ExerciseMetricNoteTagDataComponent";
-import ExerciseNoteTagDataComponentFactory from "./ExerciseNoteTagDataComponent";
 import { FitnessSpaceSetup } from "./FitnessSpaceSetup";
-import GeneratedExerciseNoteTagDataComponentFactory from "./GeneratedExerciseNoteTagDataComponent";
-import { generateWorkout, GenerateWorkoutProcessContext } from "./GenerateWorkoutProcess";
-import { GenerateWorkoutProcessData } from "./GenerateWorkoutProcessNoteTagData";
-import GenerateWorkoutProcessNoteTagDataComponentFactory from "./GenerateWorkoutProcessNoteTagDataComponent";
-import { showProcessOutputScreen } from "./GenerateWorkoutProcessUI";
-import MetricNoteTagDataComponentFactory from "./MetricNoteTagDataComponent";
-import WorkoutExerciseNoteTagDataComponentFactory from "./WorkoutExerciseNoteTagDataComponent";
-import WorkoutNoteTagDataComponentFactory from "./WorkoutNoteTagDataComponent";
 
 export class FitnessSpace implements LogicalSpace {
 
@@ -59,85 +46,5 @@ export class FitnessSpace implements LogicalSpace {
                 output.push(nt);
         }
         return output;
-    }
-
-
-    buildNoteActionsMenu(
-        note: Note,
-        menuBuilder: NoteActionsMenuBuilder,
-        notu: Notu
-    ) {
-        if (!!note.getTag(this.workout)) {
-            menuBuilder.addToTopOfEnd(
-                new NoteAction('Generate Workout Exercises',
-                    async () => {
-                        try {
-                            const newNoteOptions = await generateWorkout(note,
-                                new GenerateWorkoutProcessContext(
-                                    note.getTagData(this.generateWorkoutProcess, GenerateWorkoutProcessData),
-                                    notu
-                                )
-                            );
-                            return showProcessOutputScreen(note, newNoteOptions, notu);
-                        }
-                        catch (err) {
-                            console.log(err);
-                        }
-                    }
-                )
-            )
-        }
-    }
-
-
-    resolveNoteTagDataComponentFactory(
-        tag: Tag,
-        note: Note
-    ): NoteTagDataComponentFactory | null {
-        
-        if (tag.space.internalName == FitnessSpaceSetup.internalName) {
-            if (tag.name == FitnessSpaceSetup.metric)
-                return new MetricNoteTagDataComponentFactory();
-
-            if (tag.name == FitnessSpaceSetup.exercise)
-                return new ExerciseNoteTagDataComponentFactory();
-
-            if (tag.name == FitnessSpaceSetup.workout)
-                return new WorkoutNoteTagDataComponentFactory();
-
-            if (tag.name == FitnessSpaceSetup.generateWorkoutProcess)
-                return new GenerateWorkoutProcessNoteTagDataComponentFactory();
-        }
-
-        if (
-            tag.linksTo(this.metric) &&
-            !!note.tags.find(x => x.tag.id == this.exercise.id)
-        ) {
-            return new ExerciseMetricDefNoteTagDataComponentFactory();
-        }
-        
-        if (
-            tag.linksTo(this.exercise) &&
-            !!note.tags.find(x => x.tag.id == this.workout.id)
-        ) {
-            return new WorkoutExerciseNoteTagDataComponentFactory();
-        }
-
-        if (
-            tag.linksTo(this.exercise) &&
-            !note.tags.find(x => x.tag.id == this.workout.id)
-        ) {
-            return new GeneratedExerciseNoteTagDataComponentFactory();
-        }
-
-        if (
-            tag.linksTo(this.metric) &&
-            !note.tags.find(x => x.tag.id == this.exercise.id) &&
-            !note.tags.find(x => x.tag.id == this.workout.id)
-        ) {
-            return new ExerciseMetricNoteTagDataComponentFactory();
-        }
-
-        return null;
     }
 }

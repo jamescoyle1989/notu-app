@@ -1,10 +1,11 @@
 import { useManualRefresh } from "@/helpers/Hooks";
 import { NoteTagDataComponentFactory, NoteTagDataComponentProps } from "@/helpers/NotuRenderTools";
 import { NotuInput } from "@/helpers/NotuStyles";
-import { Note, NoteTag, Notu } from "notu";
+import { Note, NoteTag, Notu, Tag } from "notu";
 import { ReactNode } from "react";
 import { Label, XStack, YStack } from "tamagui";
 import { CustomProcessData } from "./CustomProcessNoteTagData";
+import defs from "./SystemSpaceDefs";
 
 export default class CustomProcessNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
 
@@ -22,6 +23,22 @@ export default class CustomProcessNoteTagDataComponentFactory implements NoteTag
 
     getDataObject(noteTag: NoteTag): any {
         return new CustomProcessData(noteTag);
+    }
+
+    isForNoteTag(note: Note, tag: Tag): boolean {
+        if (!tag.links.find(x => 
+            x.space.internalName == defs.internalName &&
+            x.name == defs.process
+        ))
+            return false;
+
+        if (tag.isInternal)
+            return false;
+
+        return !!tag.links.find(x => !!x.links.find(y => 
+            y.space.internalName == defs.internalName &&
+            y.name == defs.process
+        ));
     }
 }
 

@@ -1,6 +1,7 @@
 import { NoteTagDataComponentFactory } from "@/helpers/NotuRenderTools";
-import { Note, NoteTag, Notu } from "notu";
+import { Note, NoteTag, Notu, Tag } from "notu";
 import { ReactNode } from "react";
+import { MoneySpaceSetup } from "./MoneySpaceSetup";
 
 export default class BudgetCategoryNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
 
@@ -21,5 +22,10 @@ export default class BudgetCategoryNoteTagDataComponentFactory implements NoteTa
 
     getDataObject(noteTag: NoteTag) {
         return null;
+    }
+
+    isForNoteTag(note: Note, tag: Tag): boolean {
+        return tag.space.internalName == MoneySpaceSetup.internalName &&
+            tag.name == MoneySpaceSetup.budgetCategory;
     }
 }

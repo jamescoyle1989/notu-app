@@ -1,15 +1,6 @@
-import { NoteActionsMenuBuilder } from "@/helpers/NoteAction";
-import { NoteTagDataComponentFactory } from "@/helpers/NotuRenderTools";
-import { Note, Notu, Space, Tag } from "notu";
+import { Notu, Space, Tag } from "notu";
 import { LogicalSpace } from "../LogicalSpace";
-import AddressNoteTagDataComponentFactory from "./AddressNoteTagDataComponent";
-import CancelledNoteTagDataComponentFactory from "./CancelledNoteTagDataComponent";
 import { CommonSpaceSetup } from "./CommonSpaceSetup";
-import DurationNoteTagDataComponentFactory from "./DurationNoteTagDataComponent";
-import FinishedNoteTagDataComponentFactory from "./FinishedNoteTagDataComponent";
-import RecurringNoteTagDataComponentFactory from "./RecurringNoteTagDataComponent";
-import ScheduledNoteTagDataComponentFactory from "./ScheduledNoteTagDataComponent";
-import StartedNoteTagDataComponentFactory from "./StartedNoteTagDataComponent";
 
 export class CommonSpace implements LogicalSpace {
 
@@ -93,30 +84,5 @@ export class CommonSpace implements LogicalSpace {
     async setup(notu: Notu): Promise<void> {
         await CommonSpaceSetup.setup(notu);
         this._load(notu);
-    }
-
-
-    buildNoteActionsMenu(note: Note, menuBuilder: NoteActionsMenuBuilder, notu: Notu) {
-    }
-
-
-    resolveNoteTagDataComponentFactory(tag: Tag, note: Note): NoteTagDataComponentFactory | null {
-        if (tag.space.internalName == CommonSpaceSetup.internalName) {
-            if (tag.name == CommonSpaceSetup.address)
-                return new AddressNoteTagDataComponentFactory();
-            if (tag.name == CommonSpaceSetup.cancelled)
-                return new CancelledNoteTagDataComponentFactory();
-            if (tag.name == CommonSpaceSetup.duration)
-                return new DurationNoteTagDataComponentFactory();
-            if (tag.name == CommonSpaceSetup.finished)
-                return new FinishedNoteTagDataComponentFactory();
-            if (tag.name == CommonSpaceSetup.recurring)
-                return new RecurringNoteTagDataComponentFactory();
-            if (tag.name == CommonSpaceSetup.started)
-                return new StartedNoteTagDataComponentFactory();
-            if (tag.name == CommonSpaceSetup.scheduled)
-                return new ScheduledNoteTagDataComponentFactory();
-        }
-        return null;
     }
 }

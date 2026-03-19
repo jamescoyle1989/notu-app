@@ -2,10 +2,11 @@ import { NotuDateTimePicker } from "@/components/NotuDateTimePicker";
 import { NoteTagDataComponentFactory, NoteTagDataComponentProps } from "@/helpers/NotuRenderTools";
 import { NotuText } from "@/helpers/NotuStyles";
 import { datetimeToText } from "@/helpers/RenderHelpers";
-import { Note, NoteTag, Notu } from "notu";
+import { Note, NoteTag, Notu, Tag } from "notu";
 import { ReactNode } from "react";
 import { View } from "tamagui";
 import { CancelledData } from "./CancelledNoteTagData";
+import { CommonSpaceSetup } from "./CommonSpaceSetup";
 
 export default class CancelledNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
 
@@ -23,6 +24,11 @@ export default class CancelledNoteTagDataComponentFactory implements NoteTagData
 
     getDataObject(noteTag: NoteTag) {
         return new CancelledData(noteTag);
+    }
+
+    isForNoteTag(note: Note, tag: Tag): boolean {
+        return tag.space.internalName == CommonSpaceSetup.internalName &&
+            tag.name == CommonSpaceSetup.cancelled;
     }
 }
 

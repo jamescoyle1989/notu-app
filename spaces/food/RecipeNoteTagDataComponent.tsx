@@ -4,9 +4,10 @@ import { useManualRefresh } from "@/helpers/Hooks";
 import { NoteTagDataComponentFactory, NoteTagDataComponentProps } from "@/helpers/NotuRenderTools";
 import { NotuText, NotuView } from "@/helpers/NotuStyles";
 import { Check, X } from "@tamagui/lucide-icons";
-import { Note, NoteTag, Notu } from "notu";
+import { Note, NoteTag, Notu, Tag } from "notu";
 import { ReactNode, useState } from "react";
 import { Checkbox, Input, Label, XStack, YStack } from "tamagui";
+import { FoodSpaceSetup } from "./FoodSpaceSetup";
 import { RecipeData, RecipeGroupData, RecipeIngredientData, RecipeStepData } from "./RecipeNoteTagData";
 
 export default class RecipeNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
@@ -26,6 +27,11 @@ export default class RecipeNoteTagDataComponentFactory implements NoteTagDataCom
 
     getDataObject(noteTag: NoteTag) {
         return new RecipeData(noteTag);
+    }
+
+    isForNoteTag(note: Note, tag: Tag): boolean {
+        return tag.space.internalName == FoodSpaceSetup.internalName &&
+            tag.name == FoodSpaceSetup.recipe;
     }
 }
 

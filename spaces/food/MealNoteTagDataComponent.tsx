@@ -2,10 +2,11 @@ import { useManualRefresh } from "@/helpers/Hooks";
 import { NoteTagDataComponentFactory, NoteTagDataComponentProps } from "@/helpers/NotuRenderTools";
 import { NotuText, NotuView } from "@/helpers/NotuStyles";
 import { Check } from "@tamagui/lucide-icons";
-import { Note, NoteTag, Notu } from "notu";
+import { Note, NoteTag, Notu, Tag } from "notu";
 import { ReactNode } from "react";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { Checkbox, XStack, YStack } from "tamagui";
+import { FoodSpaceSetup } from "./FoodSpaceSetup";
 import { MealData, MealGroupData, MealIngredientData, MealStepData } from "./MealNoteTagData";
 
 export default class MealNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
@@ -25,6 +26,11 @@ export default class MealNoteTagDataComponentFactory implements NoteTagDataCompo
 
     getDataObject(noteTag: NoteTag) {
         return new MealData(noteTag);
+    }
+
+    isForNoteTag(note: Note, tag: Tag): boolean {
+        return tag.space.internalName == FoodSpaceSetup.internalName &&
+            tag.name == FoodSpaceSetup.meal;
     }
 }
 

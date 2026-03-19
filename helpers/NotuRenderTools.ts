@@ -16,18 +16,23 @@ export class NotuRenderTools {
     private _noteComponentProcessors: Array<NoteComponentProcessor>;
     get noteComponentProcessors() { return this._noteComponentProcessors; }
 
+    private _noteTagDataComponentFactories: Array<NoteTagDataComponentFactory>;
+    get noteTagDataComponentFactories() { return this._noteTagDataComponentFactories; }
+
     private _logicalSpaces: Array<LogicalSpace>;
     get logicalSpaces() { return this._logicalSpaces; }
 
     constructor(
         notu: Notu,
         noteComponentProcessors: Array<NoteComponentProcessor>,
+        noteTagDataComponentFactories: Array<NoteTagDataComponentFactory>,
         logicalSpaces: Array<LogicalSpace>
     ) {
         this._notu = notu;
         this._logicalSpaces = logicalSpaces;
 
         this._noteComponentProcessors = noteComponentProcessors;
+        this._noteTagDataComponentFactories = noteTagDataComponentFactories;
         this._noteTextSplitter = (note: Note, forEdit: boolean = false) => splitNoteTextIntoComponents(
             note,
             notu,
@@ -39,9 +44,8 @@ export class NotuRenderTools {
     }
 
     getComponentFactoryForNoteTag(tag: Tag, note: Note): NoteTagDataComponentFactory | null {
-        for (const space of this.logicalSpaces) {
-            const factory = space.resolveNoteTagDataComponentFactory(tag, note);
-            if (!!factory)
+        for (const factory of this.noteTagDataComponentFactories) {
+            if (factory.isForNoteTag(note, tag))
                 return factory;
         }
         return null;
@@ -57,8 +61,6 @@ export class NotuRenderTools {
             customActions(note, builder, this._notu);
             return builder.actions;
         }
-        for (const space of this.logicalSpaces)
-            space.buildNoteActionsMenu(note, builder, this.notu);
         if (textComponents != null) {
             for (const rootComponent of textComponents) {
                 for (const component of rootComponent.getThisPlusAllChildComponents())
@@ -81,6 +83,8 @@ export interface NoteTagDataComponentFactory {
     validate(noteTag: NoteTag, note: Note, notu: Notu): Promise<boolean>;
 
     getDataObject(noteTag: NoteTag): any;
+
+    isForNoteTag(note: Note, tag: Tag): boolean;
 }
 
 

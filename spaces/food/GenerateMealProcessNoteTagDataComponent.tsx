@@ -3,9 +3,10 @@ import { useManualRefresh } from "@/helpers/Hooks";
 import { NoteTagDataComponentFactory, NoteTagDataComponentProps } from "@/helpers/NotuRenderTools";
 import { NotuInput } from "@/helpers/NotuStyles";
 import { sortBy } from "es-toolkit";
-import { Note, NoteTag, Notu } from "notu";
+import { Note, NoteTag, Notu, Tag } from "notu";
 import { ReactNode } from "react";
 import { Label, XStack, YStack } from "tamagui";
+import { FoodSpaceSetup } from "./FoodSpaceSetup";
 import { GenerateMealProcessData } from "./GenerateMealProcessNoteTagData";
 
 export default class GenerateMealProcessNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
@@ -24,6 +25,11 @@ export default class GenerateMealProcessNoteTagDataComponentFactory implements N
 
     getDataObject(noteTag: NoteTag) {
         return new GenerateMealProcessData(noteTag);
+    }
+
+    isForNoteTag(note: Note, tag: Tag): boolean {
+        return tag.space.internalName == FoodSpaceSetup.internalName &&
+            tag.name == FoodSpaceSetup.generateMealProcess;
     }
 }
 

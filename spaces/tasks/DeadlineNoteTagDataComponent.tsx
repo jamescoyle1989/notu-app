@@ -3,10 +3,11 @@ import { NoteTagDataComponentFactory, NoteTagDataComponentProps } from "@/helper
 import { NotuText } from "@/helpers/NotuStyles";
 import { timespanToText } from "@/helpers/RenderHelpers";
 import dayjs from "dayjs";
-import { Note, NoteTag, Notu } from "notu";
+import { Note, NoteTag, Notu, Tag } from "notu";
 import { ReactNode } from "react";
 import { View } from "tamagui";
 import { DeadlineData } from "./DeadlineNoteTagData";
+import { TasksSpaceSetup } from "./TasksSpaceSetup";
 
 export default class DeadlineNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
 
@@ -36,6 +37,11 @@ export default class DeadlineNoteTagDataComponentFactory implements NoteTagDataC
 
     getDataObject(noteTag: NoteTag) {
         return new DeadlineData(noteTag);
+    }
+
+    isForNoteTag(note: Note, tag: Tag): boolean {
+        return tag.space.internalName == TasksSpaceSetup.internalName &&
+            tag.name == TasksSpaceSetup.deadline;
     }
 }
 

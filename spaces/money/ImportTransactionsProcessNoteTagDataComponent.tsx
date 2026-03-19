@@ -3,10 +3,11 @@ import { useManualRefresh } from "@/helpers/Hooks";
 import { NoteTagDataComponentFactory, NoteTagDataComponentProps } from "@/helpers/NotuRenderTools";
 import { NotuInput } from "@/helpers/NotuStyles";
 import { sortBy } from "es-toolkit";
-import { Note, NoteTag, Notu } from "notu";
+import { Note, NoteTag, Notu, Tag } from "notu";
 import { ReactNode } from "react";
 import { Label, XStack, YStack } from "tamagui";
 import { ImportTransactionsProcessData } from "./ImportTransactionsProcessNoteTagData";
+import { MoneySpaceSetup } from "./MoneySpaceSetup";
 
 export default class ImportTransactionsProcessNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
 
@@ -24,6 +25,11 @@ export default class ImportTransactionsProcessNoteTagDataComponentFactory implem
 
     getDataObject(noteTag: NoteTag) {
         return new ImportTransactionsProcessData(noteTag);
+    }
+
+    isForNoteTag(note: Note, tag: Tag): boolean {
+        return tag.space.internalName == MoneySpaceSetup.internalName &&
+            tag.name == MoneySpaceSetup.importTransactionsProcess;
     }
 }
 

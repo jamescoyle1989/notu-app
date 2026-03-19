@@ -1,14 +1,5 @@
-import { NoteActionsMenuBuilder } from "@/helpers/NoteAction";
-import { NoteTagDataComponentFactory } from "@/helpers/NotuRenderTools";
-import { Note, Notu, Space, Tag } from "notu";
+import { Notu, Space, Tag } from "notu";
 import { LogicalSpace } from "../LogicalSpace";
-import CloneNoteProcessNoteTagDataComponentFactory from "./CloneNoteProcessNoteTagDataComponent";
-import CreateNoteProcessNoteTagDataComponentFactory from "./CreateNoteProcessNoteTagDataComponent";
-import CustomProcessNoteTagDataComponentFactory from "./CustomProcessNoteTagDataComponent";
-import EditNoteProcessNoteTagDataComponentFactory from "./EditNoteProcessNoteTagDataComponent";
-import PageNoteTagDataComponentFactory from "./PageNoteTagDataComponent";
-import ProcessAvailabilityNoteTagDataComponentFactory from "./ProcessAvailabilityNoteTagDataComponent";
-import ProcessNoteTagDataComponentFactory from "./ProcessNoteTagDataComponent";
 import defs from "./SystemSpaceDefs";
 import { SystemSpaceSetup } from "./SystemSpaceSetup";
 
@@ -58,41 +49,5 @@ export class SystemSpace implements LogicalSpace {
     async setup(notu: Notu): Promise<void> {
         await SystemSpaceSetup.setup(notu);
         this._load(notu);
-    }
-
-
-    buildNoteActionsMenu(note: Note, menuBuilder: NoteActionsMenuBuilder, notu: Notu) {
-    }
-
-
-    resolveNoteTagDataComponentFactory(tag: Tag, note: Note): NoteTagDataComponentFactory | null {
-        if (tag.space.internalName == defs.internalName) {
-            if (tag.name == defs.page)
-                return new PageNoteTagDataComponentFactory();
-            
-            if (tag.name == defs.createNoteProcess)
-                return new CreateNoteProcessNoteTagDataComponentFactory();
-
-            if (tag.name == defs.editNoteProcess)
-                return new EditNoteProcessNoteTagDataComponentFactory();
-
-            if (tag.name == defs.process)
-                return new ProcessNoteTagDataComponentFactory();
-
-            if (tag.name == defs.processAvailability)
-                return new ProcessAvailabilityNoteTagDataComponentFactory();
-
-            if (tag.name == defs.cloneNoteProcess)
-                return new CloneNoteProcessNoteTagDataComponentFactory();
-        }
-
-        if (
-            tag.linksTo(this.process) &&
-            !tag.isInternal &&
-            !!tag.links.find(x => x.linksTo(this.process))
-        )
-            return new CustomProcessNoteTagDataComponentFactory();
-
-        return null;
     }
 }

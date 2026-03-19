@@ -8,6 +8,7 @@ import { Note, NoteTag, Notu, Tag } from "notu";
 import { ReactNode, useState } from "react";
 import { Dialog, Label, XStack, YStack } from "tamagui";
 import { CloneNoteProcessData } from "./CloneNoteProcessNoteTagData";
+import defs from "./SystemSpaceDefs";
 
 export default class CloneNoteProcessNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
     
@@ -35,6 +36,11 @@ export default class CloneNoteProcessNoteTagDataComponentFactory implements Note
 
     getDataObject(noteTag: NoteTag) {
         return new CloneNoteProcessData(noteTag);
+    }
+
+    isForNoteTag(note: Note, tag: Tag): boolean {
+        return tag.space.internalName == defs.internalName &&
+            tag.name == defs.cloneNoteProcess;
     }
 }
 

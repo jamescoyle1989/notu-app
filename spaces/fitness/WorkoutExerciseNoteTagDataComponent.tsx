@@ -1,9 +1,10 @@
 import { NotuSelect } from "@/components/NotuSelect";
 import { NoteTagDataComponentFactory, NoteTagDataComponentProps } from "@/helpers/NotuRenderTools";
 import { NotuText } from "@/helpers/NotuStyles";
-import { Note, NoteTag, Notu } from "notu";
+import { Note, NoteTag, Notu, Tag } from "notu";
 import { ReactNode } from "react";
 import { Label, XStack } from "tamagui";
+import { FitnessSpaceSetup } from "./FitnessSpaceSetup";
 import { WorkoutExerciseData } from "./WorkoutExerciseNoteTagData";
 
 export default class WorkoutExerciseNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
@@ -23,6 +24,19 @@ export default class WorkoutExerciseNoteTagDataComponentFactory implements NoteT
 
     getDataObject(noteTag: NoteTag) {
         return new WorkoutExerciseData(noteTag);
+    }
+
+    isForNoteTag(note: Note, tag: Tag): boolean {
+        if (!tag.links.find(x => 
+            x.space.internalName == FitnessSpaceSetup.internalName &&
+            x.name == FitnessSpaceSetup.exercise
+        ))
+            return false;
+
+        return !!note.tags.find(x => 
+            x.tag.space.internalName == FitnessSpaceSetup.internalName &&
+            x.tag.name == FitnessSpaceSetup.workout
+        );
     }
 }
 

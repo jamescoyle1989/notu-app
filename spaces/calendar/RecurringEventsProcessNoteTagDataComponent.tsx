@@ -3,9 +3,10 @@ import { useManualRefresh } from "@/helpers/Hooks";
 import { NoteTagDataComponentFactory, NoteTagDataComponentProps } from "@/helpers/NotuRenderTools";
 import { NotuInput } from "@/helpers/NotuStyles";
 import { sortBy } from "es-toolkit";
-import { Note, NoteTag, Notu } from "notu";
+import { Note, NoteTag, Notu, Tag } from "notu";
 import { ReactNode } from "react";
 import { Label, XStack, YStack } from "tamagui";
+import { CalendarSpaceSetup } from "./CalendarSpaceSetup";
 import { RecurringEventsProcessData } from "./RecurringEventsProcessNoteTagData";
 
 export default class RecurringEventsProcessNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
@@ -23,6 +24,11 @@ export default class RecurringEventsProcessNoteTagDataComponentFactory implement
 
     getDataObject(noteTag: NoteTag) {
         return new RecurringEventsProcessData(noteTag);
+    }
+
+    isForNoteTag(note: Note, tag: Tag): boolean {
+        return tag.space.internalName == CalendarSpaceSetup.internalName &&
+            tag.name == CalendarSpaceSetup.recurringEventsProcess;
     }
 }
 

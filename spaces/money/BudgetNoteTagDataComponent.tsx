@@ -3,10 +3,11 @@ import { NumberInput } from "@/components/NumberInput";
 import { useManualRefresh } from "@/helpers/Hooks";
 import { NoteTagDataComponentFactory, NoteTagDataComponentProps } from "@/helpers/NotuRenderTools";
 import { Check } from "@tamagui/lucide-icons";
-import { Note, NoteTag, Notu } from "notu";
+import { Note, NoteTag, Notu, Tag } from "notu";
 import { ReactNode } from "react";
 import { Checkbox, CheckedState, Input, Label, XStack, YStack } from "tamagui";
 import { BudgetData } from "./BudgetNoteTagData";
+import { MoneySpaceSetup } from "./MoneySpaceSetup";
 
 export default class BudgetNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
     
@@ -24,6 +25,11 @@ export default class BudgetNoteTagDataComponentFactory implements NoteTagDataCom
 
     getDataObject(noteTag: NoteTag) {
         return new BudgetData(noteTag);
+    }
+
+    isForNoteTag(note: Note, tag: Tag): boolean {
+        return tag.space.internalName == MoneySpaceSetup.internalName &&
+            tag.name == MoneySpaceSetup.budget;
     }
 }
 

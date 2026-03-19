@@ -1,6 +1,7 @@
 import { NoteTagDataComponentFactory } from "@/helpers/NotuRenderTools";
-import { Note, NoteTag, Notu } from "notu";
+import { Note, NoteTag, Notu, Tag } from "notu";
 import { ReactNode } from "react";
+import { FitnessSpaceSetup } from "./FitnessSpaceSetup";
 
 export default class ExerciseNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
     
@@ -31,5 +32,10 @@ export default class ExerciseNoteTagDataComponentFactory implements NoteTagDataC
 
     getDataObject(noteTag: NoteTag) {
         return null;
+    }
+
+    isForNoteTag(note: Note, tag: Tag): boolean {
+        return tag.space.internalName == FitnessSpaceSetup.internalName &&
+            tag.name == FitnessSpaceSetup.exercise;
     }
 }

@@ -5,11 +5,12 @@ import { NoteTagDataComponentFactory, NoteTagDataComponentProps } from "@/helper
 import { NotuText } from "@/helpers/NotuStyles";
 import { dateToText } from "@/helpers/RenderHelpers";
 import { Check } from "@tamagui/lucide-icons";
-import { Note, NoteTag, Notu } from "notu";
+import { Note, NoteTag, Notu, Tag } from "notu";
 import { ReactNode, useEffect, useState } from "react";
 import { Checkbox, CheckedState, Label, View, XStack, YStack } from "tamagui";
 import { CommonSpace } from "../common/CommonSpace";
 import { RecurringData } from "../common/RecurringNoteTagData";
+import { PeopleSpaceSetup } from "./PeopleSpaceSetup";
 import { PersonCelebrationData } from "./PersonCelebrationNoteTagData";
 
 export default class PersonCelebrationNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
@@ -48,6 +49,24 @@ export default class PersonCelebrationNoteTagDataComponentFactory implements Not
 
     getDataObject(noteTag: NoteTag) {
         return new PersonCelebrationData(noteTag);
+    }
+
+    isForNoteTag(note: Note, tag: Tag): boolean {
+        if (!tag.links.find(x =>
+            x.space.internalName == PeopleSpaceSetup.internalName &&
+            x.name == PeopleSpaceSetup.celebration
+        ))
+            return false;
+
+        if (note.tags.find(x => 
+            x.tag.space.internalName == PeopleSpaceSetup.internalName && (
+                x.tag.name == PeopleSpaceSetup.person ||
+                x.tag.name == PeopleSpaceSetup.circle
+            )
+        ))
+            return true;
+
+        return false;
     }
 }
 

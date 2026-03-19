@@ -1,7 +1,8 @@
 import { NoteTagDataComponentFactory } from "@/helpers/NotuRenderTools";
-import { Note, NoteTag, Notu } from "notu";
+import { Note, NoteTag, Notu, Tag } from "notu";
 import { ReactNode } from "react";
 import { SystemSpace } from "./SystemSpace";
+import defs from "./SystemSpaceDefs";
 
 export default class ProcessNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
 
@@ -32,5 +33,10 @@ export default class ProcessNoteTagDataComponentFactory implements NoteTagDataCo
 
     getDataObject(noteTag: NoteTag) {
         return null;
+    }
+
+    isForNoteTag(note: Note, tag: Tag): boolean {
+        return tag.space.internalName == defs.internalName &&
+            tag.name == defs.process;
     }
 }

@@ -1,9 +1,6 @@
-import { NoteActionsMenuBuilder } from "@/helpers/NoteAction";
-import { NoteTagDataComponentFactory } from "@/helpers/NotuRenderTools";
-import { Note, Notu, Space, Tag } from "notu";
+import { Notu, Space, Tag } from "notu";
 import { LogicalSpace } from "../LogicalSpace";
 import { ContentSpaceSetup } from "./ContentSpaceSetup";
-import RatingNoteTagDataComponentFactory from "./RatingNoteTagDataComponent";
 
 export class ContentSpace implements LogicalSpace {
     
@@ -33,16 +30,5 @@ export class ContentSpace implements LogicalSpace {
     async setup(notu: Notu): Promise<void> {
         await ContentSpaceSetup.setup(notu);
         this._load(notu);
-    }
-
-    buildNoteActionsMenu(note: Note, menuBuilder: NoteActionsMenuBuilder, notu: Notu) {
-    }
-
-    resolveNoteTagDataComponentFactory(tag: Tag, note: Note): NoteTagDataComponentFactory | null {
-        if (tag.space.internalName == ContentSpaceSetup.internalName) {
-            if (tag.name == ContentSpaceSetup.rating)
-                return new RatingNoteTagDataComponentFactory();
-        }
-        return null;
     }
 }

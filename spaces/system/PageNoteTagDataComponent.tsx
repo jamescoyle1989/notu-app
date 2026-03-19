@@ -3,11 +3,12 @@ import { useManualRefresh } from "@/helpers/Hooks";
 import { NoteTagDataComponentFactory, NoteTagDataComponentProps } from "@/helpers/NotuRenderTools";
 import { NotuInput, NotuText } from "@/helpers/NotuStyles";
 import { Check } from "@tamagui/lucide-icons";
-import { Note, NoteTag, Notu } from "notu";
+import { Note, NoteTag, Notu, Tag } from "notu";
 import { ReactNode } from "react";
 import { Checkbox, CheckedState, Label, XStack, YStack } from "tamagui";
 import { PageData } from "./PageNoteTagData";
 import { SystemSpace } from "./SystemSpace";
+import defs from "./SystemSpaceDefs";
 
 export default class PageNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
 
@@ -32,6 +33,11 @@ export default class PageNoteTagDataComponentFactory implements NoteTagDataCompo
 
     getDataObject(noteTag: NoteTag) {
         return new PageData(noteTag);
+    }
+
+    isForNoteTag(note: Note, tag: Tag): boolean {
+        return tag.space.internalName == defs.internalName &&
+            tag.name == defs.page;
     }
 }
 

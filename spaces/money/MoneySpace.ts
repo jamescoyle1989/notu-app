@@ -1,17 +1,6 @@
-import { NoteAction, NoteActionsMenuBuilder } from "@/helpers/NoteAction";
-import { NoteTagDataComponentFactory } from "@/helpers/NotuRenderTools";
-import { Note, Notu, Space, Tag } from "notu";
+import { Notu, Space, Tag } from "notu";
 import { LogicalSpace } from "../LogicalSpace";
-import AccountNoteTagDataComponentFactory from "./AccountNoteTagDataComponent";
-import BudgetCategoryNoteTagDataComponentFactory from "./BudgetCategoryNoteTagDataComponent";
-import BudgetNoteTagDataComponentFactory from "./BudgetNoteTagDataComponent";
-import CurrencyNoteTagDataComponentFactory from "./CurrencyNoteTagDataComponent";
-import { ImportTransactionProcessContext, importTransactions } from "./ImportTransactionsProcess";
-import { ImportTransactionsProcessData } from "./ImportTransactionsProcessNoteTagData";
-import ImportTransactionsProcessNoteTagDataComponentFactory from "./ImportTransactionsProcessNoteTagDataComponent";
-import { showProcessOutputScreen } from "./ImportTransactionsProcessUI";
 import { MoneySpaceSetup } from "./MoneySpaceSetup";
-import TransactionNoteTagDataComponentFactory from "./TransactionNoteTagDataComponent";
 
 export class MoneySpace implements LogicalSpace {
 
@@ -55,52 +44,5 @@ export class MoneySpace implements LogicalSpace {
     async setup(notu: Notu): Promise<void> {
         await MoneySpaceSetup.setup(notu);
         this._load(notu);
-    }
-
-
-    buildNoteActionsMenu(note: Note, menuBuilder: NoteActionsMenuBuilder, notu: Notu) {
-        if (!!note.getTag(this.account)) {
-            menuBuilder.addToTopOfEnd(
-                new NoteAction('Import Account Statement',
-                    async () => {
-                        try {
-                            const newNoteOptions = await importTransactions(note,
-                                new ImportTransactionProcessContext(
-                                    note.getTagData(this.importTransactionsProcess, ImportTransactionsProcessData),
-                                    notu
-                                )
-                            );
-                            return showProcessOutputScreen(note, newNoteOptions, notu);
-                        }
-                        catch (err) {
-                            console.log(err);
-                        }
-                    }
-                )
-            )
-        }
-    }
-
-
-    resolveNoteTagDataComponentFactory(tag: Tag, note: Note): NoteTagDataComponentFactory | null {
-        if (tag == this.currency)
-            return new CurrencyNoteTagDataComponentFactory();
-
-        if (tag == this.account)
-            return new AccountNoteTagDataComponentFactory();
-
-        if (tag == this.budgetCategory)
-            return new BudgetCategoryNoteTagDataComponentFactory();
-
-        if (tag == this.budget)
-            return new BudgetNoteTagDataComponentFactory();
-
-        if (tag == this.transaction)
-            return new TransactionNoteTagDataComponentFactory();
-
-        if (tag == this.importTransactionsProcess)
-            return new ImportTransactionsProcessNoteTagDataComponentFactory();
-        
-        return null;
     }
 }

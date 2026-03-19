@@ -1,10 +1,11 @@
 import { NotuSelect } from "@/components/NotuSelect";
 import { NoteTagDataComponentFactory, NoteTagDataComponentProps } from "@/helpers/NotuRenderTools";
 import { NotuText } from "@/helpers/NotuStyles";
-import { Note, NoteTag, Notu } from "notu";
+import { Note, NoteTag, Notu, Tag } from "notu";
 import { ReactNode } from "react";
 import { Label, View, XStack } from "tamagui";
 import { LinkedRoutineData, RoutineRelationType } from "./LinkedRoutineNoteTagData";
+import { RoutinesSpaceSetup } from "./RoutinesSpaceSetup";
 
 export default class LinkedRoutineNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
 
@@ -27,6 +28,19 @@ export default class LinkedRoutineNoteTagDataComponentFactory implements NoteTag
 
     getDataObject(noteTag: NoteTag) {
         return new LinkedRoutineData(noteTag);
+    }
+
+    isForNoteTag(note: Note, tag: Tag): boolean {
+        if (!tag.links.find(x => 
+            x.space.internalName == RoutinesSpaceSetup.internalName &&
+            x.name == RoutinesSpaceSetup.routine
+        ))
+            return false;
+
+        return !!note.tags.find(x => 
+            x.tag.space.internalName == RoutinesSpaceSetup.internalName &&
+            x.tag.name == RoutinesSpaceSetup.routine
+        );
     }
 }
 

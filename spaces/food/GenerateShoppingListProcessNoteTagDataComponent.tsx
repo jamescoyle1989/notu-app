@@ -7,6 +7,7 @@ import { NotuButton, NotuInput } from "@/helpers/NotuStyles";
 import { Note, NoteTag, Notu, Tag } from "notu";
 import { ReactNode, useState } from "react";
 import { Dialog, Label, XStack, YStack } from "tamagui";
+import { FoodSpaceSetup } from "./FoodSpaceSetup";
 import { GenerateShoppingListProcessData } from "./GenerateShoppingListProcessNoteTagData";
 
 export default class GenerateShoppingListProcessNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
@@ -30,6 +31,11 @@ export default class GenerateShoppingListProcessNoteTagDataComponentFactory impl
 
     getDataObject(noteTag: NoteTag) {
         return new GenerateShoppingListProcessData(noteTag);
+    }
+
+    isForNoteTag(note: Note, tag: Tag): boolean {
+        return tag.space.internalName == FoodSpaceSetup.internalName &&
+            tag.name == FoodSpaceSetup.generateShoppingListProcess;
     }
 }
 

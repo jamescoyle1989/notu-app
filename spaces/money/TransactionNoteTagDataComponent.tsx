@@ -12,6 +12,7 @@ import { ReactNode, useEffect, useState } from "react";
 import { Checkbox, CheckedState, Input, Label, Slider, XStack, YStack } from "tamagui";
 import { CurrencyData } from "./CurrencyNoteTagData";
 import { MoneySpace } from "./MoneySpace";
+import { MoneySpaceSetup } from "./MoneySpaceSetup";
 import { TransactionCategoryData } from "./TransactionCategoryData";
 import { TransactionData } from "./TransactionNoteTagData";
 
@@ -32,6 +33,11 @@ export default class TransactionNoteTagDataComponentFactory implements NoteTagDa
 
     getDataObject(noteTag: NoteTag) {
         return new TransactionData(noteTag);
+    }
+
+    isForNoteTag(note: Note, tag: Tag): boolean {
+        return tag.space.internalName == MoneySpaceSetup.internalName &&
+            tag.name == MoneySpaceSetup.transaction;
     }
 }
 

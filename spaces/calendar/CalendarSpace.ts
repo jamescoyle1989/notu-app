@@ -1,9 +1,6 @@
-import { NoteActionsMenuBuilder } from "@/helpers/NoteAction";
-import { NoteTagDataComponentFactory } from "@/helpers/NotuRenderTools";
-import { Note, Notu, Space, Tag } from "notu";
+import { Notu, Space, Tag } from "notu";
 import { LogicalSpace } from "../LogicalSpace";
 import { CalendarSpaceSetup } from "./CalendarSpaceSetup";
-import RecurringEventsProcessNoteTagDataComponentFactory from "./RecurringEventsProcessNoteTagDataComponent";
 
 export class CalendarSpace implements LogicalSpace {
 
@@ -35,24 +32,5 @@ export class CalendarSpace implements LogicalSpace {
     async setup(notu: Notu): Promise<void> {
         await CalendarSpaceSetup.setup(notu);
         this._load(notu);
-    }
-
-
-    buildNoteActionsMenu(
-        note: Note,
-        menuBuilder: NoteActionsMenuBuilder,
-        notu: Notu
-    ) {
-    }
-
-
-    resolveNoteTagDataComponentFactory(tag: Tag, note: Note): NoteTagDataComponentFactory | null {
-        
-        if (tag.space.internalName == CalendarSpaceSetup.internalName) {
-            if (tag.name == CalendarSpaceSetup.recurringEventsProcess)
-                return new RecurringEventsProcessNoteTagDataComponentFactory();
-        }
-        
-        return null;
     }
 }

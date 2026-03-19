@@ -3,10 +3,11 @@ import { NumberInput } from "@/components/NumberInput";
 import { useManualRefresh } from "@/helpers/Hooks";
 import { NoteTagDataComponentFactory, NoteTagDataComponentProps } from "@/helpers/NotuRenderTools";
 import { NotuInput } from "@/helpers/NotuStyles";
-import { Note, NoteTag, Notu } from "notu";
+import { Note, NoteTag, Notu, Tag } from "notu";
 import { ReactNode, useState } from "react";
 import { Label, XStack, YStack } from "tamagui";
 import { ExerciseMetricDefData } from "./ExerciseMetricDefNoteTagData";
+import { FitnessSpaceSetup } from "./FitnessSpaceSetup";
 
 export default class ExerciseMetricDefNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
     
@@ -34,6 +35,19 @@ export default class ExerciseMetricDefNoteTagDataComponentFactory implements Not
 
     getDataObject(noteTag: NoteTag) {
         return new ExerciseMetricDefData(noteTag);
+    }
+
+    isForNoteTag(note: Note, tag: Tag): boolean {
+        if (!tag.links.find(x => 
+            x.space.internalName == FitnessSpaceSetup.internalName &&
+            x.name == FitnessSpaceSetup.metric
+        ))
+            return false;
+
+        return !!note.tags.find(x => 
+            x.tag.space.internalName == FitnessSpaceSetup.internalName &&
+            x.tag.name == FitnessSpaceSetup.exercise
+        );
     }
 }
 

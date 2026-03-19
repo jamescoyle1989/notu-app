@@ -1,9 +1,10 @@
 import { NoteTagDataComponentFactory, NoteTagDataComponentProps } from "@/helpers/NotuRenderTools";
-import { Note, NoteTag, Notu } from "notu";
+import { Note, NoteTag, Notu, Tag } from "notu";
 import { ReactNode } from "react";
 import { Anchor, Button, Input, Label, Paragraph, XStack, YStack } from "tamagui";
 import { convertAddressUrlToCoordinates } from "./AddressFetch";
 import { AddressData } from "./AddressNoteTagData";
+import { CommonSpaceSetup } from "./CommonSpaceSetup";
 
 export default class AddressNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
 
@@ -34,6 +35,11 @@ export default class AddressNoteTagDataComponentFactory implements NoteTagDataCo
 
     getDataObject(noteTag: NoteTag) {
         return new AddressData(noteTag);
+    }
+
+    isForNoteTag(note: Note, tag: Tag): boolean {
+        return tag.space.internalName == CommonSpaceSetup.internalName &&
+            tag.name == CommonSpaceSetup.address;
     }
 }
 

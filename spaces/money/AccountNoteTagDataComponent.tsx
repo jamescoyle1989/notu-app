@@ -3,10 +3,11 @@ import { NumberInput } from "@/components/NumberInput";
 import { useManualRefresh } from "@/helpers/Hooks";
 import { NoteTagDataComponentFactory, NoteTagDataComponentProps } from "@/helpers/NotuRenderTools";
 import { NotuText } from "@/helpers/NotuStyles";
-import { Note, NoteTag, Notu } from "notu";
+import { Note, NoteTag, Notu, Tag } from "notu";
 import { ReactNode } from "react";
 import { Input, Label, XStack, YStack } from "tamagui";
 import { AccountData } from "./AccountNoteTagData";
+import { MoneySpaceSetup } from "./MoneySpaceSetup";
 
 export default class AccountNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
     
@@ -28,6 +29,11 @@ export default class AccountNoteTagDataComponentFactory implements NoteTagDataCo
 
     getDataObject(noteTag: NoteTag) {
         return new AccountData(noteTag);
+    }
+
+    isForNoteTag(note: Note, tag: Tag): boolean {
+        return tag.space.internalName == MoneySpaceSetup.internalName &&
+            tag.name == MoneySpaceSetup.account;
     }
 }
 

@@ -3,14 +3,58 @@ import { NoteChecklistProcessor } from '@/notecomponents/NoteChecklist';
 import { NoteChoiceProcessor } from '@/notecomponents/NoteChoice';
 import { NoteLinkProcessor } from '@/notecomponents/NoteLink';
 import { CalendarSpace } from '@/spaces/calendar/CalendarSpace';
+import RecurringEventsProcessNoteTagDataComponentFactory from '@/spaces/calendar/RecurringEventsProcessNoteTagDataComponent';
+import AddressNoteTagDataComponentFactory from '@/spaces/common/AddressNoteTagDataComponent';
+import CancelledNoteTagDataComponentFactory from '@/spaces/common/CancelledNoteTagDataComponent';
 import { CommonSpace } from '@/spaces/common/CommonSpace';
+import DurationNoteTagDataComponentFactory from '@/spaces/common/DurationNoteTagDataComponent';
+import FinishedNoteTagDataComponentFactory from '@/spaces/common/FinishedNoteTagDataComponent';
+import RecurringNoteTagDataComponentFactory from '@/spaces/common/RecurringNoteTagDataComponent';
+import ScheduledNoteTagDataComponentFactory from '@/spaces/common/ScheduledNoteTagDataComponent';
+import StartedNoteTagDataComponentFactory from '@/spaces/common/StartedNoteTagDataComponent';
 import { ContentSpace } from '@/spaces/content/ContentSpace';
+import RatingNoteTagDataComponentFactory from '@/spaces/content/RatingNoteTagDataComponent';
+import ExerciseMetricDefNoteTagDataComponentFactory from '@/spaces/fitness/ExerciseMetricDefNoteTagDataComponent';
+import ExerciseMetricNoteTagDataComponentFactory from '@/spaces/fitness/ExerciseMetricNoteTagDataComponent';
+import ExerciseNoteTagDataComponentFactory from '@/spaces/fitness/ExerciseNoteTagDataComponent';
 import { FitnessSpace } from '@/spaces/fitness/FitnessSpace';
+import GeneratedExerciseNoteTagDataComponentFactory from '@/spaces/fitness/GeneratedExerciseNoteTagDataComponent';
+import GenerateWorkoutProcessNoteTagDataComponentFactory from '@/spaces/fitness/GenerateWorkoutProcessNoteTagDataComponent';
+import MetricNoteTagDataComponentFactory from '@/spaces/fitness/MetricNoteTagDataComponent';
+import WorkoutExerciseNoteTagDataComponentFactory from '@/spaces/fitness/WorkoutExerciseNoteTagDataComponent';
+import WorkoutNoteTagDataComponentFactory from '@/spaces/fitness/WorkoutNoteTagDataComponent';
 import { FoodSpace } from '@/spaces/food/FoodSpace';
+import GenerateMealProcessNoteTagDataComponentFactory from '@/spaces/food/GenerateMealProcessNoteTagDataComponent';
+import GenerateShoppingListProcessNoteTagDataComponentFactory from '@/spaces/food/GenerateShoppingListProcessNoteTagDataComponent';
+import MealNoteTagDataComponentFactory from '@/spaces/food/MealNoteTagDataComponent';
+import RecipeNoteTagDataComponentFactory from '@/spaces/food/RecipeNoteTagDataComponent';
+import AccountNoteTagDataComponentFactory from '@/spaces/money/AccountNoteTagDataComponent';
+import BudgetCategoryNoteTagDataComponentFactory from '@/spaces/money/BudgetCategoryNoteTagDataComponent';
+import BudgetNoteTagDataComponentFactory from '@/spaces/money/BudgetNoteTagDataComponent';
+import CurrencyNoteTagDataComponentFactory from '@/spaces/money/CurrencyNoteTagDataComponent';
+import ImportTransactionsProcessNoteTagDataComponentFactory from '@/spaces/money/ImportTransactionsProcessNoteTagDataComponent';
 import { MoneySpace } from '@/spaces/money/MoneySpace';
+import TransactionNoteTagDataComponentFactory from '@/spaces/money/TransactionNoteTagDataComponent';
+import CelebrationEventsProcessNoteTagDataComponentFactory from '@/spaces/people/CelebrationEventsProcessNoteTagDataComponent';
+import CelebrationNoteTagDataComponentFactory from '@/spaces/people/CelebrationNoteTagDataComponent';
+import CircleNoteTagDataComponentFactory from '@/spaces/people/CircleNoteTagDataComponent';
 import { PeopleSpace } from '@/spaces/people/PeopleSpace';
+import PersonCelebrationNoteTagDataComponentFactory from '@/spaces/people/PersonCelebrationNoteTagDataComponent';
+import PersonNoteTagDataComponentFactory from '@/spaces/people/PersonNoteTagDataComponent';
+import CompressRoutinesProcessNoteTagDataComponentFactory from '@/spaces/routines/CompressRoutinesProcessNoteTagDataComponent';
+import GenerateRoutinesProcessNoteTagDataComponentFactory from '@/spaces/routines/GenerateRoutinesProcessNoteTagDataComponent';
+import LinkedRoutineNoteTagDataComponentFactory from '@/spaces/routines/LinkedRoutineNoteTagDataComponent';
+import RoutineNoteTagDataComponentFactory from '@/spaces/routines/RoutineNoteTagDataComponent';
 import { RoutinesSpace } from '@/spaces/routines/RoutinesSpace';
+import CloneNoteProcessNoteTagDataComponentFactory from '@/spaces/system/CloneNoteProcessNoteTagDataComponent';
+import CreateNoteProcessNoteTagDataComponentFactory from '@/spaces/system/CreateNoteProcessNoteTagDataComponent';
+import CustomProcessNoteTagDataComponentFactory from '@/spaces/system/CustomProcessNoteTagDataComponent';
+import EditNoteProcessNoteTagDataComponentFactory from '@/spaces/system/EditNoteProcessNoteTagDataComponent';
+import PageNoteTagDataComponentFactory from '@/spaces/system/PageNoteTagDataComponent';
+import ProcessAvailabilityNoteTagDataComponentFactory from '@/spaces/system/ProcessAvailabilityNoteTagDataComponent';
+import ProcessNoteTagDataComponentFactory from '@/spaces/system/ProcessNoteTagDataComponent';
 import { SystemSpace } from '@/spaces/system/SystemSpace';
+import DeadlineNoteTagDataComponentFactory from '@/spaces/tasks/DeadlineNoteTagDataComponent';
 import { TasksSpace } from '@/spaces/tasks/TasksSpace';
 import { NotuSQLiteCacheFetcher } from '@/sqlite/NotuSQLiteCacheFetcher';
 import { NotuSQLiteClient } from '@/sqlite/NotuSQLiteClient';
@@ -53,6 +97,61 @@ export async function setupNotu(): Promise<NotuRenderTools> {
             new NoteChecklistProcessor(),
             new NoteChoiceProcessor(),
             new NoteCalcProcessor()
+        ],
+        [
+            new CloneNoteProcessNoteTagDataComponentFactory(),
+            new CreateNoteProcessNoteTagDataComponentFactory(),
+            new CustomProcessNoteTagDataComponentFactory(),
+            new EditNoteProcessNoteTagDataComponentFactory(),
+            new PageNoteTagDataComponentFactory(),
+            new ProcessAvailabilityNoteTagDataComponentFactory(),
+            new ProcessNoteTagDataComponentFactory(),
+
+            new AddressNoteTagDataComponentFactory(),
+            new CancelledNoteTagDataComponentFactory(),
+            new DurationNoteTagDataComponentFactory(),
+            new FinishedNoteTagDataComponentFactory(),
+            new RecurringNoteTagDataComponentFactory(),
+            new ScheduledNoteTagDataComponentFactory(),
+            new StartedNoteTagDataComponentFactory(),
+
+            new RecurringEventsProcessNoteTagDataComponentFactory(),
+
+            new RatingNoteTagDataComponentFactory(),
+
+            new ExerciseMetricDefNoteTagDataComponentFactory(),
+            new ExerciseMetricNoteTagDataComponentFactory(),
+            new ExerciseNoteTagDataComponentFactory(),
+            new GeneratedExerciseNoteTagDataComponentFactory(),
+            new GenerateWorkoutProcessNoteTagDataComponentFactory(),
+            new MetricNoteTagDataComponentFactory(),
+            new WorkoutExerciseNoteTagDataComponentFactory(),
+            new WorkoutNoteTagDataComponentFactory(),
+
+            new GenerateMealProcessNoteTagDataComponentFactory(),
+            new GenerateShoppingListProcessNoteTagDataComponentFactory(),
+            new MealNoteTagDataComponentFactory(),
+            new RecipeNoteTagDataComponentFactory(),
+
+            new AccountNoteTagDataComponentFactory(),
+            new BudgetCategoryNoteTagDataComponentFactory(),
+            new BudgetNoteTagDataComponentFactory(),
+            new CurrencyNoteTagDataComponentFactory(),
+            new ImportTransactionsProcessNoteTagDataComponentFactory(),
+            new TransactionNoteTagDataComponentFactory(),
+
+            new CelebrationEventsProcessNoteTagDataComponentFactory(),
+            new CelebrationNoteTagDataComponentFactory(),
+            new CircleNoteTagDataComponentFactory(),
+            new PersonCelebrationNoteTagDataComponentFactory(),
+            new PersonNoteTagDataComponentFactory(),
+
+            new CompressRoutinesProcessNoteTagDataComponentFactory(),
+            new GenerateRoutinesProcessNoteTagDataComponentFactory(),
+            new LinkedRoutineNoteTagDataComponentFactory(),
+            new RoutineNoteTagDataComponentFactory(),
+
+            new DeadlineNoteTagDataComponentFactory()
         ],
         [
             new SystemSpace(notuVal),
