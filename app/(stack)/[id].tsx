@@ -1,40 +1,79 @@
-import { GroupedSearchList } from "@/components/GroupedSearchList";
+import GroupedNoteList from "@/components/GroupedNoteList";
+import { NoteSearch } from "@/components/NoteSearch";
 import { ShowCustomPageAction, ShowEditorAction, ShowNoteListAction, UIAction } from "@/helpers/NoteAction";
+import { NoteTagDataComponentFactory } from "@/helpers/NotuRenderTools";
 import { getNotu } from "@/helpers/NotuSetup";
-import { CommonSpace } from "@/spaces/common/CommonSpace";
 import { PageData } from "@/spaces/system/PageNoteTagData";
 import { ProcessDataBase } from "@/spaces/system/ProcessNoteTagDataBaseClass";
-import { SystemSpace } from "@/spaces/system/SystemSpace";
+import { FilterComponentFactory, SystemSpace } from "@/spaces/system/SystemSpace";
 import { DrawerActions } from "@react-navigation/native";
 import { Menu } from '@tamagui/lucide-icons';
 import { Stack, useLocalSearchParams, useNavigation, usePathname, useRouter } from "expo-router";
-import { Note, NoteTag } from "notu";
+import { Note, NoteTag, ParsedQuery, parseQuery } from "notu";
 import { useEffect, useRef, useState } from "react";
 import { Button, Text, View, YStack } from "tamagui";
 import { setActiveCustomPage } from "./custompage";
 import { setNoteBeingEdited } from "./editnote";
 import { setActiveNoteListAction } from "./listnoteobjects";
 
+
+function isFilter(compFactory: NoteTagDataComponentFactory) {
+    return 'getFilterComponent' in compFactory;
+}
+
+function sleep(milliseconds: number) {
+    return new Promise(resolve => setTimeout(resolve, milliseconds));
+}
+
+let filterUpdateId = 0;
+
 export default function CustomPage() {
     const { id } = useLocalSearchParams();
     const pathName = usePathname();
     const [pageNote, setPageNote] = useState<Note>(null);
+    const [pageFilters, setPageFilters] = useState<Array<FilterComponentFactory>>([]);
     const renderTools = getNotu();
     const notu = renderTools.notu;
     const router = useRouter();
     const nav = useNavigation();
-    const searchListRef = useRef(null);
+    const searchRef = useRef(null);
+    const [queryState, setQueryState] = useState('');
+    const [fetchedNotes, setFetchedNotes] = useState<Array<Note>>([]);
+    const systemSpace = new SystemSpace(renderTools.notu);
+    const pageData = pageNote?.getTagData(systemSpace.page, PageData);
 
     useEffect(() => {
         setPageNote(null);
         async function loadPage() {
             //I hate that I've had to put this line here, but otherwise the drawer just stays open when switching between screens
             nav.dispatch(DrawerActions.closeDrawer());
+
             const idn = Number(id);
-            setPageNote((await notu.getNotes(`n.id = ${idn}`))[0]);
+            const note = (await notu.getNotes(`n.id = ${idn}`))[0];
+            setQueryState(note.getTagData(systemSpace.page, PageData).query);
+            const filters = note.tags
+                .map(nt => renderTools.getComponentFactoryForNoteTag(nt.tag, note))
+                .filter(isFilter)
+                .map(x => x as FilterComponentFactory);
+            setPageFilters(filters);
+            setPageNote(note);
         }
         loadPage();
     }, [pathName]);
+
+    useEffect(() => {
+        if (!!pageData?.showQuery || !searchRef.current)
+            return;
+
+        async function handleFilterUpdate() {
+            filterUpdateId = (filterUpdateId + 1) % 1000;
+            const token = filterUpdateId;
+            await sleep(500);
+            if (token == filterUpdateId)
+                searchRef.current.refresh();
+        }
+        handleFilterUpdate();
+    }, [queryState]);
 
     if (!pageNote) {
         return (
@@ -44,6 +83,13 @@ export default function CustomPage() {
         )
     }
 
+    let parsedQuery: ParsedQuery;
+    try {
+        parsedQuery = parseQuery(pageData.query);
+    }
+    catch (err) {
+    }
+
     function startEditingNote(action: ShowEditorAction) {
         setNoteBeingEdited(action);
         router.push('/editnote');
@@ -51,7 +97,7 @@ export default function CustomPage() {
 
     function onUIAction(action: UIAction) {
         if (action.name == 'Refresh')
-            searchListRef.current.refresh();
+            searchRef.current.refresh();
         else if (action.name == 'Edit') {
             const editAction = action as ShowEditorAction;
             startEditingNote(editAction);
@@ -68,6 +114,10 @@ export default function CustomPage() {
         }
     }
 
+    async function handleFilterChange(query: ParsedQuery): Promise<void> {
+        setQueryState(query.compose());
+    }
+
     async function handleProcessPress(noteTag: NoteTag) {
         const componentFactory = renderTools.getComponentFactoryForNoteTag(noteTag.tag, pageNote);
         const processData = componentFactory.getDataObject(noteTag) as ProcessDataBase;
@@ -75,9 +125,6 @@ export default function CustomPage() {
         onUIAction(result);
     }
 
-    const commonSpace = new CommonSpace(renderTools.notu);
-    const systemSpace = new SystemSpace(renderTools.notu);
-    const pageData = pageNote.getTagData(systemSpace.page, PageData);
     return (
         <View flex={1}>
             <Stack.Screen options={{
@@ -90,22 +137,35 @@ export default function CustomPage() {
                     )
                 }
             }} />
-            <GroupedSearchList ref={searchListRef}
-                               query={pageData.query}
-                               searchSpace={pageData.searchAllSpaces ? null : pageNote.space}
-                               notuRenderTools={renderTools}
-                               onUIAction={onUIAction}
-                               actionsBar={() => (
-                                <YStack>
-                                    {pageNote.tags.filter(nt => nt.tag.linksTo(systemSpace.process)).map((nt, index) => {
-                                        const baseData = new ProcessDataBase(nt);
-                                        return (
-                                            <Button theme="highlight" key={index}
-                                                    onPress={() => handleProcessPress(nt)}>{baseData.name}</Button>
-                                        )
-                                    })}
-                                </YStack>
-                               )} />
+
+            <YStack flex={1}>
+                <NoteSearch ref={searchRef}
+                            space={pageData.searchAllSpaces ? null : pageNote.space}
+                            notu={renderTools.notu}
+                            query={queryState}
+                            onQueryChanged={s => setQueryState(s)}
+                            onFetched={arr => setFetchedNotes(arr)}
+                            autoFetch={true}
+                            visible={pageData.showQuery} />
+
+                {pageFilters.map((x, index) => (
+                    <View key={index}>
+                        {x.getFilterComponent(parsedQuery, handleFilterChange, notu)}
+                    </View>
+                ))}
+
+                {pageNote.tags.filter(nt => nt.tag.linksTo(systemSpace.process)).map((nt, index) => {
+                    const baseData = new ProcessDataBase(nt);
+                    return (
+                        <Button theme="highlight" key={index}
+                                onPress={() => handleProcessPress(nt)}>{baseData.name}</Button>
+                    )
+                })}
+
+                <GroupedNoteList notes={fetchedNotes}
+                                 notuRenderTools={renderTools}
+                                 onUIAction={onUIAction} />
+            </YStack>
         </View>
     )
 }

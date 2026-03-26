@@ -16,7 +16,8 @@ interface NoteSearchProps {
     onFetchRequested?: (query: string, space: Space) => Promise<Array<Note>>,
     /** Callback that gets fired when the search has been executed and notes returned */
     onFetched?: (notes: Array<Note>) => void,
-    autoFetch?: boolean
+    autoFetch?: boolean,
+    visible?: boolean
 }
 
 export interface NoteSearchCommands {
@@ -32,7 +33,8 @@ export const NoteSearch = React.forwardRef((
         onQueryChanged,
         onFetchRequested,
         onFetched,
-        autoFetch = false
+        autoFetch = false,
+        visible = true
     }: NoteSearchProps,
     ref: React.ForwardedRef<NoteSearchCommands>
 ) => {
@@ -67,6 +69,12 @@ export const NoteSearch = React.forwardRef((
         catch (err) {
             setError(err.message);
         }
+    }
+
+    if (!visible) {
+        return (
+            <View />
+        );
     }
 
     return (

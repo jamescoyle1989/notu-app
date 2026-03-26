@@ -1,4 +1,6 @@
-import { Notu, Space, Tag } from "notu";
+import { NoteTagDataComponentFactory } from "@/helpers/NotuRenderTools";
+import { Notu, ParsedQuery, Space, Tag } from "notu";
+import { ReactNode } from "react";
 import { LogicalSpace } from "../LogicalSpace";
 import defs from "./SystemSpaceDefs";
 
@@ -15,6 +17,9 @@ export class SystemSpace implements LogicalSpace {
 
     private _processAvailability: Tag;
     get processAvailability(): Tag { return this._processAvailability; }
+
+    private _filter: Tag;
+    get filter(): Tag { return this._filter; }
 
     private _createNoteProcess: Tag;
     get createNoteProcess(): Tag { return this._createNoteProcess; }
@@ -38,9 +43,23 @@ export class SystemSpace implements LogicalSpace {
         this._page = notu.getTagByName(defs.page, this._space);
         this._process = notu.getTagByName(defs.process, this._space);
         this._processAvailability = notu.getTagByName(defs.processAvailability, this._space);
+        this._filter = notu.getTagByName(defs.filter, this._space);
         this._createNoteProcess = notu.getTagByName(defs.createNoteProcess, this._space);
         this._editNoteProcess = notu.getTagByName(defs.editNoteProcess, this._space);
         this._deleteNoteProcess = notu.getTagByName(defs.deleteNoteProcess, this._space);
         this._cloneNoteProcess = notu.getTagByName(defs.cloneNoteProcess, this._space);
     }
+}
+
+
+export interface FilterComponentFactory extends NoteTagDataComponentFactory {
+
+    getFilterComponent(query: ParsedQuery, onChange: (query: ParsedQuery) => void, notu: Notu): ReactNode;
+}
+
+
+export interface FilterComponentProps {
+    query: ParsedQuery,
+    onChange: (query: ParsedQuery) => void,
+    notu: Notu
 }

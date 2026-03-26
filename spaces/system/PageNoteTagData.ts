@@ -18,6 +18,7 @@ export class PageData {
         this.group = this.group;
         this.order = this.order;
         this.query = this.query;
+        this.showQuery = this.showQuery;
         this.searchAllSpaces = this.searchAllSpaces;
     }
     static new(noteTag: NoteTag) {
@@ -59,6 +60,14 @@ export class PageData {
         if (this._nt.data.query != value && this._nt.isClean)
             this._nt.dirty();
         this._nt.data.query = value;
+    }
+
+    get showQuery(): boolean { return this._nt.data.showQuery; }
+    set showQuery(value: boolean) {
+        value = value ?? true;
+        if (this._nt.data.showQuery != value && this._nt.isClean)
+            this._nt.dirty();
+        this._nt.data.showQuery = value;
     }
 
     get searchAllSpaces(): boolean { return this._nt.data.searchAllSpaces; }

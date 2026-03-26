@@ -7,6 +7,7 @@ export class FoodSpaceSetup {
     static get meal(): string { return 'Meal'; }
     static get generateMealProcess(): string { return 'Generate Meal Process'; }
     static get generateShoppingListProcess(): string { return 'Generate Shopping List Process'; }
+    static get ingredientFilter(): string { return 'Ingredient Filter'; }
 
     static async setup(notu: Notu): Promise<void> {
         let foodSpace = notu.getSpaceByInternalName(this.internalName);
@@ -37,7 +38,12 @@ export class FoodSpaceSetup {
             generateShoppingListProcess.ownTag.asInternal();
             generateShoppingListProcess.addTag(systemSpace.process);
 
-            await notu.saveNotes([generateMealProcess, generateShoppingListProcess]);
+            const ingredientFilter = new Note(`This filter allows for filtering recipe/meal search results by whether they contain a particular ingredient.`)
+                .in(foodSpace).setOwnTag(this.ingredientFilter);
+            ingredientFilter.ownTag.asInternal();
+            ingredientFilter.addTag(systemSpace.filter);
+
+            await notu.saveNotes([generateMealProcess, generateShoppingListProcess, ingredientFilter]);
         }
     }
 }

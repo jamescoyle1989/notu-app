@@ -67,6 +67,11 @@ function EditorComponent({ noteTag, refreshCallback }: NoteTagDataComponentProps
         manualRefresh();
     }
 
+    function handleShowQueryChange(checked: CheckedState) {
+        data.showQuery = (checked.valueOf() == true);
+        manualRefresh();
+    }
+
     function handleSearchAllSpacesChange(checked: CheckedState) {
         data.searchAllSpaces = (checked.valueOf() == true);
         manualRefresh();
@@ -96,6 +101,15 @@ function EditorComponent({ noteTag, refreshCallback }: NoteTagDataComponentProps
             <NotuInput value={data.query}
                        multiline={true}
                        onChangeText={handleQueryChange} />
+
+            <XStack style={{alignItems: 'center'}}>
+                <Label marginInlineEnd={3}>Show Query</Label>
+                <Checkbox checked={data.showQuery} onCheckedChange={handleShowQueryChange}>
+                    <Checkbox.Indicator>
+                        <Check />
+                    </Checkbox.Indicator>
+                </Checkbox>
+            </XStack>
 
             <XStack style={{alignItems: 'center'}}>
                 <Label marginInlineEnd={3}>Search All Spaces</Label>

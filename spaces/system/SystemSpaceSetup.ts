@@ -26,7 +26,11 @@ export class SystemSpaceSetup {
                 .in(systemSpace).setOwnTag(defs.processAvailability);
             processAvailability.ownTag.asInternal();
 
-            await notu.saveNotes([page, process, processAvailability]);
+            const filter = new Note(`This tag defines any note that links to it as being a filter, which can be used for dynamically customising the filtering used on a page.`)
+                .in(systemSpace).setOwnTag(defs.filter);
+            filter.ownTag.asInternal();
+
+            await notu.saveNotes([page, process, processAvailability, filter]);
 
             const createNoteProcess = new Note(`Process for creating a new note. It will create a new note with the configured tags, text & space, then display the new note for further editing and saving.`)
                 .in(systemSpace).setOwnTag(defs.createNoteProcess);

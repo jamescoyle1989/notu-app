@@ -26,6 +26,7 @@ import WorkoutNoteTagDataComponentFactory from '@/spaces/fitness/WorkoutNoteTagD
 import { FoodSpaceSetup } from '@/spaces/food/FoodSpaceSetup';
 import GenerateMealProcessNoteTagDataComponentFactory from '@/spaces/food/GenerateMealProcessNoteTagDataComponent';
 import GenerateShoppingListProcessNoteTagDataComponentFactory from '@/spaces/food/GenerateShoppingListProcessNoteTagDataComponent';
+import IngredientFilterNoteTagDataComponentFactory from '@/spaces/food/IngredientFilterNoteTagDataComponent';
 import MealNoteTagDataComponentFactory from '@/spaces/food/MealNoteTagDataComponent';
 import RecipeNoteTagDataComponentFactory from '@/spaces/food/RecipeNoteTagDataComponent';
 import AccountNoteTagDataComponentFactory from '@/spaces/money/AccountNoteTagDataComponent';
@@ -132,6 +133,7 @@ export async function setupNotu(): Promise<NotuRenderTools> {
             new GenerateShoppingListProcessNoteTagDataComponentFactory(),
             new MealNoteTagDataComponentFactory(),
             new RecipeNoteTagDataComponentFactory(),
+            new IngredientFilterNoteTagDataComponentFactory(),
 
             new AccountNoteTagDataComponentFactory(),
             new BudgetCategoryNoteTagDataComponentFactory(),

@@ -19,6 +19,9 @@ export class FoodSpace implements LogicalSpace {
     private _generateShoppingListProcess: Tag;
     get generateShoppingListProcess(): Tag { return this._generateShoppingListProcess; }
 
+    private _ingredientFilter: Tag;
+    get ingredientFilter(): Tag { return this._ingredientFilter; }
+
     
     constructor(notu: Notu) {
         this._load(notu);
@@ -30,5 +33,6 @@ export class FoodSpace implements LogicalSpace {
         this._meal = notu.getTagByName(FoodSpaceSetup.meal, this._space);
         this._generateMealProcess = notu.getTagByName(FoodSpaceSetup.generateMealProcess, this._space);
         this._generateShoppingListProcess = notu.getTagByName(FoodSpaceSetup.generateShoppingListProcess, this._space);
+        this._ingredientFilter = notu.getTagByName(FoodSpaceSetup.ingredientFilter, this._space);
     }
 }
