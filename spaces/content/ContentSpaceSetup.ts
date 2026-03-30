@@ -1,4 +1,4 @@
-import { Note, Notu, Space } from "notu";
+import { Note, Notu } from "notu";
 
 export class ContentSpaceSetup {
     static get internalName(): string { return 'com.decoyspace.notu.content'; }
@@ -8,9 +8,10 @@ export class ContentSpaceSetup {
 
     static async setup(notu: Notu): Promise<void> {
         let contentSpace = notu.getSpaceByInternalName(this.internalName);
-        if (!contentSpace) {
-            contentSpace = new Space('Content').v('1.0.0');
-            contentSpace.internalName = this.internalName;
+        if (!contentSpace)
+            return;
+        if (contentSpace.version == '0.0.0') {
+            contentSpace.version = '1.0.0';
             await notu.saveSpace(contentSpace);
 
             const medium = new Note(`This tag defines a note as representing a particular medium, for example, Book, TV, Video Game. It's generally advisable to give each piece of content a medium so that it's more easily searchable.`)

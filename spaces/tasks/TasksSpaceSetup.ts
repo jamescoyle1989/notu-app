@@ -1,4 +1,4 @@
-import { Note, Notu, Space } from "notu";
+import { Note, Notu } from "notu";
 
 export class TasksSpaceSetup {
     static get internalName(): string { return 'com.decoyspace.notu.tasks'; }
@@ -9,9 +9,10 @@ export class TasksSpaceSetup {
 
     static async setup(notu: Notu): Promise<void> {
         let tasksSpace = notu.getSpaceByInternalName(this.internalName);
-        if (!tasksSpace) {
-            tasksSpace = new Space('Tasks').v('1.0.0');
-            tasksSpace.internalName = this.internalName;
+        if (!tasksSpace)
+            return;
+        if (tasksSpace.version == '0.0.0') {
+            tasksSpace.version = '1.0.0';
             await notu.saveSpace(tasksSpace);
 
             const task = new Note(`Add this tag to a note to mark it as a task that can be completed in a single work session.`)

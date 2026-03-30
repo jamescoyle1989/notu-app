@@ -1,4 +1,4 @@
-import { Note, Notu, Space } from "notu";
+import { Note, Notu } from "notu";
 import { SystemSpace } from "../system/SystemSpace";
 
 export class FitnessSpaceSetup {
@@ -10,9 +10,10 @@ export class FitnessSpaceSetup {
 
     static async setup(notu: Notu): Promise<void> {
         let fitnessSpace = notu.getSpaceByInternalName(this.internalName);
-        if (!fitnessSpace) {
-            fitnessSpace = new Space('Fitness').v('1.0.0');
-            fitnessSpace.internalName = this.internalName;
+        if (!fitnessSpace)
+            return;
+        if (fitnessSpace.version == '0.0.0') {
+            fitnessSpace.version = '1.0.0';
             await notu.saveSpace(fitnessSpace);
 
             const metric = new Note(`Adding this tag to a note marks that the note represents some metric which we can measure exercises by. When a metric gets added to an exercise, the metric will define the range of values that it can take.`)

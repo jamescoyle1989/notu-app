@@ -90,72 +90,7 @@ export async function setupNotu(): Promise<NotuRenderTools> {
 
     await notuVal.setup();
     await notuVal.cache.populate();
-
-    const renderToolsVal = new NotuRenderTools(
-        notuVal,
-        [
-            new NoteLinkProcessor(),
-            new NoteChecklistProcessor(),
-            new NoteChoiceProcessor(),
-            new NoteCalcProcessor()
-        ],
-        [
-            new CloneNoteProcessNoteTagDataComponentFactory(),
-            new CreateNoteProcessNoteTagDataComponentFactory(),
-            new CustomProcessNoteTagDataComponentFactory(),
-            new EditNoteProcessNoteTagDataComponentFactory(),
-            new PageNoteTagDataComponentFactory(),
-            new ProcessAvailabilityNoteTagDataComponentFactory(),
-            new ProcessNoteTagDataComponentFactory(),
-
-            new AddressNoteTagDataComponentFactory(),
-            new CancelledNoteTagDataComponentFactory(),
-            new DurationNoteTagDataComponentFactory(),
-            new FinishedNoteTagDataComponentFactory(),
-            new RecurringNoteTagDataComponentFactory(),
-            new ScheduledNoteTagDataComponentFactory(),
-            new StartedNoteTagDataComponentFactory(),
-
-            new RecurringEventsProcessNoteTagDataComponentFactory(),
-
-            new RatingNoteTagDataComponentFactory(),
-
-            new ExerciseMetricDefNoteTagDataComponentFactory(),
-            new ExerciseMetricNoteTagDataComponentFactory(),
-            new ExerciseNoteTagDataComponentFactory(),
-            new GeneratedExerciseNoteTagDataComponentFactory(),
-            new GenerateWorkoutProcessNoteTagDataComponentFactory(),
-            new MetricNoteTagDataComponentFactory(),
-            new WorkoutExerciseNoteTagDataComponentFactory(),
-            new WorkoutNoteTagDataComponentFactory(),
-
-            new GenerateMealProcessNoteTagDataComponentFactory(),
-            new GenerateShoppingListProcessNoteTagDataComponentFactory(),
-            new MealNoteTagDataComponentFactory(),
-            new RecipeNoteTagDataComponentFactory(),
-            new IngredientFilterNoteTagDataComponentFactory(),
-
-            new AccountNoteTagDataComponentFactory(),
-            new BudgetCategoryNoteTagDataComponentFactory(),
-            new BudgetNoteTagDataComponentFactory(),
-            new CurrencyNoteTagDataComponentFactory(),
-            new ImportTransactionsProcessNoteTagDataComponentFactory(),
-            new TransactionNoteTagDataComponentFactory(),
-
-            new CelebrationEventsProcessNoteTagDataComponentFactory(),
-            new CelebrationNoteTagDataComponentFactory(),
-            new CircleNoteTagDataComponentFactory(),
-            new PersonCelebrationNoteTagDataComponentFactory(),
-            new PersonNoteTagDataComponentFactory(),
-
-            new CompressRoutinesProcessNoteTagDataComponentFactory(),
-            new GenerateRoutinesProcessNoteTagDataComponentFactory(),
-            new LinkedRoutineNoteTagDataComponentFactory(),
-            new RoutineNoteTagDataComponentFactory(),
-
-            new DeadlineNoteTagDataComponentFactory()
-        ]
-    );
+    
     await SystemSpaceSetup.setup(notuVal);
     await CommonSpaceSetup.setup(notuVal);
     await PeopleSpaceSetup.setup(notuVal);
@@ -166,6 +101,95 @@ export async function setupNotu(): Promise<NotuRenderTools> {
     await MoneySpaceSetup.setup(notuVal);
     await FoodSpaceSetup.setup(notuVal);
     await ContentSpaceSetup.setup(notuVal);
+
+    const noteTagComponentFactories = [
+        new CloneNoteProcessNoteTagDataComponentFactory(),
+        new CreateNoteProcessNoteTagDataComponentFactory(),
+        new CustomProcessNoteTagDataComponentFactory(),
+        new EditNoteProcessNoteTagDataComponentFactory(),
+        new PageNoteTagDataComponentFactory(),
+        new ProcessAvailabilityNoteTagDataComponentFactory(),
+        new ProcessNoteTagDataComponentFactory()
+    ];
+    if (!!notuCache.getSpaceByInternalName(CommonSpaceSetup.internalName)) {
+        noteTagComponentFactories.push(...[
+            new AddressNoteTagDataComponentFactory(),
+            new CancelledNoteTagDataComponentFactory(),
+            new DurationNoteTagDataComponentFactory(),
+            new FinishedNoteTagDataComponentFactory(),
+            new RecurringNoteTagDataComponentFactory(),
+            new ScheduledNoteTagDataComponentFactory(),
+            new StartedNoteTagDataComponentFactory()
+        ]);
+    }
+    if (!!notuCache.getSpaceByInternalName(CalendarSpaceSetup.internalName)) {
+        noteTagComponentFactories.push(new RecurringEventsProcessNoteTagDataComponentFactory());
+    }
+    if (!!notuCache.getSpaceByInternalName(ContentSpaceSetup.internalName)) {
+        noteTagComponentFactories.push(new RatingNoteTagDataComponentFactory());
+    }
+    if (!!notuCache.getSpaceByInternalName(FitnessSpaceSetup.internalName)) {
+        noteTagComponentFactories.push(...[
+            new ExerciseMetricDefNoteTagDataComponentFactory(),
+            new ExerciseMetricNoteTagDataComponentFactory(),
+            new ExerciseNoteTagDataComponentFactory(),
+            new GeneratedExerciseNoteTagDataComponentFactory(),
+            new GenerateWorkoutProcessNoteTagDataComponentFactory(),
+            new MetricNoteTagDataComponentFactory(),
+            new WorkoutExerciseNoteTagDataComponentFactory(),
+            new WorkoutNoteTagDataComponentFactory()
+        ]);
+    }
+    if (!!notuCache.getSpaceByInternalName(FoodSpaceSetup.internalName)) {
+        noteTagComponentFactories.push(...[
+            new GenerateMealProcessNoteTagDataComponentFactory(),
+            new GenerateShoppingListProcessNoteTagDataComponentFactory(),
+            new MealNoteTagDataComponentFactory(),
+            new RecipeNoteTagDataComponentFactory(),
+            new IngredientFilterNoteTagDataComponentFactory()
+        ]);
+    }
+    if (!!notuCache.getSpaceByInternalName(MoneySpaceSetup.internalName)) {
+        noteTagComponentFactories.push(...[
+            new AccountNoteTagDataComponentFactory(),
+            new BudgetCategoryNoteTagDataComponentFactory(),
+            new BudgetNoteTagDataComponentFactory(),
+            new CurrencyNoteTagDataComponentFactory(),
+            new ImportTransactionsProcessNoteTagDataComponentFactory(),
+            new TransactionNoteTagDataComponentFactory()
+        ]);
+    }
+    if (!!notuCache.getSpaceByInternalName(PeopleSpaceSetup.internalName)) {
+        noteTagComponentFactories.push(...[
+            new CelebrationEventsProcessNoteTagDataComponentFactory(),
+            new CelebrationNoteTagDataComponentFactory(),
+            new CircleNoteTagDataComponentFactory(),
+            new PersonCelebrationNoteTagDataComponentFactory(),
+            new PersonNoteTagDataComponentFactory()
+        ]);
+    }
+    if (!!notuCache.getSpaceByInternalName(RoutinesSpaceSetup.internalName)) {
+        noteTagComponentFactories.push(...[
+            new CompressRoutinesProcessNoteTagDataComponentFactory(),
+            new GenerateRoutinesProcessNoteTagDataComponentFactory(),
+            new LinkedRoutineNoteTagDataComponentFactory(),
+            new RoutineNoteTagDataComponentFactory()
+        ]);
+    }
+    if (!!notuCache.getSpaceByInternalName(TasksSpaceSetup.internalName)) {
+        noteTagComponentFactories.push(new DeadlineNoteTagDataComponentFactory());
+    }
+
+    const renderToolsVal = new NotuRenderTools(
+        notuVal,
+        [
+            new NoteLinkProcessor(),
+            new NoteChecklistProcessor(),
+            new NoteChoiceProcessor(),
+            new NoteCalcProcessor()
+        ],
+        noteTagComponentFactories
+    );
     _renderTools = renderToolsVal;
     return _renderTools;
 }

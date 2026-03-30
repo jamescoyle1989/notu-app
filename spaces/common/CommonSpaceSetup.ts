@@ -1,4 +1,4 @@
-import { Note, Notu, Space } from "notu";
+import { Note, Notu } from "notu";
 import { PageData } from "../system/PageNoteTagData";
 import { SystemSpace } from "../system/SystemSpace";
 
@@ -17,9 +17,10 @@ export class CommonSpaceSetup {
 
     static async setup(notu: Notu): Promise<void> {
         let commonSpace = notu.getSpaceByInternalName(this.internalName);
-        if (!commonSpace) {
-            commonSpace = new Space('Common').v('1.0.0');
-            commonSpace.internalName = this.internalName;
+        if (!commonSpace)
+            return;
+        if (commonSpace.version == '0.0.0') {
+            commonSpace.version = '1.0.0';
             await notu.saveSpace(commonSpace);
 
             const address = new Note(`When added to a note, this tag stores address data. This includes a map URL, coordinates, and human-readable name.`)

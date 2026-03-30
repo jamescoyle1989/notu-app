@@ -130,6 +130,7 @@ export default function RootLayout() {
         return (
             <DrawerContentScrollView {...props}>
                 <DrawerItem label="Home" onPress={() => navigateToPage(`/`)} />
+                <DrawerItem label="Spaces" onPress={() => navigateToPage(`/spaces`)} />
                 {getPageGroups(systemSpace).map(renderGroup)}
                 <DrawerItem label="Toggle Theme" onPress={() => switchColorScheme()} />
             </DrawerContentScrollView>

@@ -1,4 +1,4 @@
-import { Note, Notu, Space } from "notu";
+import { Note, Notu } from "notu";
 import { SystemSpace } from "../system/SystemSpace";
 
 export class PeopleSpaceSetup {
@@ -10,9 +10,10 @@ export class PeopleSpaceSetup {
 
     static async setup(notu: Notu): Promise<void> {
         let peopleSpace = notu.getSpaceByInternalName(this.internalName);
-        if (!peopleSpace) {
-            peopleSpace = new Space('People').v('1.0.0');
-            peopleSpace.internalName = this.internalName;
+        if (!peopleSpace)
+            return;
+        if (peopleSpace.version == '0.0.0') {
+            peopleSpace.version = '1.0.0';
             await notu.saveSpace(peopleSpace);
 
             const person = new Note(`Adding this tag to a note marks that the note represents a particular person. This tag requires that the note has its own tag defined, so that the person can be referenced by other notes.`)

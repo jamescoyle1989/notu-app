@@ -1,4 +1,4 @@
-import { Note, Notu, Space } from "notu";
+import { Note, Notu } from "notu";
 import { SystemSpace } from "../system/SystemSpace";
 
 export class MoneySpaceSetup {
@@ -12,9 +12,10 @@ export class MoneySpaceSetup {
 
     static async setup(notu: Notu): Promise<void> {
         let moneySpace = notu.getSpaceByInternalName(this.internalName);
-        if (!moneySpace) {
-            moneySpace = new Space('Money').v('1.0.0');
-            moneySpace.internalName = this.internalName;
+        if (!moneySpace)
+            return;
+        if (moneySpace.version == '0.0.0') {
+            moneySpace.version = '1.0.0';
             await notu.saveSpace(moneySpace);
 
             const currency = new Note(`Adding this tag to a note marks it as representing a financial currency. The first currency that you add will automatically be set up as your base currency, this is the currency which will be used throughout the system for all calculations. Every other currency that you add will prompt you for an exchange rate to the base currency. If you do have multiple bank accounts in separate currencies then it's recommended before importing transactions from those accounts to quickly check and update what the exchange rate is for those foreign currencies so that your transactions get imported with a fairly up-to-date representation of what their value is in your base currency.`)

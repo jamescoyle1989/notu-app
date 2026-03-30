@@ -1,4 +1,4 @@
-import { Note, Notu, Space } from "notu";
+import { Note, Notu } from "notu";
 import { SystemSpace } from "../system/SystemSpace";
 
 export class CalendarSpaceSetup {
@@ -8,9 +8,10 @@ export class CalendarSpaceSetup {
 
     static async setup(notu: Notu): Promise<void> {
         let calendarSpace = notu.getSpaceByInternalName(this.internalName);
-        if (!calendarSpace) {
-            calendarSpace = new Space('Calendar').v('1.0.0');
-            calendarSpace.internalName = this.internalName;
+        if (!calendarSpace)
+            return;
+        if (calendarSpace.version == '0.0.0') {
+            calendarSpace.version = '1.0.0';
             await notu.saveSpace(calendarSpace);
 
             const event = new Note(`Add this tag to any note to mark it as an event which can be tracked in the calendar.`)

@@ -1,4 +1,4 @@
-import { Note, Notu, Space } from "notu";
+import { Note, Notu } from "notu";
 import { SystemSpace } from "../system/SystemSpace";
 
 export class RoutinesSpaceSetup {
@@ -9,9 +9,10 @@ export class RoutinesSpaceSetup {
 
     static async setup(notu: Notu): Promise<void> {
         let routinesSpace = notu.getSpaceByInternalName(this.internalName);
-        if (!routinesSpace) {
-            routinesSpace = new Space('Routines').v('1.0.0');
-            routinesSpace.internalName = this.internalName;
+        if (!routinesSpace)
+            return;
+        if (routinesSpace.version == '0.0.0') {
+            routinesSpace.version = '1.0.0';
             await notu.saveSpace(routinesSpace);
 
             const routine = new Note(`This tag defines a note as being a routine to be maintained on a regular interval. This is the definition note from which recurring notes will be generated.`)
