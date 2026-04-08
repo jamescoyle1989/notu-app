@@ -1,8 +1,9 @@
 import GroupedNoteList from "@/components/GroupedNoteList";
 import { NoteSearch } from "@/components/NoteSearch";
-import { ShowCustomPageAction, ShowEditorAction, ShowNoteListAction, UIAction } from "@/helpers/NoteAction";
+import { ShowCustomPageAction, ShowEditorAction, ShowErrorAction, ShowNoteListAction, UIAction } from "@/helpers/NoteAction";
 import { NoteTagDataComponentFactory } from "@/helpers/NotuRenderTools";
 import { getNotu } from "@/helpers/NotuSetup";
+import { NotuText } from "@/helpers/NotuStyles";
 import { PageData } from "@/spaces/system/PageNoteTagData";
 import { ProcessDataBase } from "@/spaces/system/ProcessNoteTagDataBaseClass";
 import { FilterComponentFactory, SystemSpace } from "@/spaces/system/SystemSpace";
@@ -41,6 +42,7 @@ export default function CustomPage() {
     const [fetchedNotes, setFetchedNotes] = useState<Array<Note>>([]);
     const systemSpace = new SystemSpace(renderTools.notu);
     const pageData = pageNote?.getTagData(systemSpace.page, PageData);
+    const [processError, setProcessError] = useState<string>(null);
 
     useEffect(() => {
         setPageNote(null);
@@ -96,6 +98,7 @@ export default function CustomPage() {
     }
 
     function onUIAction(action: UIAction) {
+        setProcessError(null);
         if (action.name == 'Refresh')
             searchRef.current.refresh();
         else if (action.name == 'Edit') {
@@ -112,6 +115,10 @@ export default function CustomPage() {
             setActiveCustomPage(showCustomPageAction);
             router.push('/custompage');
         }
+        else if (action.name == 'ShowError') {
+            const showErrorAction = action as ShowErrorAction;
+            setProcessError(showErrorAction.errorMessage);
+        }
     }
 
     async function handleFilterChange(query: ParsedQuery): Promise<void> {
@@ -119,10 +126,16 @@ export default function CustomPage() {
     }
 
     async function handleProcessPress(noteTag: NoteTag) {
-        const componentFactory = renderTools.getComponentFactoryForNoteTag(noteTag.tag, pageNote);
-        const processData = componentFactory.getDataObject(noteTag) as ProcessDataBase;
-        const result = await processData.runProcess(pageNote, notu);
-        onUIAction(result);
+        try {
+            const componentFactory = renderTools.getComponentFactoryForNoteTag(noteTag.tag, pageNote);
+            const processData = componentFactory.getDataObject(noteTag) as ProcessDataBase;
+            const result = await processData.runProcess(pageNote, notu);
+            onUIAction(result);
+            setProcessError(null);
+        }
+        catch (err) {
+            setProcessError(err.message);
+        }
     }
 
     return (
@@ -161,6 +174,10 @@ export default function CustomPage() {
                                 onPress={() => handleProcessPress(nt)}>{baseData.name}</Button>
                     )
                 })}
+
+                {!!processError && (
+                    <NotuText danger>{processError}</NotuText>
+                )}
 
                 <GroupedNoteList notes={fetchedNotes}
                                  notuRenderTools={renderTools}

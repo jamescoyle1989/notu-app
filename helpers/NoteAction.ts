@@ -41,6 +41,16 @@ export class RefreshAction extends UIAction {
     }
 }
 
+export class ShowErrorAction extends UIAction {
+    private _errorMessage: string;
+    get errorMessage(): string { return this._errorMessage; }
+
+    constructor(errorMessage: string) {
+        super('ShowError');
+        this._errorMessage = errorMessage;
+    }
+}
+
 export class PreviousScreenAction extends UIAction {
     constructor() {
         super('PreviousScreen');

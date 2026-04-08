@@ -34,13 +34,9 @@ export class GenerateWorkoutProcessData extends ProcessDataBase {
     }
 
     async runProcess(note: Note, notu: Notu): Promise<UIAction> {
-        const fitnessSpace = new FitnessSpace(notu);
         const newNoteOptions = await generateWorkout(
             note,
-            new GenerateWorkoutProcessContext(
-                note.getTagData(fitnessSpace.generateWorkoutProcess, GenerateWorkoutProcessData),
-                notu
-            )
+            new GenerateWorkoutProcessContext(this, notu)
         );
         return showProcessOutputScreen(note, newNoteOptions, notu);
     }

@@ -1,4 +1,4 @@
-import { NoteAction, NoteActionsMenuBuilder, UIAction } from '@/helpers/NoteAction';
+import { NoteAction, NoteActionsMenuBuilder, ShowErrorAction, UIAction } from '@/helpers/NoteAction';
 import { NotuButton, NotuText } from '@/helpers/NotuStyles';
 import { ProcessAvailabilityData } from '@/spaces/system/ProcessAvailabilityNoteTagData';
 import { ProcessDataBase } from '@/spaces/system/ProcessNoteTagDataBaseClass';
@@ -66,10 +66,14 @@ export const NoteViewer = ({
     }
 
     async function onActionConfirmed(action: NoteAction) {
-        const uiAction = await action.action(note);
-        onUIAction(uiAction);
+        try {
+            const uiAction = await action.action(note);
+            onUIAction(uiAction);
+        }
+        catch (err) {
+            onUIAction(new ShowErrorAction(err.message));
+        }
         hideOverlay();
-
     }
 
     function onActionCancelled(action: NoteAction) {
