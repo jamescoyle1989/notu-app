@@ -148,7 +148,12 @@ export class NotuSQLiteClient {
                 for (let i = 0; i < parsedQuery.groupings.length; i++) {
                     const groupingVal = x[`grouping${i}`];
                     if (!!groupingVal) {
-                        note.grouping = this._formatGroupingName(parsedQuery.groupings[i].name, groupingVal);
+                        const grouping = parsedQuery.groupings[i];
+                        if (!grouping.name) {
+                            note.grouping = groupingVal;
+                        }
+                        else
+                            note.grouping = this._formatGroupingName(grouping.name, groupingVal);
                         groupings[i].push(note);
                         break;
                     }
@@ -181,11 +186,23 @@ export class NotuSQLiteClient {
                 for (let i = 0; i < groupings.length; i++) {
                     let grouping = groupings[i];
                     if (i < parsedQuery.groupings.length) {
-                        const groupingNameTightUpper = parsedQuery.groupings[i].name.replaceAll(' ', '').toUpperCase();
-                        if (groupingNameTightUpper.includes('FORMAT(ASC'))
-                            grouping.sort((a, b) => a.grouping.localeCompare(b.grouping));
-                        else if (groupingNameTightUpper.includes('FORMAT(DESC'))
-                            grouping.sort((a, b) => b.grouping.localeCompare(a.grouping));
+                        if (!!parsedQuery.groupings[i].name) {
+                            const groupingNameTightUpper = parsedQuery.groupings[i].name.replaceAll(' ', '').toUpperCase();
+                            if (groupingNameTightUpper.includes('FORMAT(ASC'))
+                                grouping.sort((a, b) => a.grouping.localeCompare(b.grouping));
+                            else if (groupingNameTightUpper.includes('FORMAT(DESC'))
+                                grouping.sort((a, b) => b.grouping.localeCompare(a.grouping));
+                        }
+                        else {
+                            grouping.sort((a, b) => {
+                                console.log({a: a.grouping, b: b.grouping});
+                                if (a.grouping == null)
+                                    return (b.grouping == null) ? 0 : 1;
+                                if (b.grouping == null)
+                                    return -1;
+                                return a.grouping.toString().localeCompare(b.grouping.toString());
+                            });
+                        }
                     }
                     output.push(...grouping);
                 }

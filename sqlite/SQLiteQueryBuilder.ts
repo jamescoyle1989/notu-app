@@ -29,7 +29,7 @@ export function buildNotesQuery(
 
 
 /**
- * Builds up a portion of the query, either the where section or the order section
+ * Builds up a portion of the query, either the where section, the order section, or the group section
  * Will go through each tag it can find in that section, swapping it out for a proper SQL expression
  */
 function buildNewNotesQueryPortion(
@@ -39,7 +39,7 @@ function buildNewNotesQueryPortion(
     portion: string
 ): string {
     let output: string = null;
-    let tagBuilder: (parsedTag: ParsedTag, tag: Tag) => string;
+    let tagBuilder: (parsedQuery: ParsedQuery, tagIndex: number, tag: Tag) => string;
     if (portion == 'where') {
         output = parsedQuery.where;
         tagBuilder = buildTagFilterCondition;
@@ -74,7 +74,7 @@ function buildNewNotesQueryPortion(
                 throw Error(`Unable to uniquely identify tag '${parsedTag.name}', please include space name`);
             tag = tags[0];
         }
-        output = output.replace(`{tag${i}}`, tagBuilder(parsedTag, tag));
+        output = output.replace(`{tag${i}}`, tagBuilder(parsedQuery, i, tag));
     }
 
     return output;
@@ -84,8 +84,9 @@ function buildNewNotesQueryPortion(
 /**
  * The logic for building up a SQL snippet from a tag for the purposes of filtering
  */
-function buildTagFilterCondition(parsedTag: ParsedTag, tag: Tag): string {
+function buildTagFilterCondition(parsedQuery: ParsedQuery, tagIndex: number, tag: Tag): string {
     let conditions = [];
+    const parsedTag = parsedQuery.tags[tagIndex];
     for (const searchDepth of parsedTag.searchDepths) {
         if (searchDepth == 0)
             conditions.push(`n.id = ${tag.id}`);
@@ -108,25 +109,32 @@ function buildTagFilterCondition(parsedTag: ParsedTag, tag: Tag): string {
 /**
  * The logic for building up a SQL snippet from a tag for the purposes of ordering
  */
-function buildTagOrderClause(parsedTag: ParsedTag, tag: Tag): string {
+function buildTagOrderClause(parsedQuery: ParsedQuery, tagIndex: number, tag: Tag): string {
+    const parsedTag = parsedQuery.tags[tagIndex];
     if (parsedTag.searchDepths.length != 1)
         throw Error('Order clauses must specify exactly one search depth which they are ordering by')
     const searchDepth = parsedTag.searchDepths[0];
     if (searchDepth == 0)
         return `n.id = ${tag.id}`;
     if (searchDepth == 1)
-        return `(SELECT ${buildTagDataExpression(parsedTag, 'nt')} ` +
+        return `(SELECT ${buildTagDataSelectExpression(parsedTag, 'nt')} ` +
             `FROM NoteTag nt ` +
             `WHERE nt.noteId = n.id AND nt.tagId = ${tag.id})`;
     if (searchDepth == 2)
-        return `(SELECT ${buildTagDataExpression(parsedTag, 'nt1')} ` +
+        return `(SELECT ${buildTagDataSelectExpression(parsedTag, 'nt1')} ` +
             `FROM NoteTag nt1 INNER JOIN NoteTag nt2 ON nt2.noteId = nt1.tagId ` +
             `WHERE nt1.noteId = n.id AND nt2.tagId = ${tag.id}`;
 }
 
 
-function buildTagGroupClause(parsedTag: ParsedTag, tag: Tag): string {
+function buildTagGroupClause(parsedQuery: ParsedQuery, tagIndex: number, tag: Tag): string {
     let conditions = [];
+    const parsedTag = parsedQuery.tags[tagIndex];
+    const parsedGroup = parsedQuery.groupings.find(x => x.criteria.includes(`{tag${tagIndex}}`));
+    //If the group has a name specified then we're expecting that any expressions are for determining if something should be part of the group
+    //If the group doesn't have a name specified then we're exprecting that the expression is determining what the name of the group should be, meaning we want our expression in the select portion of the sub-query, which is what the order logic is already doing.
+    if (!parsedGroup.name)
+        return buildTagOrderClause(parsedQuery, tagIndex, tag);
     for (const searchDepth of parsedTag.searchDepths) {
         if (searchDepth == 0)
             conditions.push(`n.id = ${tag.id}`);
@@ -153,6 +161,13 @@ function buildTagDataWhereExpression(parsedTag: ParsedTag, noteTagsAlias: string
     let output = buildTagDataExpression(parsedTag, noteTagsAlias);
     if (output != '')
         output = ` AND (${output})`;
+    return output;
+}
+
+function buildTagDataSelectExpression(parsedTag: ParsedTag, noteTagsAlias: string): string {
+    let output = buildTagDataExpression(parsedTag, noteTagsAlias);
+    if (output == '')
+        output = '1';
     return output;
 }
 
