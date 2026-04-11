@@ -50,6 +50,7 @@ import { RoutinesSpaceSetup } from '@/spaces/routines/RoutinesSpaceSetup';
 import CloneNoteProcessNoteTagDataComponentFactory from '@/spaces/system/CloneNoteProcessNoteTagDataComponent';
 import CreateNoteProcessNoteTagDataComponentFactory from '@/spaces/system/CreateNoteProcessNoteTagDataComponent';
 import CustomProcessNoteTagDataComponentFactory from '@/spaces/system/CustomProcessNoteTagDataComponent';
+import DeleteNoteProcessNoteTagDataComponentFactory from '@/spaces/system/DeleteNoteProcessNoteTagDataComponent';
 import EditNoteProcessNoteTagDataComponentFactory from '@/spaces/system/EditNoteProcessNoteTagDataComponent';
 import PageNoteTagDataComponentFactory from '@/spaces/system/PageNoteTagDataComponent';
 import ProcessAvailabilityNoteTagDataComponentFactory from '@/spaces/system/ProcessAvailabilityNoteTagDataComponent';
@@ -106,6 +107,7 @@ export async function setupNotu(): Promise<NotuRenderTools> {
         new CloneNoteProcessNoteTagDataComponentFactory(),
         new CreateNoteProcessNoteTagDataComponentFactory(),
         new CustomProcessNoteTagDataComponentFactory(),
+        new DeleteNoteProcessNoteTagDataComponentFactory(),
         new EditNoteProcessNoteTagDataComponentFactory(),
         new PageNoteTagDataComponentFactory(),
         new ProcessAvailabilityNoteTagDataComponentFactory(),
