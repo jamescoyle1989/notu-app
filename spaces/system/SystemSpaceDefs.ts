@@ -7,5 +7,6 @@ export default {
     createNoteProcess: 'Create Note',
     editNoteProcess: 'Edit Note',
     deleteNoteProcess: 'Delete Note',
-    cloneNoteProcess: 'Clone Note'
+    cloneNoteProcess: 'Clone Note',
+    showRelatedNotesProcess: 'Show Related Notes'
 };

@@ -1,4 +1,4 @@
-import { Note } from "notu";
+import { Note, Space } from "notu";
 import { JSX } from "react";
 import { NotuRenderTools } from "./NotuRenderTools";
 
@@ -100,6 +100,24 @@ export class ShowCustomPageAction extends UIAction {
         super('ShowCustomPage');
         this._title = title;
         this._render = render;
+    }
+}
+
+export class ShowDynamicPageAction extends UIAction {
+    private _title: string;
+    get title(): string { return this._title; }
+
+    private _space: Space;
+    get space(): Space { return this._space; }
+
+    private _query: string;
+    get query(): string { return this._query; }
+
+    constructor(title: string, space: Space, query: string) {
+        super('ShowDynamicPage');
+        this._title = title;
+        this._space = space;
+        this._query = query;
     }
 }
 

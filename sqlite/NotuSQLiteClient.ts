@@ -195,7 +195,6 @@ export class NotuSQLiteClient {
                         }
                         else {
                             grouping.sort((a, b) => {
-                                console.log({a: a.grouping, b: b.grouping});
                                 if (a.grouping == null)
                                     return (b.grouping == null) ? 0 : 1;
                                 if (b.grouping == null)

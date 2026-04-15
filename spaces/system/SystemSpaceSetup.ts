@@ -91,5 +91,18 @@ export class SystemSpaceSetup {
 
             await notu.saveNotes([pagesPage, processesPage, editPageProcess]);
         }
+
+        if (systemSpace.version == '1.0.0') {
+            systemSpace.version = '1.1.0';
+            const system = new SystemSpace(notu);
+
+            const showRelatedNotesProcess = new Note(`Process for showing all notes which reference a particular tagged note.`)
+                .in(systemSpace).setOwnTag(defs.showRelatedNotesProcess);
+            showRelatedNotesProcess.ownTag.asInternal();
+            showRelatedNotesProcess.addTag(system.process);
+
+            await notu.saveNotes([showRelatedNotesProcess]);
+            await notu.saveSpace(systemSpace);
+        }
     }
 }

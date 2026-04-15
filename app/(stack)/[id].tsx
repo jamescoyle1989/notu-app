@@ -1,6 +1,6 @@
 import GroupedNoteList from "@/components/GroupedNoteList";
 import { NoteSearch } from "@/components/NoteSearch";
-import { ShowCustomPageAction, ShowEditorAction, ShowErrorAction, ShowNoteListAction, UIAction } from "@/helpers/NoteAction";
+import { ShowCustomPageAction, ShowDynamicPageAction, ShowEditorAction, ShowErrorAction, ShowNoteListAction, UIAction } from "@/helpers/NoteAction";
 import { NoteTagDataComponentFactory } from "@/helpers/NotuRenderTools";
 import { getNotu } from "@/helpers/NotuSetup";
 import { NotuText } from "@/helpers/NotuStyles";
@@ -14,6 +14,7 @@ import { Note, NoteTag, ParsedQuery, parseQuery } from "notu";
 import { useEffect, useRef, useState } from "react";
 import { Button, Text, View, YStack } from "tamagui";
 import { setActiveCustomPage } from "./custompage";
+import { setActiveDynamicPage } from "./dynamicpage";
 import { setNoteBeingEdited } from "./editnote";
 import { setActiveNoteListAction } from "./listnoteobjects";
 
@@ -118,6 +119,11 @@ export default function CustomPage() {
         else if (action.name == 'ShowError') {
             const showErrorAction = action as ShowErrorAction;
             setProcessError(showErrorAction.errorMessage);
+        }
+        else if (action.name == 'ShowDynamicPage') {
+            const showDynamicPageAction = action as ShowDynamicPageAction;
+            setActiveDynamicPage(showDynamicPageAction);
+            router.push('/dynamicpage');
         }
     }
 

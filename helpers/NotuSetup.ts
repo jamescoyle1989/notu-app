@@ -55,6 +55,7 @@ import EditNoteProcessNoteTagDataComponentFactory from '@/spaces/system/EditNote
 import PageNoteTagDataComponentFactory from '@/spaces/system/PageNoteTagDataComponent';
 import ProcessAvailabilityNoteTagDataComponentFactory from '@/spaces/system/ProcessAvailabilityNoteTagDataComponent';
 import ProcessNoteTagDataComponentFactory from '@/spaces/system/ProcessNoteTagDataComponent';
+import ShowRelatedNotesProcessNoteTagDataComponentFactory from '@/spaces/system/ShowRelatedNotesProcessNoteTagDataComponent';
 import { SystemSpaceSetup } from '@/spaces/system/SystemSpaceSetup';
 import DeadlineNoteTagDataComponentFactory from '@/spaces/tasks/DeadlineNoteTagDataComponent';
 import { TasksSpaceSetup } from '@/spaces/tasks/TasksSpaceSetup';
@@ -111,7 +112,8 @@ export async function setupNotu(): Promise<NotuRenderTools> {
         new EditNoteProcessNoteTagDataComponentFactory(),
         new PageNoteTagDataComponentFactory(),
         new ProcessAvailabilityNoteTagDataComponentFactory(),
-        new ProcessNoteTagDataComponentFactory()
+        new ProcessNoteTagDataComponentFactory(),
+        new ShowRelatedNotesProcessNoteTagDataComponentFactory()
     ];
     if (!!notuCache.getSpaceByInternalName(CommonSpaceSetup.internalName)) {
         noteTagComponentFactories.push(...[
