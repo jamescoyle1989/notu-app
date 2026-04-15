@@ -4,8 +4,6 @@ import { useManualRefresh } from "@/helpers/Hooks";
 import { ShowDynamicPageAction, ShowEditorAction, UIAction } from "@/helpers/NoteAction";
 import { getNotu } from "@/helpers/NotuSetup";
 import { NotuText } from "@/helpers/NotuStyles";
-import { DrawerActions } from "@react-navigation/native";
-import { Menu } from "@tamagui/lucide-icons";
 import { last } from "es-toolkit";
 import { Stack, useFocusEffect, useNavigation, useRouter } from "expo-router";
 import { Note } from "notu";
@@ -45,9 +43,8 @@ export default function Index() {
             manualRefresh();
         else if (action.name == 'Edit') {
             const editAction = action as ShowEditorAction;
-            _activeDynamicPageStack.pop();
             setNoteBeingEdited(editAction);
-            router.replace('/editnote');
+            router.push('/editnote');
         }
         else if (action.name == 'PreviousScreen') {
             _activeDynamicPageStack.pop();
@@ -58,14 +55,7 @@ export default function Index() {
     return (
         <View flex={1} paddingBlockEnd={insets.bottom}>
             <Stack.Screen options={{
-                title: activePage.title,
-                headerLeft: () => {
-                    return (
-                        <Menu onPress={() => {
-                            navigation.dispatch(DrawerActions.openDrawer());
-                        }} />
-                    )
-                }
+                title: activePage.title
             }} />
 
             <YStack flex={1}>
