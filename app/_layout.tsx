@@ -3,7 +3,7 @@ import { NotuText } from "@/helpers/NotuStyles";
 import { PageData } from "@/spaces/system/PageNoteTagData";
 import { SystemSpace } from "@/spaces/system/SystemSpace";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { DrawerContentComponentProps, DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
+import { DrawerContentComponentProps, DrawerContentScrollView, DrawerItem, useDrawerStatus } from "@react-navigation/drawer";
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { orderBy } from "es-toolkit";
 import { Href, useRouter } from "expo-router";
@@ -20,30 +20,18 @@ import { tamaguiConfig } from '../tamagui.config';
 export default function RootLayout() {
 
     const [isLoaded, setIsLoaded] = useState(false);
-    const [pageNotes, setPageNotes] = useState<Array<Note>>([]);
     const [error, setError] = useState(null);
-    const [expandedGroups, setExpandedGroups] = useState(new Set<string>());
-    const router = useRouter();
 
     const defaultColorScheme = useColorScheme().toString();
     const [colorScheme, setColorScheme] = useState(defaultColorScheme);
 
-    function switchColorScheme() {
-        const schemes = ['light', 'dark'];
-        const newScheme = schemes[(schemes.indexOf(colorScheme) + 1) % 2];
-        setColorScheme(newScheme);
-        AsyncStorage.setItem('color-scheme', newScheme);
-    }
-
     useEffect(() => {
         async function loadSetupData() {
             try {
-                const renderTools = await setupNotu();
-                const notu = renderTools.notu;
+                await setupNotu();
                 const fetchedColorScheme = await AsyncStorage.getItem('color-scheme');
                 if (!!fetchedColorScheme)
                     setColorScheme(fetchedColorScheme);
-                await reloadPages(notu);
                 setIsLoaded(true);
             }
             catch (err) {
@@ -52,6 +40,13 @@ export default function RootLayout() {
         }
         loadSetupData();
     }, []);
+
+    function switchColorScheme() {
+        const schemes = ['light', 'dark'];
+        const newScheme = schemes[(schemes.indexOf(colorScheme) + 1) % 2];
+        setColorScheme(newScheme);
+        AsyncStorage.setItem('color-scheme', newScheme);
+    }
 
 
     function renderInTamagui(content: () => ReactNode) {
@@ -82,20 +77,39 @@ export default function RootLayout() {
         ));
     }
 
-    function navigateToPage(href: string) {
-        router.replace(href as Href);
-    }
+    return renderInTamagui(() => (
+        <SafeAreaProvider>
+            <GestureHandlerRootView>
+                <Drawer drawerContent={props => (
+                            <CustomDrawerContent {...props} onColorSchemeToggled={switchColorScheme} />
+                        )}
+                        screenOptions={{
+                            headerShown: false,
+                            swipeEnabled: false
+                        }}>
+                </Drawer>
+            </GestureHandlerRootView>
+        </SafeAreaProvider>
+    ));
+}
+
+
+function CustomDrawerContent(props: DrawerContentComponentProps & { onColorSchemeToggled: () => void }) {
+
+    const router = useRouter();
+    const drawerStatus = useDrawerStatus();
+    const [pageNotes, setPageNotes] = useState<Array<Note>>([]);
+    const renderTools = getNotu();
+    const systemSpace = new SystemSpace(renderTools.notu);
+    const [expandedGroups, setExpandedGroups] = useState(new Set<string>());
+
+    useEffect(() => {
+        if (drawerStatus == 'open')
+            reloadPages(renderTools.notu);
+    }, [drawerStatus]);
 
     async function reloadPages(notu: Notu) {
         setPageNotes(await notu.getNotes(`#System.Page`));
-    }
-
-    function toggleGroupExpanded(groupName: string) {
-        if (expandedGroups.has(groupName))
-            expandedGroups.delete(groupName);
-        else
-            expandedGroups.add(groupName);
-        setExpandedGroups(expandedGroups);
     }
 
     function getPageGroups(systemSpace: SystemSpace): Array<Array<{id: number, data: PageData}>> {
@@ -123,18 +137,16 @@ export default function RootLayout() {
         return output;
     }
 
-    function customDrawerContent(props: DrawerContentComponentProps) {
-        const renderTools = getNotu();
-        reloadPages(renderTools.notu);
-        const systemSpace = new SystemSpace(renderTools.notu);
-        return (
-            <DrawerContentScrollView {...props}>
-                <DrawerItem label="Home" onPress={() => navigateToPage(`/`)} />
-                <DrawerItem label="Spaces" onPress={() => navigateToPage(`/spaces`)} />
-                {getPageGroups(systemSpace).map(renderGroup)}
-                <DrawerItem label="Toggle Theme" onPress={() => switchColorScheme()} />
-            </DrawerContentScrollView>
-        )
+    function navigateToPage(href: string) {
+        router.replace(href as Href);
+    }
+
+    function toggleGroupExpanded(groupName: string) {
+        if (expandedGroups.has(groupName))
+            expandedGroups.delete(groupName);
+        else
+            expandedGroups.add(groupName);
+        setExpandedGroups(expandedGroups);
     }
 
     function renderGroup(group: Array<{id: number, data: PageData}>): Array<React.JSX.Element> {
@@ -157,16 +169,12 @@ export default function RootLayout() {
         return render;
     }
 
-    return renderInTamagui(() => (
-        <SafeAreaProvider>
-            <GestureHandlerRootView>
-                <Drawer drawerContent={customDrawerContent}
-                        screenOptions={{
-                            headerShown: false,
-                            swipeEnabled: false
-                        }}>
-                </Drawer>
-            </GestureHandlerRootView>
-        </SafeAreaProvider>
-    ));
+    return (
+        <DrawerContentScrollView {...props}>
+            <DrawerItem label="Home" onPress={() => navigateToPage(`/`)} />
+            <DrawerItem label="Spaces" onPress={() => navigateToPage(`/spaces`)} />
+            {getPageGroups(systemSpace).map(renderGroup)}
+            <DrawerItem label="Toggle Theme" onPress={props.onColorSchemeToggled} />
+        </DrawerContentScrollView>
+    );
 }
