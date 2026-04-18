@@ -147,7 +147,7 @@ function buildTagGroupClause(parsedQuery: ParsedQuery, tagIndex: number, tag: Ta
             if (searchDepth == 2)
                 return `(SELECT t1.name ` +
                     `FROM NoteTag nt1 ` +
-                        `INNER JOIN t1 ON t1.id = nt1.tagId ` +
+                        `INNER JOIN Tag t1 ON t1.id = nt1.tagId ` +
                         `INNER JOIN NoteTag nt2 ON nt2.noteId = nt1.tagId ` +
                     `WHERE nt1.noteId = n.id AND nt2.tagId = ${tag.id})`;
         }
