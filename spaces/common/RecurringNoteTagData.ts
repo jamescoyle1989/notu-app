@@ -1,7 +1,7 @@
-import { areArraysDifferent } from "@/helpers/RenderHelpers";
 import dayjs from "dayjs";
 import { last } from "es-toolkit";
 import { Note, NoteTag } from "notu";
+import { areArraysDifferent } from "../../helpers/RenderHelpers";
 import { CommonSpace } from "./CommonSpace";
 import { CommonSpaceSetup } from "./CommonSpaceSetup";
 

@@ -132,25 +132,54 @@ function buildTagGroupClause(parsedQuery: ParsedQuery, tagIndex: number, tag: Ta
     const parsedTag = parsedQuery.tags[tagIndex];
     const parsedGroup = parsedQuery.groupings.find(x => x.criteria.includes(`{tag${tagIndex}}`));
     //If the group has a name specified then we're expecting that any expressions are for determining if something should be part of the group
-    //If the group doesn't have a name specified then we're exprecting that the expression is determining what the name of the group should be, meaning we want our expression in the select portion of the sub-query, which is what the order logic is already doing.
-    if (!parsedGroup.name)
-        return buildTagOrderClause(parsedQuery, tagIndex, tag);
-    for (const searchDepth of parsedTag.searchDepths) {
+    //If the group doesn't have a name specified then we're exprecting that the expression is determining what the name of the group should be, meaning we want our expression in the select portion of the sub-query
+    if (!parsedGroup.name) {
+        if (parsedTag.searchDepths.length != 1)
+            throw Error('Unnamed group clauses must specify exactly one search depth which they are grouping by')
+        const searchDepth = parsedTag.searchDepths[0];
         if (searchDepth == 0)
-            conditions.push(`n.id = ${tag.id}`);
-        else if (searchDepth == 1)
-            conditions.push(`(SELECT 1 ` +
-            `FROM NoteTag nt ` +
-            `WHERE nt.noteId = n.id AND nt.tagId = ${tag.id}${buildTagDataWhereExpression(parsedTag, 'nt')})`);
-        else if (searchDepth == 2)
-            conditions.push(`(SELECT 1 ` +
-            `FROM NoteTag nt1 INNER JOIN NoteTag nt2 ON nt2.noteId = nt1.tagId ` +
-            `WHERE nt1.noteId = n.id AND nt2.tagId = ${tag.id}${buildTagDataWhereExpression(parsedTag, 'nt1')}`);
+            return `CASE WHEN n.id = ${tag.id} THEN '${tag.name}' ELSE NULL END`;
+        if (!parsedTag.filter) {
+            if (searchDepth == 1)
+                return `(SELECT '${tag.name}' ` +
+                    `FROM NoteTag nt ` +
+                    `WHERE nt.noteId = n.id AND nt.tagId = ${tag.id})`;
+            if (searchDepth == 2)
+                return `(SELECT t1.name ` +
+                    `FROM NoteTag nt1 ` +
+                        `INNER JOIN t1 ON t1.id = nt1.tagId ` +
+                        `INNER JOIN NoteTag nt2 ON nt2.noteId = nt1.tagId ` +
+                    `WHERE nt1.noteId = n.id AND nt2.tagId = ${tag.id})`;
+        }
+        else {
+            if (searchDepth == 1)
+                return `(SELECT ${buildTagDataSelectExpression(parsedTag, 'nt')} ` +
+                    `FROM NoteTag nt ` +
+                    `WHERE nt.noteId = n.id AND nt.tagId = ${tag.id})`;
+            if (searchDepth == 2)
+                return `(SELECT ${buildTagDataSelectExpression(parsedTag, 'nt1')} ` +
+                    `FROM NoteTag nt1 INNER JOIN NoteTag nt2 ON nt2.noteId = nt1.tagId ` +
+                    `WHERE nt1.noteId = n.id AND nt2.tagId = ${tag.id}`;
+        }
     }
-    let output = conditions.join(' OR ');
-    if (conditions.length > 1)
-        output = `(${output})`;
-    return output;
+    else {
+        for (const searchDepth of parsedTag.searchDepths) {
+            if (searchDepth == 0)
+                conditions.push(`n.id = ${tag.id}`);
+            else if (searchDepth == 1)
+                conditions.push(`(SELECT 1 ` +
+                `FROM NoteTag nt ` +
+                `WHERE nt.noteId = n.id AND nt.tagId = ${tag.id}${buildTagDataWhereExpression(parsedTag, 'nt')})`);
+            else if (searchDepth == 2)
+                conditions.push(`(SELECT 1 ` +
+                `FROM NoteTag nt1 INNER JOIN NoteTag nt2 ON nt2.noteId = nt1.tagId ` +
+                `WHERE nt1.noteId = n.id AND nt2.tagId = ${tag.id}${buildTagDataWhereExpression(parsedTag, 'nt1')}`);
+        }
+        let output = conditions.join(' OR ');
+        if (conditions.length > 1)
+            output = `(${output})`;
+        return output;
+    }
 }
 
 

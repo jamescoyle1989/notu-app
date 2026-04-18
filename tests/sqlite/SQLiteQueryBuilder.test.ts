@@ -56,7 +56,7 @@ test('buildNotesQuery correctly processes query with group clause', async () => 
         );
 });
 
-test('buildNotesQuery correctly processes query with group by tag clause', async () => {
+test('buildNotesQuery correctly processes query with named group by #[Tag 1]', async () => {
     const query = new ParsedQuery();
     query.groupings = [new ParsedGrouping()];
     query.groupings[0].criteria = '{tag0}';
@@ -77,7 +77,7 @@ test('buildNotesQuery correctly processes query with group by tag clause', async
         );
 });
 
-test('buildNotesQuery correctly processes query with group by tag data clause', async () => {
+test('buildNotesQuery correctly processes query with named group by #[Tag 1]{.height < 5}', async () => {
     const query = new ParsedQuery();
     query.groupings = [new ParsedGrouping()];
     query.groupings[0].criteria = '{tag0}';
@@ -97,6 +97,69 @@ test('buildNotesQuery correctly processes query with group by tag data clause', 
         .toBe(
             `SELECT n.id, n.spaceId, n.text, n.date, ` +
                 `(SELECT 1 FROM NoteTag nt WHERE nt.noteId = n.id AND nt.tagId = 1 AND (nt.data->>'height' < 5)) AS grouping0 ` +
+            'FROM Note n LEFT JOIN Tag t ON n.id = t.id ' +
+            'WHERE n.spaceId = 1;'
+        );
+});
+
+test('buildNotesQuery correctly processes query with unnamed group by @[Tag 1]', async () => {
+    const query = new ParsedQuery();
+    query.groupings = [new ParsedGrouping()];
+    query.groupings[0].criteria = '{tag0}';
+    query.tags.push((() => {
+        const tag = new ParsedTag();
+        tag.name = 'Tag 1';
+        tag.space = null;
+        tag.searchDepths = [0];
+        return tag;
+    })());
+    
+    expect(buildNotesQuery(query, 1, await newNotuCache()))
+        .toBe(
+            `SELECT n.id, n.spaceId, n.text, n.date, ` +
+                `CASE WHEN n.id = 1 THEN 'Tag 1' ELSE NULL END AS grouping0 ` +
+            'FROM Note n LEFT JOIN Tag t ON n.id = t.id ' +
+            'WHERE n.spaceId = 1;'
+        );
+});
+
+test('buildNotesQuery correctly processes query with unnamed group by #[Tag 1]', async () => {
+    const query = new ParsedQuery();
+    query.groupings = [new ParsedGrouping()];
+    query.groupings[0].criteria = '{tag0}';
+    query.tags.push((() => {
+        const tag = new ParsedTag();
+        tag.name = 'Tag 1';
+        tag.space = null;
+        tag.searchDepths = [1];
+        return tag;
+    })());
+    
+    expect(buildNotesQuery(query, 1, await newNotuCache()))
+        .toBe(
+            `SELECT n.id, n.spaceId, n.text, n.date, ` +
+                `(SELECT 'Tag 1' FROM NoteTag nt WHERE nt.noteId = n.id AND nt.tagId = 1) AS grouping0 ` +
+            'FROM Note n LEFT JOIN Tag t ON n.id = t.id ' +
+            'WHERE n.spaceId = 1;'
+        );
+});
+
+test('buildNotesQuery correctly processes query with unnamed group by _#[Tag 1]', async () => {
+    const query = new ParsedQuery();
+    query.groupings = [new ParsedGrouping()];
+    query.groupings[0].criteria = '{tag0}';
+    query.tags.push((() => {
+        const tag = new ParsedTag();
+        tag.name = 'Tag 1';
+        tag.space = null;
+        tag.searchDepths = [2];
+        return tag;
+    })());
+    
+    expect(buildNotesQuery(query, 1, await newNotuCache()))
+        .toBe(
+            `SELECT n.id, n.spaceId, n.text, n.date, ` +
+                `(SELECT t1.name FROM NoteTag nt1 INNER JOIN t1 ON t1.id = nt1.tagId INNER JOIN NoteTag nt2 ON nt2.noteId = nt1.tagId WHERE nt1.noteId = n.id AND nt2.tagId = 1) AS grouping0 ` +
             'FROM Note n LEFT JOIN Tag t ON n.id = t.id ' +
             'WHERE n.spaceId = 1;'
         );
