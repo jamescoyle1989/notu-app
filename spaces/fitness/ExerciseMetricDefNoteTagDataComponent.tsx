@@ -57,7 +57,7 @@ function EditorComponent({ noteTag }: NoteTagDataComponentProps) {
     const data = new ExerciseMetricDefData(noteTag);
     const manualRefresh = useManualRefresh();
     const labelWidth = 120;
-    const [valuesString, setValuesString] = useState<string>();
+    const [valuesString, setValuesString] = useState<string>(data.values?.map(x => x.toString()).join(', '));
     const [valuesStringContainsErrors, setValuesStringContainsErrors] = useState(false);
 
     function onModeChange(newValue: any) {
