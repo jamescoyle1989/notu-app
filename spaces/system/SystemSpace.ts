@@ -36,6 +36,12 @@ export class SystemSpace implements LogicalSpace {
     private _showRelatedNotesProcess: Tag;
     get showRelatedNotesProcess(): Tag { return this._showRelatedNotesProcess; }
 
+    private _deleteDisplayedNotesProcess: Tag;
+    get deleteDisplayedNotesProcess(): Tag { return this._deleteDisplayedNotesProcess; }
+
+    private _passwordProtection: Tag;
+    get passwordProtection(): Tag { return this._passwordProtection; }
+
 
     constructor(notu: Notu) {
         this._load(notu);
@@ -52,6 +58,8 @@ export class SystemSpace implements LogicalSpace {
         this._deleteNoteProcess = notu.getTagByName(defs.deleteNoteProcess, this._space);
         this._cloneNoteProcess = notu.getTagByName(defs.cloneNoteProcess, this._space);
         this._showRelatedNotesProcess = notu.getTagByName(defs.showRelatedNotesProcess, this._space);
+        this._deleteDisplayedNotesProcess = notu.getTagByName(defs.deleteDisplayedNotesProcess, this._space);
+        this._passwordProtection = notu.getTagByName(defs.passwordProtection, this._space);
     }
 }
 

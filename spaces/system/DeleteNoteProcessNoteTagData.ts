@@ -1,4 +1,4 @@
-import { RefreshAction, UIAction } from "@/helpers/NoteAction";
+import { RefreshAction, ShowErrorAction, UIAction } from "@/helpers/NoteAction";
 import { Note, NoteTag, Notu } from "notu";
 import { ProcessDataBase } from "./ProcessNoteTagDataBaseClass";
 import { SystemSpace } from "./SystemSpace";
@@ -24,6 +24,8 @@ export class DeleteNoteProcessData extends ProcessDataBase {
     }
 
     async runProcess(note: Note, notu: Notu): Promise<UIAction> {
+        if (note.ownTag?.isInternal)
+            return new ShowErrorAction('Cannot delete notes marked as internal. These are crucial for the stability of the space they belong to.');
         await notu.saveNotes([note.delete()]);
         return new RefreshAction();
     }

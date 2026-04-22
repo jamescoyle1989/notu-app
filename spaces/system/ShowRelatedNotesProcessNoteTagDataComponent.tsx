@@ -35,7 +35,7 @@ export default class ShowRelatedNotesProcessNoteTagDataComponentFactory implemen
     }
 
     isForNoteTag(note: Note, tag: Tag): boolean {
-        return tag.space.internalName == defs.internalName ||
+        return tag.space.internalName == defs.internalName &&
             tag.name == defs.showRelatedNotesProcess;
     }
 }

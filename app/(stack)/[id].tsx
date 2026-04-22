@@ -135,7 +135,10 @@ export default function CustomPage() {
         try {
             const componentFactory = renderTools.getComponentFactoryForNoteTag(noteTag.tag, pageNote);
             const processData = componentFactory.getDataObject(noteTag) as ProcessDataBase;
-            const result = await processData.runProcess(pageNote, notu);
+            const tempPageNote = pageNote.duplicate();
+            const tempPageData = tempPageNote.getTagData(systemSpace.page, PageData);
+            tempPageData.query = queryState;
+            const result = await processData.runProcess(tempPageNote, notu);
             onUIAction(result);
             setProcessError(null);
         }

@@ -8,5 +8,7 @@ export default {
     editNoteProcess: 'Edit Note',
     deleteNoteProcess: 'Delete Note',
     cloneNoteProcess: 'Clone Note',
-    showRelatedNotesProcess: 'Show Related Notes'
+    showRelatedNotesProcess: 'Show Related Notes',
+    deleteDisplayedNotesProcess: 'Delete Displayed Notes Process',
+    passwordProtection: 'Password Protection'
 };

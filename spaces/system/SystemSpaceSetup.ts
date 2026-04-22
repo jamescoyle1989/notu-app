@@ -104,5 +104,22 @@ export class SystemSpaceSetup {
             await notu.saveNotes([showRelatedNotesProcess]);
             await notu.saveSpace(systemSpace);
         }
+
+        if (systemSpace.version == '1.1.0') {
+            systemSpace.version = '1.2.0';
+            const system = new SystemSpace(notu);
+
+            const deleteDisplayedNotesProcess = new Note(`Process for deleting all notes (except internal ones) which are currently being displayed by the active page. This process expects to be added to a page so that it's displayed as a button. Once pressed it will run the same query that the page does, and then delete all returned notes.`)
+                .in(systemSpace).setOwnTag(defs.deleteDisplayedNotesProcess);
+            deleteDisplayedNotesProcess.ownTag.asInternal();
+            deleteDisplayedNotesProcess.addTag(system.process);
+
+            const passwordProtection = new Note(`This tag allows users to create their own password protection rule tags. These password protection rules can then be added to other notes to allow for parts of the note text to be encrypted, and to require user authentication before the note can be modified.`)
+                .in(systemSpace).setOwnTag(defs.passwordProtection);
+            passwordProtection.ownTag.asInternal();
+
+            await notu.saveNotes([deleteDisplayedNotesProcess, passwordProtection]);
+            await notu.saveSpace(systemSpace);
+        }
     }
 }

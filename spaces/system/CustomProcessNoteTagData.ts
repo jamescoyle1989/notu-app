@@ -48,7 +48,7 @@ export class CustomProcessData extends ProcessDataBase {
             return new ShowErrorAction(`Custom process '${this._nt.tag.name}' is not properly configured to call a child process.`);
         
         const childProcessData = childComponentFactory.getDataObject(childProcessNoteTag) as ProcessDataBase;
-        return await childProcessData.runProcess(childProcessNote, notu);
+        return await childProcessData.runProcess(note, notu);
     }
 
     private _getChildProcessTag(tag: Tag, systemSpace: SystemSpace): Tag {
