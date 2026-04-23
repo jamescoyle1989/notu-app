@@ -1,7 +1,9 @@
 import { NoteTagDataComponentFactory, NoteTagDataComponentProps } from "@/helpers/NotuRenderTools";
+import { NotuButton, NotuText } from "@/helpers/NotuStyles";
 import { Note, NoteTag, Notu, Tag } from "notu";
 import { ReactNode } from "react";
-import { Anchor, Button, Input, Label, Paragraph, XStack, YStack } from "tamagui";
+import { Linking } from "react-native";
+import { Input, Label, XStack, YStack } from "tamagui";
 import { convertAddressUrlToCoordinates } from "./AddressFetch";
 import { AddressData } from "./AddressNoteTagData";
 import { CommonSpaceSetup } from "./CommonSpaceSetup";
@@ -48,10 +50,13 @@ function BadgeComponent({
     noteTag
 }: NoteTagDataComponentProps) {
     const data = new AddressData(noteTag);
-    if (!!data.url) {
-        return (<Anchor href={data.url} target="_blank">{data.name}</Anchor>);
+
+    function onPress() {
+        if (!!data.url)
+            Linking.openURL(data.url);
     }
-    return (<Paragraph>{data.name}</Paragraph>);
+
+    return (<NotuText small onPress={onPress}>{data.name}</NotuText>);
 }
 
 
@@ -78,7 +83,9 @@ function EditorComponent({
 
     async function getCoordinates() {
         try {
+            console.log(data.name, data.url);
             const coords = await convertAddressUrlToCoordinates(data.url);
+            console.log(coords);
             if (coords != null) {
                 data.coordinates = `${coords.latitude},${coords.longitude}`;
                 refreshCallback();
@@ -87,7 +94,6 @@ function EditorComponent({
         catch(err) {
             console.log(err);
         }
-        const coords = convertAddressUrlToCoordinates(data.url);
     }
 
     return (
@@ -101,7 +107,7 @@ function EditorComponent({
                 <Input value={data.url ?? ''} onChangeText={onURLChange} />
             </XStack>
             {!!data.url && !data.coordinates && (
-                <Button onPress={getCoordinates}>Get Coordinates</Button>
+                <NotuButton onPress={getCoordinates} theme="highlight">Get Coordinates</NotuButton>
             )}
             <XStack style={{alignItems: 'center'}}>
                 <Label width={120}>Coordinates</Label>

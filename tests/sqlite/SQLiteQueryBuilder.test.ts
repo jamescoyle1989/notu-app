@@ -159,7 +159,7 @@ test('buildNotesQuery correctly processes query with unnamed group by _#[Tag 1]'
     expect(buildNotesQuery(query, 1, await newNotuCache()))
         .toBe(
             `SELECT n.id, n.spaceId, n.text, n.date, ` +
-                `(SELECT t1.name FROM NoteTag nt1 INNER JOIN t1 ON t1.id = nt1.tagId INNER JOIN NoteTag nt2 ON nt2.noteId = nt1.tagId WHERE nt1.noteId = n.id AND nt2.tagId = 1) AS grouping0 ` +
+                `(SELECT t1.name FROM NoteTag nt1 INNER JOIN Tag t1 ON t1.id = nt1.tagId INNER JOIN NoteTag nt2 ON nt2.noteId = nt1.tagId WHERE nt1.noteId = n.id AND nt2.tagId = 1) AS grouping0 ` +
             'FROM Note n LEFT JOIN Tag t ON n.id = t.id ' +
             'WHERE n.spaceId = 1;'
         );

@@ -1,16 +1,15 @@
 export async function convertAddressUrlToCoordinates(url: string): Promise<{longitude: string, latitude: string}> {
-    let coordinates = extractCoordinatesFromUrl(url);
-    if (!!coordinates)
-        return coordinates;
-    
     let response = await fetch(url);
-    coordinates = extractCoordinatesFromUrl(response.url);
-    if (!!coordinates)
-        return coordinates;
-    
-    const text = await response.text();
-    coordinates = extractCoordinatesFromResponseText(text);
-    return coordinates;
+    const responseText = await response.text();
+    const previewUrl = getPreviewPageUrl(responseText);
+    console.log(previewUrl);
+    if (!previewUrl)
+        return null;
+    const previewResponse = await fetch(previewUrl);
+    if (!previewResponse.ok)
+        return null;
+    const previewText = await previewResponse.text();
+    return extractCoordinatesFromPreviewText(previewText);
 }
 
 function extractCoordinatesFromUrl(url: string): {longitude: string, latitude: string} {
@@ -23,11 +22,17 @@ function extractCoordinatesFromUrl(url: string): {longitude: string, latitude: s
     return {longitude, latitude};
 }
 
-function extractCoordinatesFromResponseText(text: string): {longitude: string, latitude: string} {
-    //This will do a best attempt to extract the text from the content of google's response. It's incredibly unlabeled data though, so this is probably flaky as hell.
-    const regex = /\[null,null,(-?\d+\.\d+),(-?\d+\.\d+)\]/;
-    text = text.substring(text.indexOf('window.APP_INITIALIZATION_STATE='));
-    const result = regex.exec(text);
+function getPreviewPageUrl(responseText: string): string | null {
+    const regex = /<link href="(\/maps\/preview\/place\?[^"]*)/;
+    const result = regex.exec(responseText);
+    if (!result)
+        return null;
+    return `https://maps.google.com${result[1].replaceAll('&amp;', '&')}`;
+}
+
+function extractCoordinatesFromPreviewText(previewText: string): {longitude: string, latitude: string} | null {
+    const regex = /,\[null,null,([\d-\.]*),([\d-\.]*)],/;
+    const result = regex.exec(previewText);
     if (!result)
         return null;
     const latitude = result[1];
