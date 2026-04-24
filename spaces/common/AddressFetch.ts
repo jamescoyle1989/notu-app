@@ -2,7 +2,6 @@ export async function convertAddressUrlToCoordinates(url: string): Promise<{long
     let response = await fetch(url);
     const responseText = await response.text();
     const previewUrl = getPreviewPageUrl(responseText);
-    console.log(previewUrl);
     if (!previewUrl)
         return null;
     const previewResponse = await fetch(previewUrl);

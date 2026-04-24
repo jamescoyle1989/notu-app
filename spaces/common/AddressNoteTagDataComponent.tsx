@@ -83,9 +83,7 @@ function EditorComponent({
 
     async function getCoordinates() {
         try {
-            console.log(data.name, data.url);
             const coords = await convertAddressUrlToCoordinates(data.url);
-            console.log(coords);
             if (coords != null) {
                 data.coordinates = `${coords.latitude},${coords.longitude}`;
                 refreshCallback();

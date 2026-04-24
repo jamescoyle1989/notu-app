@@ -118,6 +118,7 @@ export class NotuSQLiteClient {
 
 
     async getNotes(query: string, space?: number | Space): Promise<Array<any>> {
+        query = query.replaceAll('\n', ' ');
         if (space instanceof Space)
             space = space.id;
 
