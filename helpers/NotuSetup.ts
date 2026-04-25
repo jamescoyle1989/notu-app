@@ -65,7 +65,7 @@ import { NotuSQLiteClient } from '@/sqlite/NotuSQLiteClient';
 import { ExpoSQLiteConnection } from '@/sqlite/SQLiteConnection';
 import * as SQLite from 'expo-sqlite';
 import { Notu, NotuCache } from 'notu';
-import { NotuRenderTools } from './NotuRenderTools';
+import { NoteTagDataComponentFactory, NotuRenderTools } from './NotuRenderTools';
 
 
 let _renderTools: NotuRenderTools = null;
@@ -105,7 +105,30 @@ export async function setupNotu(): Promise<NotuRenderTools> {
     await FoodSpaceSetup.setup(notuVal);
     await ContentSpaceSetup.setup(notuVal);
 
-    const noteTagComponentFactories = [
+    const renderToolsVal = new NotuRenderTools(
+        notuVal,
+        [
+            new NoteLinkProcessor(),
+            new NoteChecklistProcessor(),
+            new NoteChoiceProcessor(),
+            new NoteCalcProcessor()
+        ],
+        getNoteTagComponentFactories(notuCache)
+    );
+    _renderTools = renderToolsVal;
+    return _renderTools;
+}
+
+
+export function getNotu(): NotuRenderTools {
+    if (_renderTools == null)
+        throw Error('Notu has not yet been loaded, getNotu is invalid before that point.');
+    return _renderTools;
+}
+
+
+export function getNoteTagComponentFactories(cache: NotuCache): Array<NoteTagDataComponentFactory> {
+    const output = [
         new CloneNoteProcessNoteTagDataComponentFactory(),
         new CreateNoteProcessNoteTagDataComponentFactory(),
         new CustomProcessNoteTagDataComponentFactory(),
@@ -117,8 +140,8 @@ export async function setupNotu(): Promise<NotuRenderTools> {
         new ShowRelatedNotesProcessNoteTagDataComponentFactory(),
         new DeleteDisplayedNotesProcessNoteTagDataComponentFactory()
     ];
-    if (!!notuCache.getSpaceByInternalName(CommonSpaceSetup.internalName)) {
-        noteTagComponentFactories.push(...[
+    if (!!cache.getSpaceByInternalName(CommonSpaceSetup.internalName)) {
+        output.push(...[
             new AddressNoteTagDataComponentFactory(),
             new CancelledNoteTagDataComponentFactory(),
             new DurationNoteTagDataComponentFactory(),
@@ -128,14 +151,14 @@ export async function setupNotu(): Promise<NotuRenderTools> {
             new StartedNoteTagDataComponentFactory()
         ]);
     }
-    if (!!notuCache.getSpaceByInternalName(CalendarSpaceSetup.internalName)) {
-        noteTagComponentFactories.push(new RecurringEventsProcessNoteTagDataComponentFactory());
+    if (!!cache.getSpaceByInternalName(CalendarSpaceSetup.internalName)) {
+        output.push(new RecurringEventsProcessNoteTagDataComponentFactory());
     }
-    if (!!notuCache.getSpaceByInternalName(ContentSpaceSetup.internalName)) {
-        noteTagComponentFactories.push(new RatingNoteTagDataComponentFactory());
+    if (!!cache.getSpaceByInternalName(ContentSpaceSetup.internalName)) {
+        output.push(new RatingNoteTagDataComponentFactory());
     }
-    if (!!notuCache.getSpaceByInternalName(FitnessSpaceSetup.internalName)) {
-        noteTagComponentFactories.push(...[
+    if (!!cache.getSpaceByInternalName(FitnessSpaceSetup.internalName)) {
+        output.push(...[
             new ExerciseMetricDefNoteTagDataComponentFactory(),
             new ExerciseMetricNoteTagDataComponentFactory(),
             new ExerciseNoteTagDataComponentFactory(),
@@ -146,8 +169,8 @@ export async function setupNotu(): Promise<NotuRenderTools> {
             new WorkoutNoteTagDataComponentFactory()
         ]);
     }
-    if (!!notuCache.getSpaceByInternalName(FoodSpaceSetup.internalName)) {
-        noteTagComponentFactories.push(...[
+    if (!!cache.getSpaceByInternalName(FoodSpaceSetup.internalName)) {
+        output.push(...[
             new GenerateMealProcessNoteTagDataComponentFactory(),
             new GenerateShoppingListProcessNoteTagDataComponentFactory(),
             new MealNoteTagDataComponentFactory(),
@@ -155,8 +178,8 @@ export async function setupNotu(): Promise<NotuRenderTools> {
             new IngredientFilterNoteTagDataComponentFactory()
         ]);
     }
-    if (!!notuCache.getSpaceByInternalName(MoneySpaceSetup.internalName)) {
-        noteTagComponentFactories.push(...[
+    if (!!cache.getSpaceByInternalName(MoneySpaceSetup.internalName)) {
+        output.push(...[
             new AccountNoteTagDataComponentFactory(),
             new BudgetCategoryNoteTagDataComponentFactory(),
             new BudgetNoteTagDataComponentFactory(),
@@ -165,8 +188,8 @@ export async function setupNotu(): Promise<NotuRenderTools> {
             new TransactionNoteTagDataComponentFactory()
         ]);
     }
-    if (!!notuCache.getSpaceByInternalName(PeopleSpaceSetup.internalName)) {
-        noteTagComponentFactories.push(...[
+    if (!!cache.getSpaceByInternalName(PeopleSpaceSetup.internalName)) {
+        output.push(...[
             new CelebrationEventsProcessNoteTagDataComponentFactory(),
             new CelebrationNoteTagDataComponentFactory(),
             new CircleNoteTagDataComponentFactory(),
@@ -174,35 +197,16 @@ export async function setupNotu(): Promise<NotuRenderTools> {
             new PersonNoteTagDataComponentFactory()
         ]);
     }
-    if (!!notuCache.getSpaceByInternalName(RoutinesSpaceSetup.internalName)) {
-        noteTagComponentFactories.push(...[
+    if (!!cache.getSpaceByInternalName(RoutinesSpaceSetup.internalName)) {
+        output.push(...[
             new CompressRoutinesProcessNoteTagDataComponentFactory(),
             new GenerateRoutinesProcessNoteTagDataComponentFactory(),
             new LinkedRoutineNoteTagDataComponentFactory(),
             new RoutineNoteTagDataComponentFactory()
         ]);
     }
-    if (!!notuCache.getSpaceByInternalName(TasksSpaceSetup.internalName)) {
-        noteTagComponentFactories.push(new DeadlineNoteTagDataComponentFactory());
+    if (!!cache.getSpaceByInternalName(TasksSpaceSetup.internalName)) {
+        output.push(new DeadlineNoteTagDataComponentFactory());
     }
-
-    const renderToolsVal = new NotuRenderTools(
-        notuVal,
-        [
-            new NoteLinkProcessor(),
-            new NoteChecklistProcessor(),
-            new NoteChoiceProcessor(),
-            new NoteCalcProcessor()
-        ],
-        noteTagComponentFactories
-    );
-    _renderTools = renderToolsVal;
-    return _renderTools;
-}
-
-
-export function getNotu(): NotuRenderTools {
-    if (_renderTools == null)
-        throw Error('Notu has not yet been loaded, getNotu is invalid before that point.');
-    return _renderTools;
+    return output;
 }

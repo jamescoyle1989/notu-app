@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 import { NoteParagraph } from "../notecomponents/NoteParagraph";
 import { NoteText } from "../notecomponents/NoteText";
 import { NoteAction, NoteActionsMenuBuilder } from "./NoteAction";
+import { getNoteTagComponentFactories } from "./NotuSetup";
 
 export class NotuRenderTools {
     private _notu: Notu;
@@ -17,6 +18,10 @@ export class NotuRenderTools {
 
     private _noteTagDataComponentFactories: Array<NoteTagDataComponentFactory>;
     get noteTagDataComponentFactories() { return this._noteTagDataComponentFactories; }
+
+    updateNoteTagDataComponentFactories() {
+        this._noteTagDataComponentFactories = getNoteTagComponentFactories(this.notu.cache);
+    }
 
     constructor(
         notu: Notu,

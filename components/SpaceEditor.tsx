@@ -123,6 +123,7 @@ export default function SpaceEditor({
                 await spaceSetupFunctions.get(space.internalName)(notuRenderTools.notu);
             setError(null);
             onFinished();
+            notuRenderTools.updateNoteTagDataComponentFactories();
         }
         catch (err) {
             setError(err.message);
