@@ -89,7 +89,7 @@ export class EditNoteProcessData extends ProcessDataBase {
         }
         if (!this.hasEditorSettings) {
             await notu.saveNotes([note]);
-            new RefreshAction();
+            return new RefreshAction();
         }
         const editSet = this.editorSettings;
         return new ShowEditorAction(note)

@@ -91,6 +91,7 @@ export async function generateRoutines(
         if (newDate == null)
             continue;
         const newTask = generateNewRoutineTaskNote(newDate, routine, context.routinesSpace, context.commonSpace);
+        newTask.in(spaceToSaveNotesTo);
         output.push(newTask);
         pendingTasks.push(newTask);
     }
@@ -293,7 +294,7 @@ export function generateNewRoutineTaskNote(
     const scheduled = ScheduledData.addTag(output, commonSpace);
     scheduled.includeTime = true;
     scheduled.start = date;
-    const duration = new DurationData(routine.getTag(commonSpace.duration));
+    const duration = routine.getTagData(commonSpace.duration, DurationData);
     if (!!duration)
         scheduled.durationMs = duration.ms;
     return output;
