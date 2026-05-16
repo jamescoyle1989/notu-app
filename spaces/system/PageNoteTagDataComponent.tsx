@@ -14,9 +14,8 @@ export default class PageNoteTagDataComponentFactory implements NoteTagDataCompo
 
     getBadgeComponent(noteTag: NoteTag, note: Note, notu: Notu, textColor: string): ReactNode {
         const data = new PageData(noteTag);
-        if (!data.name)
-            return null;
-        return (<NotuText small color={textColor}>{data.name}</NotuText>)
+        const text = `(${data.order}) ${data.name ?? ''}`.trim();
+        return (<NotuText small color={textColor}>{text}</NotuText>)
     }
 
     getEditorComponent(noteTag: NoteTag, note: Note, notu: Notu, refreshCallback: () => void): ReactNode {
