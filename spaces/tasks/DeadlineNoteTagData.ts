@@ -1,3 +1,4 @@
+import { mapDateToNumber, mapNumberToDate } from "@/sqlite/SQLMappings";
 import { Note, NoteTag } from "notu";
 import { TasksSpace } from "./TasksSpace";
 import { TasksSpaceSetup } from "./TasksSpaceSetup";
@@ -28,10 +29,10 @@ export class DeadlineData {
     get date(): Date {
         if (!this._nt.data.date)
             return null;
-        return new Date(this._nt.data.date);
+        return mapNumberToDate(this._nt.data.date);
     }
     set date(value: Date) {
-        let newVal = (value ?? new Date()).toISOString();
+        let newVal = mapDateToNumber(value ?? new Date());
         if (this._nt.data.date != newVal && this._nt.isClean)
             this._nt.dirty();
         this._nt.data.date = newVal;

@@ -30,9 +30,7 @@ test('buildNotesQuery correctly processes query with order clause', async () => 
 test('buildNotesQuery correctly processes query with group clause', async () => {
     const query = new ParsedQuery();
     query.where = '{tag0}';
-    query.groupings = [new ParsedGrouping()];
-    query.groupings[0].criteria = '{tag1}';
-    query.groupings[0].name = 'Pinned';
+    query.groupings = [new ParsedGrouping('{tag1}', 'Pinned')];
     query.tags.push((() => {
         const tag = new ParsedTag();
         tag.name = 'Tag 1';
@@ -58,9 +56,7 @@ test('buildNotesQuery correctly processes query with group clause', async () => 
 
 test('buildNotesQuery correctly processes query with named group by #[Tag 1]', async () => {
     const query = new ParsedQuery();
-    query.groupings = [new ParsedGrouping()];
-    query.groupings[0].criteria = '{tag0}';
-    query.groupings[0].name = 'Test';
+    query.groupings = [new ParsedGrouping('{tag0}', 'Test')];
     query.tags.push((() => {
         const tag = new ParsedTag();
         tag.name = 'Tag 1';
@@ -79,9 +75,7 @@ test('buildNotesQuery correctly processes query with named group by #[Tag 1]', a
 
 test('buildNotesQuery correctly processes query with named group by #[Tag 1]{.height < 5}', async () => {
     const query = new ParsedQuery();
-    query.groupings = [new ParsedGrouping()];
-    query.groupings[0].criteria = '{tag0}';
-    query.groupings[0].name = 'Test';
+    query.groupings = [new ParsedGrouping('{tag0}', 'Test')];
     query.tags.push((() => {
         const tag = new ParsedTag();
         tag.name = 'Tag 1';
@@ -104,8 +98,7 @@ test('buildNotesQuery correctly processes query with named group by #[Tag 1]{.he
 
 test('buildNotesQuery correctly processes query with unnamed group by @[Tag 1]', async () => {
     const query = new ParsedQuery();
-    query.groupings = [new ParsedGrouping()];
-    query.groupings[0].criteria = '{tag0}';
+    query.groupings = [new ParsedGrouping('{tag0}')];
     query.tags.push((() => {
         const tag = new ParsedTag();
         tag.name = 'Tag 1';
@@ -125,8 +118,7 @@ test('buildNotesQuery correctly processes query with unnamed group by @[Tag 1]',
 
 test('buildNotesQuery correctly processes query with unnamed group by #[Tag 1]', async () => {
     const query = new ParsedQuery();
-    query.groupings = [new ParsedGrouping()];
-    query.groupings[0].criteria = '{tag0}';
+    query.groupings = [new ParsedGrouping('{tag0}')];
     query.tags.push((() => {
         const tag = new ParsedTag();
         tag.name = 'Tag 1';
@@ -146,8 +138,7 @@ test('buildNotesQuery correctly processes query with unnamed group by #[Tag 1]',
 
 test('buildNotesQuery correctly processes query with unnamed group by _#[Tag 1]', async () => {
     const query = new ParsedQuery();
-    query.groupings = [new ParsedGrouping()];
-    query.groupings[0].criteria = '{tag0}';
+    query.groupings = [new ParsedGrouping('{tag0}')];
     query.tags.push((() => {
         const tag = new ParsedTag();
         tag.name = 'Tag 1';

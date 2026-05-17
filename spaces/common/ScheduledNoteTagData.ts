@@ -1,3 +1,4 @@
+import { mapDateToNumber, mapNumberToDate } from "@/sqlite/SQLMappings";
 import dayjs from "dayjs";
 import { Note, NoteTag } from "notu";
 import { CommonSpace } from "./CommonSpace";
@@ -40,13 +41,13 @@ export class ScheduledData {
     get start(): Date {
         if (!this._nt.data.start)
             return null;
-        return new Date(this._nt.data.start);
+        return mapNumberToDate(this._nt.data.start);
     }
     set start(value: Date) {
         value = value ?? new Date();
         if (!this.includeTime)
             value = dayjs(value).hour(12).startOf('hour').toDate();
-        let newVal = (value).toISOString();
+        let newVal = mapDateToNumber(value);
         if (this._nt.data.start != newVal && this._nt.isClean)
             this._nt.dirty();
         this._nt.data.start = newVal;

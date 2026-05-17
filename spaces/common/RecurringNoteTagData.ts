@@ -1,3 +1,4 @@
+import { mapDateToNumber, mapNumberToDate } from "@/sqlite/SQLMappings";
 import dayjs from "dayjs";
 import { last } from "es-toolkit";
 import { Note, NoteTag } from "notu";
@@ -38,10 +39,10 @@ export class RecurringData {
     get timeOfDay(): Date {
         if (!this._nt.data.timeOfDay)
             return null;
-        return new Date(this._nt.data.timeOfDay);
+        return mapNumberToDate(this._nt.data.timeOfDay);
     }
     set timeOfDay(value: Date) {
-        let newVal = (value ?? new Date()).toISOString();
+        let newVal = mapDateToNumber(value ?? new Date());
         if (this._nt.data.timeOfDay != newVal && this._nt.isClean)
             this._nt.dirty();
         this._nt.data.timeOfDay = newVal;

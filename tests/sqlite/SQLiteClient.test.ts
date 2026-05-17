@@ -226,15 +226,15 @@ test('getNotes fetches notes with correct grouping information', async () => {
     ];
     connection.onGetAll = () => connection.nextGetAllOutput = [];
 
-    const notes = await client.getNotes(`GROUP BY n.id AS 'Pinned', n.date AS 'Dated FORMAT(ASC YYYY-MMM-D)'`, space1);
+    const notes = await client.getNotes(`GROUP BY n.id AS Pinned, n.date AS Dated {YYYY-MMM-D} ASC`, space1);
 
     expect(notes.length).toBe(3);
     expect(notes[0].id).toBe(7);
     expect(notes[0].grouping).toBe('Pinned');
     expect(notes[1].id).toBe(6);
-    expect(notes[1].grouping).toBe('Dated @~!11708573979!~@2341-Jan-11')
+    expect(notes[1].grouping).toBe('@~!11708573979!~@Dated 2341-Jan-11')
     expect(notes[2].id).toBe(5);
-    expect(notes[2].grouping).toBe('Dated @~!11708643600!~@2341-Jan-12');
+    expect(notes[2].grouping).toBe('@~!11708643600!~@Dated 2341-Jan-12');
 });
 
 test('getNotes handles a note not fitting into any defined groups', async () => {

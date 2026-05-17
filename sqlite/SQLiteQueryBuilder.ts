@@ -131,11 +131,9 @@ function buildTagGroupClause(parsedQuery: ParsedQuery, tagIndex: number, tag: Ta
     let conditions = [];
     const parsedTag = parsedQuery.tags[tagIndex];
     const parsedGroup = parsedQuery.groupings.find(x => x.criteria.includes(`{tag${tagIndex}}`));
-    //If the group has a name specified then we're expecting that any expressions are for determining if something should be part of the group
-    //If the group doesn't have a name specified then we're exprecting that the expression is determining what the name of the group should be, meaning we want our expression in the select portion of the sub-query
-    if (!parsedGroup.name) {
+    if (parsedGroup.nameHasExpressions) {
         if (parsedTag.searchDepths.length != 1)
-            throw Error('Unnamed group clauses must specify exactly one search depth which they are grouping by')
+            throw Error('Expression-based group clauses must specify exactly one search depth which they are grouping by')
         const searchDepth = parsedTag.searchDepths[0];
         if (searchDepth == 0)
             return `CASE WHEN n.id = ${tag.id} THEN '${tag.name}' ELSE NULL END`;

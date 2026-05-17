@@ -1,3 +1,4 @@
+import { mapDateToNumber, mapNumberToDate } from "@/sqlite/SQLMappings";
 import { Note, NoteTag } from "notu";
 import { MoneySpace } from "./MoneySpace";
 import { MoneySpaceSetup } from "./MoneySpaceSetup";
@@ -57,10 +58,10 @@ export class TransactionData {
     get effectiveStart(): Date {
         if (!this._nt.data.effectiveStart)
             return null;
-        return new Date(this._nt.data.effectiveStart);
+        return mapNumberToDate(this._nt.data.effectiveStart);
     }
     set effectiveStart(value: Date) {
-        let newVal = (value ?? new Date()).toISOString();
+        let newVal = mapDateToNumber(value ?? new Date());
         if (this._nt.data.effectiveStart != newVal && this._nt.isClean)
             this._nt.dirty();
         this._nt.data.effectiveStart = newVal;
@@ -69,10 +70,10 @@ export class TransactionData {
     get effectiveEnd(): Date {
         if (!this._nt.data.effectiveEnd)
             return null;
-        return new Date(this._nt.data.effectiveEnd);
+        return mapNumberToDate(this._nt.data.effectiveEnd);
     }
     set effectiveEnd(value: Date) {
-        let newVal = (value ?? new Date()).toISOString();
+        let newVal = mapDateToNumber(value ?? new Date());
         if (this._nt.data.effectiveEnd != newVal && this._nt.isClean)
             this._nt.dirty();
         this._nt.data.effectiveEnd = newVal;

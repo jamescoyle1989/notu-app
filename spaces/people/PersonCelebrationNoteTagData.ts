@@ -1,3 +1,5 @@
+import { mapDateToNumber, mapNumberToDate } from "@/sqlite/SQLMappings";
+import dayjs from "dayjs";
 import { Note, NoteTag, Tag } from "notu";
 import { PeopleSpaceSetup } from "./PeopleSpaceSetup";
 
@@ -30,12 +32,12 @@ export class PersonCelebrationData {
     get date(): Date | null {
         if (!this._nt.data.date)
             return null;
-        return new Date(this._nt.data.date);
+        return mapNumberToDate(this._nt.data.date);
     }
     set date(value: Date | null) {
-        let newVal: string = null;
+        let newVal: number = null;
         if (!!value)
-            newVal = value.toISOString();
+            newVal = mapDateToNumber(dayjs(value).startOf('day').add(12, 'hours').toDate());
         if (this._nt.data.date != newVal && this._nt.isClean)
             this._nt.dirty();
         this._nt.data.date = newVal;
