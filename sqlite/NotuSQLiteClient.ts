@@ -196,6 +196,16 @@ export class NotuSQLiteClient {
                             });
                         }
                     }
+                    for (const note of grouping) {
+                        let groupingName = note.grouping as string;
+                        if (groupingName.startsWith('@~!')) {
+                            const specialCharEnd = groupingName.indexOf('!~@');
+                            if (specialCharEnd > 0) {
+                                groupingName = groupingName.substring(specialCharEnd + '!~@'.length);
+                                note.grouping = groupingName;
+                            }
+                        }
+                    }
                     output.push(...grouping);
                 }
                 return output;
