@@ -19,6 +19,8 @@ export interface ISQLiteConnection {
 
     getAll(query: string, ...args: Array<any>): Promise<Array<any>>;
 
+    finish(): Promise<void>;
+
     close(): Promise<void>;
 }
 
@@ -47,7 +49,10 @@ export class ExpoSQLiteConnection implements ISQLiteConnection {
         return await this._internal.getAllAsync(query, ...args);
     }
 
+    async finish(): Promise<void> {
+    }
+
     async close(): Promise<void> {
-        //await this._internal.closeAsync();
+        await this._internal.closeAsync();
     }
 }

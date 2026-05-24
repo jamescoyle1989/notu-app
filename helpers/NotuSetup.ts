@@ -69,6 +69,14 @@ import { NoteTagDataComponentFactory, NotuRenderTools } from './NotuRenderTools'
 
 
 let _renderTools: NotuRenderTools = null;
+let _connectionFactory: () => Promise<ExpoSQLiteConnection>;
+
+
+export async function destroyNotu(): Promise<void> {
+    (await _connectionFactory()).close();
+    _renderTools = null;
+    _connectionFactory = null;
+}
 
 
 export async function setupNotu(): Promise<NotuRenderTools> {
@@ -76,18 +84,14 @@ export async function setupNotu(): Promise<NotuRenderTools> {
         return _renderTools;
 
     const db = await SQLite.openDatabaseAsync('notu.db', { useNewConnection: true });
+    _connectionFactory = async () => Promise.resolve(new ExpoSQLiteConnection(db));
 
     const notuCache = new NotuCache(
-        new NotuSQLiteCacheFetcher(
-            async () => Promise.resolve(new ExpoSQLiteConnection(db))
-        )
+        new NotuSQLiteCacheFetcher(_connectionFactory)
     );
 
     const notuVal = new Notu(
-        new NotuSQLiteClient(
-            async () => Promise.resolve(new ExpoSQLiteConnection(db)),
-            notuCache
-        ),
+        new NotuSQLiteClient(_connectionFactory, notuCache),
         notuCache
     );
 

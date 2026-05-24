@@ -76,7 +76,7 @@ export class NotuSQLiteClient {
             }
         }
         finally {
-            await connection.close();
+            await connection.finish();
         }
     }
 
@@ -112,7 +112,7 @@ export class NotuSQLiteClient {
             return Promise.resolve(space.toJSON());
         }
         finally {
-            await connection.close();
+            await connection.finish();
         }
     }
 
@@ -213,7 +213,7 @@ export class NotuSQLiteClient {
             return notes;
         }
         finally {
-            await connection.close();
+            await connection.finish();
         }
     }
 
@@ -230,7 +230,7 @@ export class NotuSQLiteClient {
             return (await connection.getFirst(query)).cnt;
         }
         finally {
-            await connection.close();
+            await connection.finish();
         }
     }
 
@@ -273,7 +273,7 @@ export class NotuSQLiteClient {
             return Promise.resolve(notes.map(n => n.toJSON()))
         }
         finally {
-            await connection.close();
+            await connection.finish();
         }
     }
 
@@ -343,7 +343,7 @@ export class NotuSQLiteClient {
                     return await data(connection);
             }
             finally {
-                await connection.close();
+                await connection.finish();
             }
         }
         throw Error(`Unrecognised custom job '${name}'`);

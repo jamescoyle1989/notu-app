@@ -31,7 +31,7 @@ export class NotuSQLiteCacheFetcher {
             return spaces;
         }
         finally {
-            await connection.close();
+            await connection.finish();
         }
     }
 
@@ -59,7 +59,7 @@ export class NotuSQLiteCacheFetcher {
             return tags;
         }
         finally {
-            await connection.close();
+            await connection.finish();
         }
     }
 }
