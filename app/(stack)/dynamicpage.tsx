@@ -1,7 +1,7 @@
 import GroupedNoteList from "@/components/GroupedNoteList";
 import { NoteSearch } from "@/components/NoteSearch";
 import { useManualRefresh } from "@/helpers/Hooks";
-import { ShowDynamicPageAction, ShowEditorAction, UIAction } from "@/helpers/NoteAction";
+import { ShowCustomPageAction, ShowDynamicPageAction, ShowEditorAction, ShowErrorAction, UIAction } from "@/helpers/NoteAction";
 import { getNotu } from "@/helpers/NotuSetup";
 import { NotuText } from "@/helpers/NotuStyles";
 import { last } from "es-toolkit";
@@ -10,6 +10,7 @@ import { Note } from "notu";
 import { useCallback, useRef, useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { View, YStack } from "tamagui";
+import { setActiveCustomPage } from "./custompage";
 import { setNoteBeingEdited } from "./editnote";
 
 let _activeDynamicPageStack = new Array<ShowDynamicPageAction>();
@@ -39,12 +40,27 @@ export default function Index() {
     );
 
     function onUIAction(action: UIAction) {
+        setProcessError(null);
         if (action.name == 'Refresh')
             manualRefresh();
         else if (action.name == 'Edit') {
             const editAction = action as ShowEditorAction;
             setNoteBeingEdited(editAction);
             router.push('/editnote');
+        }
+        else if (action.name == 'ShowCustomPage') {
+            const showCustomPageAction = action as ShowCustomPageAction;
+            setActiveCustomPage(showCustomPageAction);
+            router.push('/custompage');
+        }
+        else if (action.name == 'ShowError') {
+            const showErrorAction = action as ShowErrorAction;
+            setProcessError(showErrorAction.errorMessage);
+        }
+        else if (action.name == 'ShowDynamicPage') {
+            const showDynamicPageAction = action as ShowDynamicPageAction;
+            setActiveDynamicPage(showDynamicPageAction);
+            router.push('/dynamicpage');
         }
         else if (action.name == 'PreviousScreen') {
             _activeDynamicPageStack.pop();
