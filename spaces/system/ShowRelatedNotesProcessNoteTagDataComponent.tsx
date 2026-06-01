@@ -25,8 +25,6 @@ export default class ShowRelatedNotesProcessNoteTagDataComponentFactory implemen
             if (!space)
                 throw Error('Make sure you select a space for new notes to be created in.');
         }
-        if (!data.query.includes('{TAG}'))
-            throw Error(`Your query must include '{TAG}', which is what will get replaced at execution time with the tag of the note that the process is being run against.`);
         return Promise.resolve(true);
     }
 
