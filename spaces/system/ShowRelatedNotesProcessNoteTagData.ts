@@ -42,19 +42,22 @@ export class ShowRelatedNotesProcessData extends ProcessDataBase {
     }
 
     async runProcess(note: Note, notu: Notu): Promise<UIAction> {
-        if (!note.ownTag)
-            throw new Error('Show Related Notes can only be called for notes which have their own tag set.');
+        if (this.query.includes('{TAG}') && !note.ownTag)
+            throw new Error(`Show Related Notes with '{TAG}' present in the query can only be called for notes which have their own tag set.`);
 
         let space: Space = null;
         if (this.spaceId < 0)
             space = note.space;
         else
             space = notu.getSpace(this.spaceId) ?? null;
+
+        let query = this.query;
+        let title = 'Related Notes';
+        if (query.includes('{TAG}')) {
+            query = query.replaceAll('{TAG}', `[${note.ownTag.getFullName()}]`);
+            title = `${note.ownTag.getFullName()} related notes`;
+        }
         
-        return Promise.resolve(new ShowDynamicPageAction(
-            `${note.ownTag.getFullName()} related notes`,
-            space,
-            this.query.replaceAll('{TAG}', `[${note.ownTag.getFullName()}]`)
-        ));
+        return Promise.resolve(new ShowDynamicPageAction(title, space, query));
     }
 }
