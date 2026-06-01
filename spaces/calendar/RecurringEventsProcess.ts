@@ -73,6 +73,7 @@ export async function generateRecurringNotes(
                 def,
                 context.commonSpace
             );
+            eventNote.in(spaceToSaveEventsTo);
             output.push(eventNote);
         }
     }
@@ -125,7 +126,11 @@ export function getNewEventDates(
     let date = dayjs().startOf('day').add(12, 'hours').toDate();
     for (let i = 0; i < recurringData.daysLookahead; i++) {
         if (recurringData.isDueOn(date, previousEventDates)) {
-            output.push(date);
+            let timeOfDay = dayjs(date).startOf('day')
+                .add(recurringData.timeOfDay.getHours(), 'hours')
+                .add(recurringData.timeOfDay.getMinutes(), 'minutes')
+                .toDate();
+            output.push(timeOfDay);
             previousEventDates.push(date);
         }
         date = dayjs(date).add(1, 'day').toDate();
