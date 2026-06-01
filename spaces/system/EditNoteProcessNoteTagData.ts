@@ -1,4 +1,5 @@
 import { RefreshAction, ShowEditorAction, UIAction } from "@/helpers/NoteAction";
+import { getNotu } from "@/helpers/NotuSetup";
 import { areArraysDifferent } from "@/helpers/RenderHelpers";
 import { Note, NoteTag, Notu } from "notu";
 import { ProcessDataBase } from "./ProcessNoteTagDataBaseClass";
@@ -82,10 +83,15 @@ export class EditNoteProcessData extends ProcessDataBase {
             if (!!tag)
                 note.removeTag(tag);
         }
+        
+        const renderTools = getNotu();
         for (const tagId of this.addTagIds) {
             const tag = notu.getTag(tagId);
-            if (!!tag)
-                note.addTag(tag);
+            if (!!tag) {
+                const nt = note.addTag(tag);
+                // This line ensures that if the notetag has any data needed for it, that it will be initialized properly
+                renderTools.getComponentFactoryForNoteTag(tag, note)?.getDataObject(nt);
+            }
         }
         if (!this.hasEditorSettings) {
             await notu.saveNotes([note]);
