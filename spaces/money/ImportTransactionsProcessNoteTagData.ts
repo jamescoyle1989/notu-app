@@ -37,10 +37,7 @@ export class ImportTransactionsProcessData extends ProcessDataBase {
         const moneySpace = new MoneySpace(notu);
         const newNoteOptions = await importTransactions(
             note,
-            new ImportTransactionProcessContext(
-                note.getTagData(moneySpace.importTransactionsProcess, ImportTransactionsProcessData),
-                notu
-            )
+            new ImportTransactionProcessContext(this, notu)
         );
         return showProcessOutputScreen(note, newNoteOptions, notu);
     }
