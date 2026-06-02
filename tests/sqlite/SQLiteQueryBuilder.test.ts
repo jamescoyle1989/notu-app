@@ -67,7 +67,7 @@ test('buildNotesQuery correctly processes query with named group by #[Tag 1]', a
 
     expect(buildNotesQuery(query, 1, await newNotuCache()))
         .toBe(
-            'SELECT n.id, n.spaceId, n.text, n.date, (SELECT 1 FROM NoteTag nt WHERE nt.noteId = n.id AND nt.tagId = 1) AS grouping0 ' +
+            'SELECT n.id, n.spaceId, n.text, n.date, IFNULL((SELECT 1 FROM NoteTag nt WHERE nt.noteId = n.id AND nt.tagId = 1), 0) AS grouping0 ' +
             'FROM Note n LEFT JOIN Tag t ON n.id = t.id ' +
             'WHERE n.spaceId = 1;'
         );
@@ -90,7 +90,7 @@ test('buildNotesQuery correctly processes query with named group by #[Tag 1]{.he
     expect(buildNotesQuery(query, 1, await newNotuCache()))
         .toBe(
             `SELECT n.id, n.spaceId, n.text, n.date, ` +
-                `(SELECT 1 FROM NoteTag nt WHERE nt.noteId = n.id AND nt.tagId = 1 AND (nt.data->>'height' < 5)) AS grouping0 ` +
+                `IFNULL((SELECT 1 FROM NoteTag nt WHERE nt.noteId = n.id AND nt.tagId = 1 AND (nt.data->>'height' < 5)), 0) AS grouping0 ` +
             'FROM Note n LEFT JOIN Tag t ON n.id = t.id ' +
             'WHERE n.spaceId = 1;'
         );

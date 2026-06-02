@@ -165,13 +165,13 @@ function buildTagGroupClause(parsedQuery: ParsedQuery, tagIndex: number, tag: Ta
             if (searchDepth == 0)
                 conditions.push(`n.id = ${tag.id}`);
             else if (searchDepth == 1)
-                conditions.push(`(SELECT 1 ` +
+                conditions.push(`IFNULL((SELECT 1 ` +
                 `FROM NoteTag nt ` +
-                `WHERE nt.noteId = n.id AND nt.tagId = ${tag.id}${buildTagDataWhereExpression(parsedTag, 'nt')})`);
+                `WHERE nt.noteId = n.id AND nt.tagId = ${tag.id}${buildTagDataWhereExpression(parsedTag, 'nt')}), 0)`);
             else if (searchDepth == 2)
-                conditions.push(`(SELECT 1 ` +
+                conditions.push(`IFNULL((SELECT 1 ` +
                 `FROM NoteTag nt1 INNER JOIN NoteTag nt2 ON nt2.noteId = nt1.tagId ` +
-                `WHERE nt1.noteId = n.id AND nt2.tagId = ${tag.id}${buildTagDataWhereExpression(parsedTag, 'nt1')}`);
+                `WHERE nt1.noteId = n.id AND nt2.tagId = ${tag.id}${buildTagDataWhereExpression(parsedTag, 'nt1')}), 0)`);
         }
         let output = conditions.join(' OR ');
         if (conditions.length > 1)

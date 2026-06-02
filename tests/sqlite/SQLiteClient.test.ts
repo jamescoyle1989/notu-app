@@ -43,6 +43,12 @@ export class MockConnection {
         this.history.push({type: 'closed', command: null, args: []});
         return Promise.resolve();
     }
+
+    finish(): Promise<void> {
+        this.isOpen = false;
+        this.history.push({type: 'finished', command: null, args: []});
+        return Promise.resolve();
+    }
 }
 
 
@@ -89,7 +95,7 @@ test('saveSpace inserts new space', async () => {
     expect(space.id).toBe(123);
     expect(space.isClean).toBe(true);
     expect(connection.history[0].command).toBe('INSERT INTO Space (name, internalName, version) VALUES (?, ?, ?);');
-    expect(connection.history[1].type).toBe('closed');
+    expect(connection.history[1].type).toBe('finished');
     expect(connection.history.length).toBe(2);
 });
 
@@ -105,7 +111,7 @@ test('saveSpace updates space if dirty', async () => {
 
     expect(space.isClean).toBe(true);
     expect(connection.history[0].command).toBe('UPDATE Space SET name = ?, internalName = ?, version = ? WHERE id = ?;');
-    expect(connection.history[1].type).toBe('closed');
+    expect(connection.history[1].type).toBe('finished');
     expect(connection.history.length).toBe(2);
 });
 
@@ -121,7 +127,7 @@ test('saveSpace deletes space if flagged for deletion', async () => {
 
     expect(connection.history[0].command).toBe('PRAGMA foreign_keys = ON');
     expect(connection.history[1].command).toBe('DELETE FROM Space WHERE id = ?;');
-    expect(connection.history[2].type).toBe('closed');
+    expect(connection.history[2].type).toBe('finished');
     expect(connection.history.length).toBe(3);
 });
 
@@ -156,7 +162,7 @@ test('saveNote inserts new note', async () => {
     expect(note.isClean).toBe(true);
     expect(connection.history[0].command).toBe('PRAGMA foreign_keys = ON');
     expect(connection.history[1].command).toBe('INSERT INTO Note (date, text, spaceId) VALUES (?, ?, ?);');
-    expect(connection.history[2].type).toBe('closed');
+    expect(connection.history[2].type).toBe('finished');
     expect(connection.history.length).toBe(3);
 });
 
@@ -173,7 +179,7 @@ test('saveNote updates dirty note', async () => {
     expect(note.isClean).toBe(true);
     expect(connection.history[0].command).toBe('PRAGMA foreign_keys = ON');
     expect(connection.history[1].command).toBe('UPDATE Note SET date = ?, text = ?, spaceId = ? WHERE id = ?;');
-    expect(connection.history[2].type).toBe('closed');
+    expect(connection.history[2].type).toBe('finished');
     expect(connection.history.length).toBe(3);
 });
 
@@ -189,7 +195,7 @@ test('saveNote deletes note if flagged for deletion', async () => {
 
     expect(connection.history[0].command).toBe('PRAGMA foreign_keys = ON');
     expect(connection.history[1].command).toBe('DELETE FROM Note WHERE id = ?;');
-    expect(connection.history[2].type).toBe('closed');
+    expect(connection.history[2].type).toBe('finished');
     expect(connection.history.length).toBe(3);
 });
 
@@ -232,9 +238,9 @@ test('getNotes fetches notes with correct grouping information', async () => {
     expect(notes[0].id).toBe(7);
     expect(notes[0].grouping).toBe('Pinned');
     expect(notes[1].id).toBe(6);
-    expect(notes[1].grouping).toBe('@~!11708573979!~@Dated 2341-Jan-11')
+    expect(notes[1].grouping).toBe('Dated 2341-Jan-11');
     expect(notes[2].id).toBe(5);
-    expect(notes[2].grouping).toBe('@~!11708643600!~@Dated 2341-Jan-12');
+    expect(notes[2].grouping).toBe('Dated 2341-Jan-12');
 });
 
 test('getNotes handles a note not fitting into any defined groups', async () => {
@@ -279,7 +285,7 @@ test('saveNotes for new note sets noteId on tags', async () => {
     expect(connection.history[1].command).toBe('INSERT INTO Note (date, text, spaceId) VALUES (?, ?, ?);');
     expect(connection.history[2].command).toBe('INSERT INTO NoteTag (noteId, tagId, data) VALUES (?, ?, ?)');
     expect(connection.history[2].args[0]).toBe(345);
-    expect(connection.history[3].type).toBe('closed');
+    expect(connection.history[3].type).toBe('finished');
     expect(connection.history.length).toBe(4);
 });
 
@@ -311,7 +317,7 @@ test('customJob runs raw SQL function', async () => {
 
     expect(connection.history.length).toBe(2);
     expect(connection.history[0].command).toBe('Get some data');
-    expect(connection.history[1].type).toBe('closed');
+    expect(connection.history[1].type).toBe('finished');
     expect(result).toBe('abcde');
 });
 
@@ -326,6 +332,6 @@ test('customJob runs raw SQL string', async () => {
 
     expect(connection.history.length).toBe(2);
     expect(connection.history[0].command).toBe('Get some data');
-    expect(connection.history[1].type).toBe('closed');
+    expect(connection.history[1].type).toBe('finished');
     expect(result.lastInsertRowId).toBe(123);
 });
