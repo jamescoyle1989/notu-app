@@ -65,7 +65,7 @@ export class NoteChecklist {
                                 <Check />
                             </Checkbox.Indicator>
                         </Checkbox>
-                        <NotuText>
+                        <NotuText flex={1}>
                             {line.content.map((x, index) => (
                                 <NoteComponentContainer key={index} component={x} />
                             ))}
