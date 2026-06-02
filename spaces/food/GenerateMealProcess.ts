@@ -1,4 +1,7 @@
 import { Note, Notu, Space } from "notu";
+import { CommonSpace } from "../common/CommonSpace";
+import { DurationData } from "../common/DurationNoteTagData";
+import { ScheduledData } from "../common/ScheduledNoteTagData";
 import { FoodSpace } from "./FoodSpace";
 import { GenerateMealProcessData } from "./GenerateMealProcessNoteTagData";
 import { MealData, MealGroupData, MealIngredientData, MealStepData } from "./MealNoteTagData";
@@ -10,9 +13,13 @@ export class GenerateMealProcessContext {
     private _food: FoodSpace;
     get foodSpace(): FoodSpace { return this._food; }
 
+    private _common: CommonSpace;
+    get commonSpace(): CommonSpace { return this._common; }
+
     constructor(processData: GenerateMealProcessData, notu: Notu) {
         this._notu = notu;
         this._food = new FoodSpace(notu);
+        this._common = new CommonSpace(notu);
         this._processData = processData;
     }
 
@@ -102,6 +109,11 @@ export function generateMeal(
         mealStep.text = stepText;
         mealData.addStep(mealStep);
     }
+    
+    const scheduledData = ScheduledData.addTag(meal, context.commonSpace);
+    const recipeDurationData = recipe.getTagData(context.commonSpace.duration, DurationData);
+    if (!!recipeDurationData)
+        scheduledData.durationMs = recipeDurationData.ms;
 
     return meal;
 }

@@ -59,7 +59,7 @@ function EditorComponent({ noteTag }: NoteTagDataComponentProps) {
         }).runOnJS(true);
         return (
             <GestureDetector gesture={doubleTap} key={ingredient.id}>
-                <NotuText strikethrough={ingredient.done}>{ingredient.quantity} {ingredient.name}</NotuText>
+                <NotuText strikethrough={ingredient.done} grey={ingredient.done}>{`${ingredient.quantity} ${ingredient.name}`.trim()}</NotuText>
             </GestureDetector>
         );
     }
@@ -89,7 +89,7 @@ function EditorComponent({ noteTag }: NoteTagDataComponentProps) {
         }).runOnJS(true);
         return (
             <GestureDetector gesture={doubleTap} key={index}>
-                <NotuText strikethrough={step.done}>{step.text}</NotuText>
+                <NotuText strikethrough={step.done} grey={step.done}>{step.text}</NotuText>
             </GestureDetector>
         );
     }

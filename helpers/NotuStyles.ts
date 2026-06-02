@@ -3,7 +3,6 @@ import { Button, Input } from 'tamagui';
 
 export const NotuText = styled(Text, {
     name: 'NotuText',
-    color: '$color',
 
     variants: {
         bold: {
@@ -19,6 +18,11 @@ export const NotuText = styled(Text, {
         danger: {
             true: {
                 color: '#F04438'
+            }
+        },
+        grey: {
+            true: {
+                color: '#888888'
             }
         },
         pressable: {
