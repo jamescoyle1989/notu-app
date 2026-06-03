@@ -19,6 +19,7 @@ export class ExerciseMetricDefData {
             noteTag.data = {};
         this.mode = this.mode;
         this._isLoading = false;
+        this._updateRandomisedValue();
     }
     static new(noteTag: NoteTag) {
         if (!noteTag)
@@ -41,6 +42,8 @@ export class ExerciseMetricDefData {
         this.max = this.max;
         this.increment = this.increment;
         this.values = this.values;
+        if (!this._isLoading)
+            this._updateRandomisedValue();
     }
 
 
@@ -53,6 +56,8 @@ export class ExerciseMetricDefData {
             this._nt.dirty();
         this._nt.data.min = value;
         this._updateIncrementSign();
+        if (!this._isLoading)
+            this._updateRandomisedValue();
     }
 
     get max(): number { return this._nt.data.max; }
@@ -64,6 +69,8 @@ export class ExerciseMetricDefData {
             this._nt.dirty();
         this._nt.data.max = value;
         this._updateIncrementSign();
+        if (!this._isLoading)
+            this._updateRandomisedValue();
     }
 
     private _updateIncrementSign() {
@@ -86,6 +93,8 @@ export class ExerciseMetricDefData {
             this._nt.dirty();
         this._nt.data.increment = value;
         this._updateIncrementSign();
+        if (!this._isLoading)
+            this._updateRandomisedValue();
     }
 
 
@@ -97,6 +106,22 @@ export class ExerciseMetricDefData {
         if (areArraysDifferent(value, this._nt.data.values) && this._nt.isClean)
             this._nt.dirty();
         this._nt.data.values = value;
+        if (!this._isLoading)
+            this._updateRandomisedValue();
+    }
+
+
+    // Generally on each exercise that gets generated, there'll be some kind of description which will use calculations on some of the exercise metric values
+    // This description is inherited from the Exercise template, which will have metrics attached to it which use this Def version of the notetag data
+    // The Def version doesn't naturally have a value property on it, whereas that's the key value which gets held in the notetag data of metrics attached to generated exercises
+    // As a result, this just makes sure that we do have a value property on here too. It's not really providing much use within the class itself, but it means that calculations can have a 'value' property to work with
+    private _updateRandomisedValue() {
+        const values = this.getAllowedValues();
+        if (values.length == 0)
+            return;
+        this._nt.data.value = values[Math.floor(Math.random() * values.length)];
+        if (this._nt.isClean)
+            this._nt.dirty();
     }
 
 
