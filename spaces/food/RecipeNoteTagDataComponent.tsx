@@ -1,9 +1,10 @@
 import { NotuCustomSelect } from "@/components/NotuCustomSelect";
+import { NotuSelect } from "@/components/NotuSelect";
 import { NumberInput } from "@/components/NumberInput";
 import { useManualRefresh } from "@/helpers/Hooks";
 import { NoteTagDataComponentFactory, NoteTagDataComponentProps } from "@/helpers/NotuRenderTools";
 import { NotuText, NotuView } from "@/helpers/NotuStyles";
-import { Check, X } from "@tamagui/lucide-icons";
+import { ArrowBigDown, ArrowBigUp, Check, X } from "@tamagui/lucide-icons";
 import { Note, NoteTag, Notu, Tag } from "notu";
 import { ReactNode, useState } from "react";
 import { Checkbox, Input, Label, XStack, YStack } from "tamagui";
@@ -86,6 +87,11 @@ function EditorComponent({ noteTag, refreshCallback }: NoteTagDataComponentProps
 
     function onIngredientOptionalChange(ingredient: RecipeIngredientData) {
         ingredient.optional = !ingredient.optional;
+        manualRefresh();
+    }
+
+    function handleIngredientGroupChange(ingredient: RecipeIngredientData, newGroupId: number) {
+        ingredient.groupId = newGroupId;
         manualRefresh();
     }
 
@@ -189,6 +195,14 @@ function EditorComponent({ noteTag, refreshCallback }: NoteTagDataComponentProps
         manualRefresh();
     }
 
+    function handleMoveStepUp(stepIndex: number) {
+        setSelectedStepIndex(data.moveStepUp(stepIndex));
+    }
+
+    function handleMoveStepDown(stepIndex: number) {
+        setSelectedStepIndex(data.moveStepDown(stepIndex));
+    }
+
     function renderIngredientLine(ingredient: RecipeIngredientData, asBox: boolean) {
         return (
             <NotuView bg="$background"
@@ -237,6 +251,15 @@ function EditorComponent({ noteTag, refreshCallback }: NoteTagDataComponentProps
                         </Checkbox.Indicator>
                     </Checkbox>
                 </XStack>
+
+                {data.groups.length > 0 && (
+                    <XStack style={{alignItems: 'center'}}>
+                        <Label width={labelWidth}>Group</Label>
+                        <NotuSelect options={[{name: '---None---', value: null}].concat(data.groups.map(x => ({name: x.name, value: x.id})))}
+                                    value={ingredient.groupId}
+                                    onValueChange={x => handleIngredientGroupChange(ingredient, x)} />
+                    </XStack>
+                )}
             </NotuView>
         );
     }
@@ -263,7 +286,9 @@ function EditorComponent({ noteTag, refreshCallback }: NoteTagDataComponentProps
                     return renderIngredientLine(ingredient, false);
             })}
 
-            <NotuText pressable onPress={handleAddIngredient}>Add Ingredient</NotuText>
+            <XStack>
+                <NotuText pressable onPress={handleAddIngredient}>Add Ingredient</NotuText>
+            </XStack>
 
             {groups.map(group => {
                 if (group.id == selectedId) {
@@ -295,7 +320,9 @@ function EditorComponent({ noteTag, refreshCallback }: NoteTagDataComponentProps
                                 {renderIngredientLine(ingredient, true)}
                             )}
 
-                            <NotuText pressable onPress={() => handleAddGroupIngredient(group)}>Add Ingredient</NotuText>
+                            <XStack>
+                                <NotuText pressable onPress={() => handleAddGroupIngredient(group)}>Add Ingredient</NotuText>
+                            </XStack>
 
                         </NotuView>
                     )
@@ -320,7 +347,9 @@ function EditorComponent({ noteTag, refreshCallback }: NoteTagDataComponentProps
                                 </NotuView>
                             ))}
 
-                            <NotuText pressable onPress={() => handleAddGroupIngredient(group)}>Add Ingredient</NotuText>
+                            <XStack>
+                                <NotuText pressable onPress={() => handleAddGroupIngredient(group)}>Add Ingredient</NotuText>
+                            </XStack>
                         </NotuView>
                     )
                 }
@@ -344,9 +373,13 @@ function EditorComponent({ noteTag, refreshCallback }: NoteTagDataComponentProps
                                    flex={1} multiline={true} />
 
                             <NotuText>
-                                <NotuText pressable onPress={startAddingStepCondition}>
-                                    Add Condition
-                                </NotuText>
+                                <XStack>
+                                    <NotuText pressable onPress={startAddingStepCondition} flexGrow={1}>
+                                        Add Condition
+                                    </NotuText>
+                                    <ArrowBigDown onPress={() => handleMoveStepDown(index)} />
+                                    <ArrowBigUp marginInline={10} onPress={() => handleMoveStepUp(index)} />
+                                </XStack>
                                 {step.condition.length > 1 && (
                                     <NotuText>
                                         <NotuText> - Condition Type: </NotuText>

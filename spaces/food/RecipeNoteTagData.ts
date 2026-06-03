@@ -100,6 +100,20 @@ export class RecipeData {
         if (this._nt.isClean)
             this._nt.dirty();
     }
+    moveStepUp(stepIndex: number): number {
+        if (stepIndex == 0)
+            return stepIndex;
+        const movedStep = this._nt.data.steps.splice(stepIndex, 1)[0];
+        this._nt.data.steps.splice(stepIndex - 1, 0, movedStep);
+        return stepIndex - 1;
+    }
+    moveStepDown(stepIndex: number): number {
+        if (stepIndex == this._nt.data.steps.length - 1)
+            return stepIndex;
+        const movedStep = this._nt.data.steps.splice(stepIndex, 1)[0];
+        this._nt.data.steps.splice(stepIndex + 1, 0, movedStep);
+        return stepIndex + 1;
+    }
 }
 
 
