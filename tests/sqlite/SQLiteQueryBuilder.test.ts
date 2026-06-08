@@ -320,7 +320,7 @@ test('buildNotesQuery can handle timespan range', async () => {
 
     const result = buildNotesQuery(query, 1, await newNotuCache());
 
-    expect(result).toMatch(/\(3600\);$/)
+    expect(result).toMatch(/\(3600\);$/);
 });
 
 test('buildNotesQuery can handle timespan range 2', async () => {
@@ -329,7 +329,7 @@ test('buildNotesQuery can handle timespan range 2', async () => {
 
     const result = buildNotesQuery(query, 1, await newNotuCache());
 
-    expect(result).toMatch(/\(86400\);$/)
+    expect(result).toMatch(/\(86400\);$/);
 });
 
 test('buildNotesQuery can handle timespan range 3', async () => {
@@ -338,7 +338,16 @@ test('buildNotesQuery can handle timespan range 3', async () => {
 
     const result = buildNotesQuery(query, 1, await newNotuCache());
 
-    expect(result).toMatch(/\(90001\);$/)
+    expect(result).toMatch(/\(90001\);$/);
+});
+
+test('buildNotesQuery can handle timespan range 4', async () => {
+    const query = new ParsedQuery();
+    query.where = '{1:00}';
+
+    const result = buildNotesQuery(query, 1, await newNotuCache());
+
+    expect(result).toMatch(/\(3600\);$/);
 });
 
 test('buildNotesQuery can handle date literal', async () => {

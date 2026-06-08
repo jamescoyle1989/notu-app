@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { NotuCache, ParsedQuery, ParsedTag, Tag } from 'notu';
 import { mapDateToNumber } from './SQLMappings';
 
@@ -241,36 +242,33 @@ function processLiterals(query: string) {
             query = query.replace('{Now}', dateNumber);
     }
     {
-        const today = new Date();
-        today.setUTCHours(0, 0, 0, 0);
+        const today = dayjs().startOf('day').toDate();
         const dateNumber = mapDateToNumber(today).toString();
         while (query.includes('{Today}'))
             query = query.replace('{Today}', dateNumber);
     }
     {
-        const yesterday = new Date();
-        yesterday.setUTCHours(0, 0, 0, 0);
-        yesterday.setDate(yesterday.getDate() - 1);
+        const yesterday = dayjs().startOf('day').subtract(12, 'hours').startOf('day').toDate();
         const dateNumber = mapDateToNumber(yesterday).toString();
         while (query.includes('{Yesterday}'))
             query = query.replace('{Yesterday}', dateNumber);
     }
     {
-        const tomorrow = new Date();
-        tomorrow.setUTCHours(0, 0, 0, 0);
-        tomorrow.setDate(tomorrow.getDate() + 1);
+        const tomorrow = dayjs().startOf('day').add(36, 'hours').startOf('day').toDate();
         const dateNumber = mapDateToNumber(tomorrow).toString();
         while (query.includes('{Tomorrow}'))
             query = query.replace('{Tomorrow}', dateNumber);
     }
     //Handle timespan values like {1d 5:00} to express 1 day and 5 hours. Used like {Now} + {0d 3:00}
     {
-        const regex = /\{(?:(\d+)d)(?:\s(\d+):(\d{2})(?::(\d{2}))?)?\}/;
+        const regex = /\{(?:(\d+)d)?(?:\s?(\d+):(\d{2})(?::(\d{2}))?)?\}/;
         while (true) {
             const match = regex.exec(query);
             if (!match)
                 break;
-            let secondsTimespan = 24 * 60 * 60 * Number(match[1]);
+            let secondsTimespan = 0;
+            if (match[1] != undefined)
+                secondsTimespan = 24 * 60 * 60 * Number(match[1]);
             if (match[2] != undefined) {
                 secondsTimespan += 60 * 60 * Number(match[2]);
                 secondsTimespan += 60 * Number(match[3]);

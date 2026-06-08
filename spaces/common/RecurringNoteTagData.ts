@@ -1,8 +1,8 @@
-import { mapDateToNumber, mapNumberToDate } from "@/sqlite/SQLMappings";
 import dayjs from "dayjs";
 import { last } from "es-toolkit";
 import { Note, NoteTag } from "notu";
 import { areArraysDifferent } from "../../helpers/RenderHelpers";
+import { mapDateToNumber, mapNumberToDate } from "../../sqlite/SQLMappings";
 import { CommonSpace } from "./CommonSpace";
 import { CommonSpaceSetup } from "./CommonSpaceSetup";
 
