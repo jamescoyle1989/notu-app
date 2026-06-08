@@ -31,11 +31,15 @@ export class ExerciseMetricDefData {
     }
 
 
+    private _isSwitchingMode = false;
     get mode(): 'Range' | 'Set' { return this._nt.data.mode; }
     set mode(value: 'Range' | 'Set') {
         if (value == undefined)
             value = 'Range';
-        if (this._nt.data.mode != value && this._nt.isClean)
+        if (this._nt.data.mode == value)
+            return;
+        this._isSwitchingMode = true;
+        if (this._nt.isClean)
             this._nt.dirty();
         this._nt.data.mode = value;
         this.min = this.min;
@@ -44,6 +48,7 @@ export class ExerciseMetricDefData {
         this.values = this.values;
         if (!this._isLoading)
             this._updateRandomisedValue();
+        this._isSwitchingMode = false;
     }
 
 
@@ -56,7 +61,7 @@ export class ExerciseMetricDefData {
             this._nt.dirty();
         this._nt.data.min = value;
         this._updateIncrementSign();
-        if (!this._isLoading)
+        if (!this._isLoading && !this._isSwitchingMode)
             this._updateRandomisedValue();
     }
 
@@ -69,7 +74,7 @@ export class ExerciseMetricDefData {
             this._nt.dirty();
         this._nt.data.max = value;
         this._updateIncrementSign();
-        if (!this._isLoading)
+        if (!this._isLoading && !this._isSwitchingMode)
             this._updateRandomisedValue();
     }
 
@@ -93,7 +98,7 @@ export class ExerciseMetricDefData {
             this._nt.dirty();
         this._nt.data.increment = value;
         this._updateIncrementSign();
-        if (!this._isLoading)
+        if (!this._isLoading && !this._isSwitchingMode)
             this._updateRandomisedValue();
     }
 
@@ -106,7 +111,7 @@ export class ExerciseMetricDefData {
         if (areArraysDifferent(value, this._nt.data.values) && this._nt.isClean)
             this._nt.dirty();
         this._nt.data.values = value;
-        if (!this._isLoading)
+        if (!this._isLoading && !this._isSwitchingMode)
             this._updateRandomisedValue();
     }
 
@@ -126,10 +131,13 @@ export class ExerciseMetricDefData {
 
 
     getAllowedValues(): Array<number> {
-        if (this.mode == 'Set')
+        if (this.mode == 'Set') {
+            console.log('GetAllowedValues for Set', this.values);
             return [...this.values];
+        }
 
         if (this.mode == 'Range') {
+            console.log('GetAllowedValues for Range', {min: this.min, increment: this.increment, max: this.max});
             if (this.increment == 0)
                 throw Error('Unable to generate allowed values range with zero increment');
             let position = this.min;
@@ -144,9 +152,6 @@ export class ExerciseMetricDefData {
             }
             return output;
         }
-
-        if (this.mode == 'Calculation')
-            return [];
 
         throw Error('Unknown metric mode type');
     }
