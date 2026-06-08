@@ -1,13 +1,16 @@
 import { NotuDateTimePicker } from "@/components/NotuDateTimePicker";
 import { TimespanPicker } from "@/components/TimeSpanPicker";
+import { useManualRefresh } from "@/helpers/Hooks";
 import { NoteTagDataComponentFactory, NoteTagDataComponentProps } from "@/helpers/NotuRenderTools";
 import { NotuText } from "@/helpers/NotuStyles";
 import { datetimeToText, dateToText, timespanToText } from "@/helpers/RenderHelpers";
 import { Check } from "@tamagui/lucide-icons";
 import { Note, NoteTag, Notu, Tag } from "notu";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import { Checkbox, CheckedState, Label, Paragraph, Popover, XStack, YStack } from "tamagui";
+import { CommonSpace } from "./CommonSpace";
 import { CommonSpaceSetup } from "./CommonSpaceSetup";
+import { DurationData } from "./DurationNoteTagData";
 import { ScheduledData } from "./ScheduledNoteTagData";
 
 export default class ScheduledNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
@@ -17,7 +20,7 @@ export default class ScheduledNoteTagDataComponentFactory implements NoteTagData
     }
 
     getEditorComponent(noteTag: NoteTag, note: Note, notu: Notu, refreshCallback: () => void): ReactNode {
-        return (<EditorComponent noteTag={noteTag} refreshCallback={refreshCallback} />);
+        return (<EditorComponent note={note} noteTag={noteTag} notu={notu} refreshCallback={refreshCallback} />);
     }
 
     validate(noteTag: NoteTag, note: Note, notu: Notu): Promise<boolean> {
@@ -62,8 +65,20 @@ function BadgeComponent({ noteTag }: NoteTagDataComponentProps) {
 }
 
 
-function EditorComponent({ noteTag, refreshCallback }: NoteTagDataComponentProps) {
+function EditorComponent({ note, noteTag, notu, refreshCallback }: NoteTagDataComponentProps) {
     const data = new ScheduledData(noteTag);
+    const manualRefresh = useManualRefresh();
+
+    useEffect(() => {
+        if (noteTag.isNew) {
+            const commonSpace = new CommonSpace(notu);
+            const duration = note.getTagData(commonSpace.duration, DurationData);
+            if (!!duration) {
+                data.durationMs = duration.ms;
+                manualRefresh();
+            }
+        }
+    }, []);
 
     function onIncludeTimeChange(checked: CheckedState) {
         const value = checked.valueOf();

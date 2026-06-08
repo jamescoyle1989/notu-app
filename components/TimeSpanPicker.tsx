@@ -23,11 +23,16 @@ export const TimespanPicker = ({
     const totalDays = Math.floor(totalHours / 24);
     const remainingHours = totalHours - (totalDays * 24);
 
-    const [hoursMinsText, setHoursMinsText] = useState(`${remainingHours.toString().padStart(2, '0')}:${remainingMinutes.toString().padStart(2, '0')}`);
+    const hoursMinsText = `${remainingHours.toString().padStart(2, '0')}:${remainingMinutes.toString().padStart(2, '0')}`;
+    const [workingHoursMinsText, setWorkingHoursMinsText] = useState(hoursMinsText);
     const [editingHours, setEditingHours] = useState(false);
     const [editingMinutes, setEditingMinutes] = useState(false);
     const daysTextRef = useRef<Input>(null);
     const hoursMinsTextRef = useRef<Input>(null);
+
+    useEffect(() => {
+        setWorkingHoursMinsText(hoursMinsText);
+    }, [milliseconds]);
 
     useEffect(() => {
         if (editingMinutes) {
@@ -96,7 +101,7 @@ export const TimespanPicker = ({
 
             if ((hoursVal >= 10 && hoursVal < 24) || (hoursVal < 10 && hoursVal > 2) || (hoursText.length == 2 && hoursVal <= 2)) {
                 const newText = `${hoursVal.toString().padStart(2, '0')}${value.substring(newColonIndex)}`;
-                setHoursMinsText(newText);
+                setWorkingHoursMinsText(newText);
                 setEditingHours(false);
                 setEditingMinutes(true);
                 onChange(convertToMilliseconds(totalDays, hoursVal, remainingMinutes));
@@ -104,7 +109,7 @@ export const TimespanPicker = ({
             else {
                 if (hoursVal < 24)
                     onChange(convertToMilliseconds(totalDays, hoursVal, remainingMinutes));
-                setHoursMinsText(`${hoursVal.toString()}${value.substring(newColonIndex)}`);
+                setWorkingHoursMinsText(`${hoursVal.toString()}${value.substring(newColonIndex)}`);
             }
         }
         else if (editingMinutes) {
@@ -113,7 +118,7 @@ export const TimespanPicker = ({
 
             if ((minsVal >= 10 && minsVal < 60) || (minsVal < 10 && minsVal > 5) || (minsText.length == 2 && minsVal <= 5)) {
                 const newText = `${value.substring(0, newColonIndex + 1)}${minsVal.toString().padStart(2, '0')}`;
-                setHoursMinsText(newText);
+                setWorkingHoursMinsText(newText);
                 setEditingMinutes(false);
                 hoursMinsTextRef.current.blur();
                 onChange(convertToMilliseconds(totalDays, remainingHours, minsVal));
@@ -121,7 +126,7 @@ export const TimespanPicker = ({
             else {
                 if (minsVal < 60)
                     onChange(convertToMilliseconds(totalDays, remainingHours, minsVal));
-                setHoursMinsText(`${value.substring(0, newColonIndex + 1)}${minsVal.toString()}`);
+                setWorkingHoursMinsText(`${value.substring(0, newColonIndex + 1)}${minsVal.toString()}`);
             }
         }
         blockSelectionChangeHandling = true;
@@ -151,7 +156,7 @@ export const TimespanPicker = ({
             <NotuInput ref={hoursMinsTextRef}
                        joinedLeft
                        keyboardType="numeric"
-                       value={hoursMinsText}
+                       value={editingHours || editingMinutes ? workingHoursMinsText : hoursMinsText}
                        contextMenuHidden={true}
                        onSelectionChange={onHoursMinsSelectionChange}
                        onChangeText={onHoursMinsTextChange} />

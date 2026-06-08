@@ -1,11 +1,14 @@
 import { TimespanPicker } from "@/components/TimeSpanPicker";
+import { useManualRefresh } from "@/helpers/Hooks";
 import { NoteTagDataComponentFactory, NoteTagDataComponentProps } from "@/helpers/NotuRenderTools";
 import { NotuText } from "@/helpers/NotuStyles";
 import { timespanToText } from "@/helpers/RenderHelpers";
 import { Note, NoteTag, Notu, Tag } from "notu";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
+import { CommonSpace } from "./CommonSpace";
 import { CommonSpaceSetup } from "./CommonSpaceSetup";
 import { DurationData } from "./DurationNoteTagData";
+import { ScheduledData } from "./ScheduledNoteTagData";
 
 export default class DurationNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
 
@@ -17,7 +20,7 @@ export default class DurationNoteTagDataComponentFactory implements NoteTagDataC
     }
 
     getEditorComponent(noteTag: NoteTag, note: Note, notu: Notu, refreshCallback: () => void): ReactNode {
-        return (<EditorComponent noteTag={noteTag} refreshCallback={refreshCallback} />);
+        return (<EditorComponent note={note} noteTag={noteTag} notu={notu} refreshCallback={refreshCallback} />);
     }
     
     validate(noteTag: NoteTag, note: Note, notu: Notu): Promise<boolean> {
@@ -35,8 +38,20 @@ export default class DurationNoteTagDataComponentFactory implements NoteTagDataC
 }
 
 
-function EditorComponent({ noteTag, refreshCallback }: NoteTagDataComponentProps) {
+function EditorComponent({ note, noteTag, notu, refreshCallback }: NoteTagDataComponentProps) {
     const data = new DurationData(noteTag);
+    const manualRefresh = useManualRefresh();
+
+    useEffect(() => {
+        if (noteTag.isNew) {
+            const commonSpace = new CommonSpace(notu);
+            const scheduled = note.getTagData(commonSpace.scheduled, ScheduledData);
+            if (!!scheduled) {
+                data.ms = scheduled.durationMs;
+                manualRefresh();
+            }
+        }
+    }, []);
 
     function onMsChange(value: number) {
         data.ms = value;

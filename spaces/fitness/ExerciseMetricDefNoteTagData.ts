@@ -131,13 +131,10 @@ export class ExerciseMetricDefData {
 
 
     getAllowedValues(): Array<number> {
-        if (this.mode == 'Set') {
-            console.log('GetAllowedValues for Set', this.values);
+        if (this.mode == 'Set')
             return [...this.values];
-        }
 
         if (this.mode == 'Range') {
-            console.log('GetAllowedValues for Range', {min: this.min, increment: this.increment, max: this.max});
             if (this.increment == 0)
                 throw Error('Unable to generate allowed values range with zero increment');
             let position = this.min;
