@@ -9,11 +9,11 @@ import { RoutinesSpaceSetup } from "./RoutinesSpaceSetup";
 
 export default class LinkedRoutineNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
 
-    getBadgeComponent(noteTag: NoteTag, note: Note, notu: Notu): ReactNode {
+    getBadgeComponent(noteTag: NoteTag, note: Note, notu: Notu, textColor: string): ReactNode {
         const data = new LinkedRoutineData(noteTag);
         return (
             <View>
-                <NotuText>{data.relationship}</NotuText>
+                <NotuText color={textColor} small>{data.relationship}</NotuText>
             </View>
         )
     }

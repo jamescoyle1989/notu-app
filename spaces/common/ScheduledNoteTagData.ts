@@ -1,6 +1,6 @@
-import { mapDateToNumber, mapNumberToDate } from "@/sqlite/SQLMappings";
 import dayjs from "dayjs";
 import { Note, NoteTag } from "notu";
+import { mapDateToNumber, mapNumberToDate } from "../../sqlite/SQLMappings";
 import { CommonSpace } from "./CommonSpace";
 import { CommonSpaceSetup } from "./CommonSpaceSetup";
 

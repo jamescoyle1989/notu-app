@@ -1,5 +1,5 @@
-import { mapDateToNumber, mapNumberToDate } from "@/sqlite/SQLMappings";
 import { Note, NoteTag } from "notu";
+import { mapDateToNumber, mapNumberToDate } from "../../sqlite/SQLMappings";
 import { CommonSpace } from "./CommonSpace";
 import { CommonSpaceSetup } from "./CommonSpaceSetup";
 

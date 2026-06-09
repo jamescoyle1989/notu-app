@@ -239,17 +239,17 @@ export function evaluatePotentialRoutineDueDate(
     const startOfDate = dayjs(date).startOf('day').toDate();
 
     const todaysPendingTasks = pendingTasks.filter(x => {
-        return dayjs(getScheduledDate(x, commonSpace)).startOf('day').toDate().getTime() != startOfDate.getTime()
+        return dayjs(getScheduledDate(x, commonSpace)).startOf('day').toDate().getTime() == startOfDate.getTime()
     });
 
     const forceDueDeps = dependenciesByRelationType.get('Forces Routine Due');
-    for (const dep of forceDueDeps) {
+    for (const dep of forceDueDeps ?? []) {
         if (!!todaysPendingTasks.find(x => !!x.getTag(dep)))
             return true;
     }
 
     const equivalentDeps = dependenciesByRelationType.get('Is Treated As Equivalent');
-    for (const dep of equivalentDeps) {
+    for (const dep of equivalentDeps ?? []) {
         if (!!todaysPendingTasks.find(x => !!x.getTag(dep))) {
             dateHistory.push(startOfDate);
             break;
@@ -260,11 +260,11 @@ export function evaluatePotentialRoutineDueDate(
         return false;
 
     const dueOnSameDayDeps = dependenciesByRelationType.get('Must Be Due On Same Day');
-    if (dueOnSameDayDeps.length > 0 && !dueOnSameDayDeps.find(dep => !!todaysPendingTasks.find(note => !!note.getTag(dep))))
+    if ((dueOnSameDayDeps ?? []).length > 0 && !dueOnSameDayDeps.find(dep => !!todaysPendingTasks.find(note => !!note.getTag(dep))))
         return false;
 
     const notDueOnSameDayDeps = dependenciesByRelationType.get('Must Not Be Due On Same Day');
-    for (const dep of notDueOnSameDayDeps) {
+    for (const dep of notDueOnSameDayDeps ?? []) {
         if (!!todaysPendingTasks.find(x => !!x.getTag(dep)))
             return false;
     }
