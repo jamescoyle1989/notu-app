@@ -10,5 +10,6 @@ export default {
     cloneNoteProcess: 'Clone Note',
     showRelatedNotesProcess: 'Show Related Notes',
     deleteDisplayedNotesProcess: 'Delete Displayed Notes Process',
-    passwordProtection: 'Password Protection'
+    passwordProtection: 'Password Protection',
+    shuffleChoicesProcess: 'Shuffle Choices'
 };

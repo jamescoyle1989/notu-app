@@ -57,6 +57,7 @@ import PageNoteTagDataComponentFactory from '@/spaces/system/PageNoteTagDataComp
 import ProcessAvailabilityNoteTagDataComponentFactory from '@/spaces/system/ProcessAvailabilityNoteTagDataComponent';
 import ProcessNoteTagDataComponentFactory from '@/spaces/system/ProcessNoteTagDataComponent';
 import ShowRelatedNotesProcessNoteTagDataComponentFactory from '@/spaces/system/ShowRelatedNotesProcessNoteTagDataComponent';
+import ShuffleChoicesProcessNoteTagDataComponentFactory from '@/spaces/system/ShuffleChoicesProcessNoteTagDataComponent';
 import { SystemSpaceSetup } from '@/spaces/system/SystemSpaceSetup';
 import DeadlineNoteTagDataComponentFactory from '@/spaces/tasks/DeadlineNoteTagDataComponent';
 import { TasksSpaceSetup } from '@/spaces/tasks/TasksSpaceSetup';
@@ -142,7 +143,8 @@ export function getNoteTagComponentFactories(cache: NotuCache): Array<NoteTagDat
         new ProcessAvailabilityNoteTagDataComponentFactory(),
         new ProcessNoteTagDataComponentFactory(),
         new ShowRelatedNotesProcessNoteTagDataComponentFactory(),
-        new DeleteDisplayedNotesProcessNoteTagDataComponentFactory()
+        new DeleteDisplayedNotesProcessNoteTagDataComponentFactory(),
+        new ShuffleChoicesProcessNoteTagDataComponentFactory()
     ];
     if (!!cache.getSpaceByInternalName(CommonSpaceSetup.internalName)) {
         output.push(...[

@@ -49,11 +49,11 @@ export class NoteChoice {
         this._save = save;
     }
 
-    shuffleSelection(): void {
+    shuffleSelection(allowUnchanged: boolean = false): void {
         if (this.options.length > 1) {
             let newIndex = randomInt(this._options.length - 1);
-            if (newIndex == this.selectedIndex)
-                newIndex++;
+            if (!allowUnchanged && newIndex == this.selectedIndex)
+                newIndex = (newIndex + randomInt(this._options.length - 1)) % this._options.length;
             this.selectedIndex = newIndex;
         }
     }

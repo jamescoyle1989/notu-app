@@ -42,6 +42,9 @@ export class SystemSpace implements LogicalSpace {
     private _passwordProtection: Tag;
     get passwordProtection(): Tag { return this._passwordProtection; }
 
+    private _shuffleChoicesProcess: Tag;
+    get shuffleChoicesProcess(): Tag { return this._shuffleChoicesProcess; }
+
 
     constructor(notu: Notu) {
         this._load(notu);
@@ -60,6 +63,7 @@ export class SystemSpace implements LogicalSpace {
         this._showRelatedNotesProcess = notu.getTagByName(defs.showRelatedNotesProcess, this._space);
         this._deleteDisplayedNotesProcess = notu.getTagByName(defs.deleteDisplayedNotesProcess, this._space);
         this._passwordProtection = notu.getTagByName(defs.passwordProtection, this._space);
+        this._shuffleChoicesProcess = notu.getTagByName(defs.shuffleChoicesProcess, this._space);
     }
 }
 

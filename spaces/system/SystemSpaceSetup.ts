@@ -121,5 +121,18 @@ export class SystemSpaceSetup {
             await notu.saveNotes([deleteDisplayedNotesProcess, passwordProtection]);
             await notu.saveSpace(systemSpace);
         }
+
+        if (systemSpace.version == '1.2.0') {
+            systemSpace.version = '1.3.0';
+            const system = new SystemSpace(notu);
+
+            const shuffleChoicesProcess = new Note(`Process which will shuffle the selected index of all <Choice> components within the note's description.`)
+                .in(systemSpace).setOwnTag(defs.shuffleChoicesProcess);
+            shuffleChoicesProcess.ownTag.asInternal();
+            shuffleChoicesProcess.addTag(process.ownTag);
+
+            await notu.saveNotes([shuffleChoicesProcess]);
+            await notu.saveSpace(systemSpace);
+        }
     }
 }
