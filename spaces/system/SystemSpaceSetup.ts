@@ -129,9 +129,22 @@ export class SystemSpaceSetup {
             const shuffleChoicesProcess = new Note(`Process which will shuffle the selected index of all <Choice> components within the note's description.`)
                 .in(systemSpace).setOwnTag(defs.shuffleChoicesProcess);
             shuffleChoicesProcess.ownTag.asInternal();
-            shuffleChoicesProcess.addTag(process.ownTag);
+            shuffleChoicesProcess.addTag(system.process);
 
             await notu.saveNotes([shuffleChoicesProcess]);
+            await notu.saveSpace(systemSpace);
+        }
+
+        if (systemSpace.version == '1.3.0') {
+            systemSpace.version = '1.4.0';
+            const system = new SystemSpace(notu);
+
+            const removeFinishedChecklistItemsProcess = new Note(`Process which will remove all checked items from any checklists that have been added to a note.`)
+                .in(systemSpace).setOwnTag(defs.removeFinishedChecklistItemsProcess);
+            removeFinishedChecklistItemsProcess.ownTag.asInternal();
+            removeFinishedChecklistItemsProcess.addTag(system.process);
+
+            await notu.saveNotes([removeFinishedChecklistItemsProcess]);
             await notu.saveSpace(systemSpace);
         }
     }

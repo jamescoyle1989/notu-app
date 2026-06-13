@@ -11,5 +11,6 @@ export default {
     showRelatedNotesProcess: 'Show Related Notes',
     deleteDisplayedNotesProcess: 'Delete Displayed Notes Process',
     passwordProtection: 'Password Protection',
-    shuffleChoicesProcess: 'Shuffle Choices'
+    shuffleChoicesProcess: 'Shuffle Choices',
+    removeFinishedChecklistItemsProcess: 'Remove Finished Checklist Items'
 };
