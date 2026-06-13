@@ -122,16 +122,20 @@ export function getNewEventDates(
     previousEventDates: Array<Date>
 ): Array<Date> {
 
+    previousEventDates = previousEventDates.map(x => dayjs(x).startOf('day').add(12, 'hours').toDate());
+
     const output = [];
     let date = dayjs().startOf('day').add(12, 'hours').toDate();
     for (let i = 0; i < recurringData.daysLookahead; i++) {
         if (recurringData.isDueOn(date, previousEventDates)) {
-            let timeOfDay = dayjs(date).startOf('day')
-                .add(recurringData.timeOfDay.getHours(), 'hours')
-                .add(recurringData.timeOfDay.getMinutes(), 'minutes')
-                .toDate();
-            output.push(timeOfDay);
-            previousEventDates.push(date);
+            if (!previousEventDates.find(x => x.getTime() == date.getTime())) {
+                let timeOfDay = dayjs(date).startOf('day')
+                    .add(recurringData.timeOfDay.getHours(), 'hours')
+                    .add(recurringData.timeOfDay.getMinutes(), 'minutes')
+                    .toDate();
+                output.push(timeOfDay);
+                previousEventDates.push(date);
+            }
         }
         date = dayjs(date).add(1, 'day').toDate();
     }
