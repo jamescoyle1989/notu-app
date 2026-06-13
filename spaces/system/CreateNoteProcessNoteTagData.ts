@@ -58,6 +58,8 @@ export class CreateNoteProcessData extends ProcessDataBase {
             if (!!tag)
                 newNote.addTag(tag);
         }
+        if (!!note.ownTag)
+            newNote.addTag(note.ownTag);
         return Promise.resolve(new ShowEditorAction(newNote));
     }
 }

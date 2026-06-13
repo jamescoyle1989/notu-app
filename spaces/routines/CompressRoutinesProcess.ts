@@ -159,6 +159,7 @@ export function compressNotesForDate(
     const compressedNote = notes[0];
     compressedNote.removeTag(commonSpace.scheduled);
     compressedNote.space = spaceToSaveNotesTo;
+    compressedNote.text = '';
     noteDateSetter(compressedNote, date);
     for (let i = 1; i < notes.length; i++) {
         const otherNote = notes[i];
