@@ -1,7 +1,8 @@
-import { RefreshAction, UIAction } from "@/helpers/NoteAction";
+import { UIAction } from "@/helpers/NoteAction";
 import { Note, NoteTag, Notu } from "notu";
 import { ProcessDataBase } from "../system/ProcessNoteTagDataBaseClass";
 import { CelebrationEventsProcessContext, generateCelebrationNotes } from "./CelebrationEventsProcess";
+import { showGeneratedCelebrationEventsScreen } from "./CelebrationEventsProcessUI";
 import { PeopleSpace } from "./PeopleSpace";
 import { PeopleSpaceSetup } from "./PeopleSpaceSetup";
 
@@ -48,7 +49,6 @@ export class CelebrationEventsProcessData extends ProcessDataBase {
                 notu
             )
         );
-        await notu.saveNotes(newNotes);
-        return new RefreshAction();
+        return showGeneratedCelebrationEventsScreen(newNotes, notu);
     }
 }
