@@ -81,7 +81,11 @@ export class NoteChoice {
         function getOptionSelectText(option: NoteChoiceOption): string {
             if (option.content.length == 0)
                 return '-- Empty --';
-            let output = option.content[0].getText() as string;
+            const allComponents = option.content.flatMap(x => x.getThisPlusAllChildComponents()) as any[];
+            const texts = allComponents.filter(x => x instanceof NoteText) as NoteText[];
+            let output = texts.map(x => x.displayText.trim()).join(' ');
+            if (output.length == 0)
+                return '-- Empty --';
             if (output.length > 50)
                 output = output.substring(0, 47) + '...';
             else if (option.content.length > 1)
