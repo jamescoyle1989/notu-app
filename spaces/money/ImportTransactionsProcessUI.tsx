@@ -70,8 +70,6 @@ export function showProcessOutputScreen(
                     return new RefreshAction();
                 }));
                 menuBuilder.addToBottomOfStart(new NoteAction('Delete Existing Transaction', async n => {
-                    const noteData = note.getTagData(moneySpace.transaction, TransactionData);
-                    const duplicateData = possibleDuplicate.getTagData(moneySpace.transaction, TransactionData);
                     await notu.saveNotes([possibleDuplicate.delete()]);
                     potentialDuplicatesMap.set(note.id, potentialDuplicatesMap.get(note.id).filter(x => x.id != possibleDuplicate.id));
                     return new RefreshAction();
