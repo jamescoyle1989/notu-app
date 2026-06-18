@@ -16,6 +16,7 @@ export function showProcessOutputScreen(
     let i = -1;
     for (const [tag, newExerciseInfos] of newExerciseOptions) {
         for (const newExerciseInfo of newExerciseInfos) {
+            newExerciseInfo.note.group = getExerciseInfoSummaryText(tag, newExerciseInfo, true);
             newExerciseInfo.note.id = i;
             i--;
         }
@@ -37,7 +38,7 @@ export function showProcessOutputScreen(
     function showChangeExerciseScreen(exerciseTag: Tag): ShowNoteListAction {
         const newExerciseInfos = newExerciseOptions.get(exerciseTag);
         for (const exerciseInfo of newExerciseInfos)
-            exerciseInfo.note.group = getExeriseInfoSummaryText(exerciseInfo);
+            exerciseInfo.note.group = getExerciseInfoSummaryText(exerciseTag, exerciseInfo, false);
         const output = new ShowNoteListAction(
             newExerciseInfos.map(x => x.note),
             `${exerciseTag.name} options`,
@@ -47,13 +48,14 @@ export function showProcessOutputScreen(
                 onUIAction: (action: UIAction) => void
             ) => {
                 return (
-                    <XStack>
+                    <XStack style={{alignItems: 'center'}}>
                         <View style={{alignSelf: 'flex-end', flexShrink: 1}}>
                             <NoteViewer note={note}
                                         notuRenderTools={notuRenderTools}
                                         onUIAction={onUIAction} />
                         </View>
-                        <NotuButton theme="highlight" onPress={() => handleSelectExercise(exerciseTag, note, onUIAction)}>
+                        <NotuButton theme="highlight"
+                                    onPress={() => handleSelectExercise(exerciseTag, note, onUIAction)}>
                             Select
                         </NotuButton>
                     </XStack>
@@ -63,8 +65,10 @@ export function showProcessOutputScreen(
         return output;
     }
 
-    function getExeriseInfoSummaryText(exercise: NewExerciseInfo): string {
+    function getExerciseInfoSummaryText(exerciseTag: Tag, exercise: NewExerciseInfo, includeExerciseName: boolean): string {
         let output = '';
+        if (includeExerciseName)
+            output += `${exerciseTag.name} - `;
         if (!!exercise.increasedMetric) {
             output += `${exercise.invertIncreasedMetric ? 'Less' : 'More'} ${exercise.increasedMetric.name}`
         }
@@ -82,7 +86,7 @@ export function showProcessOutputScreen(
 
     function handleSelectExercise(exerciseTag: Tag, note: Note, onUIAction: (action: UIAction) => void) {
         for (const exerciseInfo of newExerciseOptions.get(exerciseTag))
-            exerciseInfo.note.group = undefined;
+            exerciseInfo.note.group = getExerciseInfoSummaryText(exerciseTag, exerciseInfo, true);
         for (let i = 0; i < displayNotes.length; i++) {
             const displayNote = displayNotes[i];
             if (!!displayNote.getTag(exerciseTag)) {
@@ -107,7 +111,7 @@ export function showProcessOutputScreen(
             onUIAction: (action: UIAction) => void
         ) => {
             return (
-                <XStack>
+                <XStack style={{alignItems: 'center'}}>
                     <View style={{alignSelf: 'flex-end', flexShrink: 1}}>
                         <NoteViewer note={note}
                                     notuRenderTools={notuRenderTools}

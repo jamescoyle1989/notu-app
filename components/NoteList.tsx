@@ -35,7 +35,7 @@ export default function NoteList({
     return (
         <FlatList data={notes}
                   renderItem={({item}) => (
-                    <View key={item.id}>
+                    <View key={item.id} borderBottomColor="$borderColor" borderBottomWidth={1}>
                         {renderNoteViewer(item)}
                     </View>
                   )}/>

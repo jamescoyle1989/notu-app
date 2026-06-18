@@ -36,23 +36,32 @@ export const NoteViewer = ({
     const theme = useTheme();
 
     async function showNoteActions() {
-        const systemSpace = new SystemSpace(notuRenderTools.notu);
         const actionsList = new Array<NoteAction>();
-        for (const process of (await notuRenderTools.notu.getNotes(`_#System.Process AND #[System.Process Availability]`))) {
-            const procAvailData = new ProcessAvailabilityData(process.getTag(systemSpace.processAvailability));
-            const query = `n.id = ${note.id} AND (${procAvailData.query})`;
-            try {
-                if (procAvailData.query.trim() == '' || (await notuRenderTools.notu.getNoteCount(query)) > 0) {
-                    for (const nt of process.tags.filter(x => x.tag.linksTo(systemSpace.process))) {
-                        const factory = notuRenderTools.getComponentFactoryForNoteTag(nt.tag, process);
-                        const dataObj = factory.getDataObject(nt) as ProcessDataBase;
-                        actionsList.push(new NoteAction(dataObj.name, n => dataObj.runProcess(note, notuRenderTools.notu), false));
+
+        if (!!customActions) {
+            const menuBuilder = new NoteActionsMenuBuilder();
+            customActions(note, menuBuilder, notuRenderTools.notu);
+            actionsList.push(...menuBuilder.actions)
+        }
+        else {
+            const systemSpace = new SystemSpace(notuRenderTools.notu);
+            for (const process of (await notuRenderTools.notu.getNotes(`_#System.Process AND #[System.Process Availability]`))) {
+                const procAvailData = new ProcessAvailabilityData(process.getTag(systemSpace.processAvailability));
+                const query = `n.id = ${note.id} AND (${procAvailData.query})`;
+                try {
+                    if (procAvailData.query.trim() == '' || (await notuRenderTools.notu.getNoteCount(query)) > 0) {
+                        for (const nt of process.tags.filter(x => x.tag.linksTo(systemSpace.process))) {
+                            const factory = notuRenderTools.getComponentFactoryForNoteTag(nt.tag, process);
+                            const dataObj = factory.getDataObject(nt) as ProcessDataBase;
+                            actionsList.push(new NoteAction(dataObj.name, n => dataObj.runProcess(note, notuRenderTools.notu), false));
+                        }
                     }
                 }
-            }
-            catch {
+                catch {
+                }
             }
         }
+
         if (actionsList.length == 0)
             return;
         setActions(actionsList);
@@ -124,7 +133,7 @@ export const NoteViewer = ({
         <TouchableHighlight onLongPress={showNoteActions}
                             underlayColor={theme.backgroundHover.val}>
             
-            <View borderBottomColor="$borderColor" borderBottomWidth={1} paddingBlockEnd={2}>
+            <View paddingBlockEnd={2}>
 
                 <YStack marginStart={5} marginEnd={5}>
                     {textComponents.map((x, index) => (<NoteComponentContainer key={index} component={x}/>))}

@@ -63,7 +63,7 @@ export default function GroupedNoteList({
     return (
         <SectionList sections={groupedNotes.map(x => ({title: x.title, data: x.notes}))}
                      renderItem={({item}) => (
-                        <View key={item.id}>
+                        <View key={item.id} borderBottomColor="$borderColor" borderBottomWidth={1}>
                             {renderNoteViewer(item)}
                         </View>
                      )}
