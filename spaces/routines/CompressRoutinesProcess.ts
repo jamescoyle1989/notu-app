@@ -157,6 +157,16 @@ export function compressNotesForDate(
         return [];  // Nothing to compress, no saves to be made
 
     const compressedNote = notes[0];
+    for (const nt of [...compressedNote.tags]) {
+        if (
+            nt.tag.id != commonSpace.finished.id &&
+            nt.tag.id != commonSpace.cancelled.id &&
+            nt.tag.id != commonSpace.generated.id &&
+            !nt.tag.linksTo(routinesSpace.routine)
+        ) {
+            nt.delete();
+        }
+    }
     compressedNote.removeTag(commonSpace.scheduled);
     compressedNote.space = spaceToSaveNotesTo;
     compressedNote.text = '';
