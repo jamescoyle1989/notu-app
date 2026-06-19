@@ -339,11 +339,11 @@ export function generateExerciseVariation(
     for (const [tag, allowedValues] of metricAllowedValues) {
         const metricData = ExerciseMetricData.addTag(newNote, tag);
 
-        const previousMetricData = ExerciseMetricData.new(previousExercise.getTag(tag));
+        const previousMetricValue = ExerciseMetricData.new(previousExercise.getTag(tag))?.value ?? allowedValues[0];
         let bestDistance = Number.MAX_SAFE_INTEGER;
         let bestAllowedValueIndex = 0;
         for (let i = 0; i < allowedValues.length; i++) {
-            const distance = Math.abs(allowedValues[i] - previousMetricData.value);
+            const distance = Math.abs(allowedValues[i] - previousMetricValue);
             if (distance < bestDistance) {
                 bestDistance = distance;
                 bestAllowedValueIndex = i;
@@ -351,7 +351,7 @@ export function generateExerciseVariation(
         }
         
         if (tag === metricToIncrease) {
-            if (bestAllowedValueIndex + 1 > allowedValues.length)
+            if (bestAllowedValueIndex + 1 >= allowedValues.length)
                 return null;
             metricData.value = allowedValues[bestAllowedValueIndex + 1];
         }
