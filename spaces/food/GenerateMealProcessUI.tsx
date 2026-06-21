@@ -19,6 +19,11 @@ export function showCustomiseMealScreen(
     const recipeData = RecipeData.new(recipe.getTag(foodSpace.recipe));
     const processContext = new GenerateMealProcessContext(processData, notu);
 
+    if (!recipeData.ingredients.find(x => x.optional) && !recipeData.groups.find(x => x.optional)) {
+        const meal = generateMeal(recipe, [], processContext);
+        return new ShowEditorAction(meal);
+    }
+
     if (!recipeData) {
         return new ShowCustomPageAction(
             'Customise Meal',

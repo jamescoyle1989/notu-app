@@ -56,14 +56,18 @@ export function generateShoppingList(
         const mealData = meal.getTagData(context.foodSpace.meal, MealData);
         for (const ingredient of mealData.ingredients) {
             let quantitiesArray = ingredientsMap.get(ingredient.name) ?? [];
-            quantitiesArray.push(ingredient.quantity);
+            if (!!ingredient.quantity)
+                quantitiesArray.push(ingredient.quantity);
             ingredientsMap.set(ingredient.name, quantitiesArray);
         }
     }
 
     const checklist = new NoteChecklist([], null);
     for (const [ingredient, quantities] of ingredientsMap) {
-        checklist.lines.push(new NoteChecklistLine([new NoteText(`${quantities.join(' + ')} x ${ingredient}`)], false));
+        if (quantities.length > 0)
+            checklist.lines.push(new NoteChecklistLine([new NoteText(`${quantities.join(' + ')} x ${ingredient}`)], false));
+        else
+            checklist.lines.push(new NoteChecklistLine([new NoteText(ingredient)], false));
     }
     const shoppingList = new Note(checklist.getText()).in(context.getSpaceToSaveTo());
     for (const tag of context.getTagsToAdd())
