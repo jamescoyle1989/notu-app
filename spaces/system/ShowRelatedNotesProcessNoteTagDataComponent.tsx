@@ -6,6 +6,7 @@ import { Note, NoteTag, Notu, Tag } from "notu";
 import { ReactNode } from "react";
 import { Input, Label, XStack, YStack } from "tamagui";
 import { ShowRelatedNotesProcessData } from "./ShowRelatedNotesProcessNoteTagData";
+import { SystemSpace } from "./SystemSpace";
 import defs from "./SystemSpaceDefs";
 
 export default class ShowRelatedNotesProcessNoteTagDataComponentFactory implements NoteTagDataComponentFactory {
@@ -19,17 +20,24 @@ export default class ShowRelatedNotesProcessNoteTagDataComponentFactory implemen
     }
 
     validate(noteTag: NoteTag, note: Note, notu: Notu): Promise<boolean> {
-        const data = new ShowRelatedNotesProcessData(noteTag);
+        const data = new ShowRelatedNotesProcessData(noteTag, note);
+        const systemSpace = new SystemSpace(notu);
+
         if (data.spaceId > 0) {
             const space = notu.getSpace(data.spaceId);
             if (!space)
                 throw Error('Make sure you select a space for new notes to be created in.');
         }
+
+        const linkedPages = note.tags.filter(x => x.tag.linksTo(systemSpace.page));
+        if (linkedPages.length > 1)
+            throw Error('There is more than one page linked to by this note. Please select just one so the process knows which one to show.');
+
         return Promise.resolve(true);
     }
 
-    getDataObject(noteTag: NoteTag) {
-        return new ShowRelatedNotesProcessData(noteTag);
+    getDataObject(noteTag: NoteTag, note: Note) {
+        return new ShowRelatedNotesProcessData(noteTag, note);
     }
 
     isForNoteTag(note: Note, tag: Tag): boolean {
@@ -40,7 +48,7 @@ export default class ShowRelatedNotesProcessNoteTagDataComponentFactory implemen
 
 
 function EditorComponent({ noteTag, note, notu }: NoteTagDataComponentProps) {
-    const data = new ShowRelatedNotesProcessData(noteTag);
+    const data = new ShowRelatedNotesProcessData(noteTag, note);
     const manualRefresh = useManualRefresh();
     const labelWidth = 120;
     const spaces = [
@@ -48,6 +56,12 @@ function EditorComponent({ noteTag, note, notu }: NoteTagDataComponentProps) {
         { name: `Note's Space`, value: -1 }
     ];
     spaces.push(...notu.getSpaces().map(x => ({ name: x.name, value: x.id })));
+    const systemSpace = new SystemSpace(notu);
+    const linkedPageNoteTag = note.tags.find(x => x.tag.linksTo(systemSpace.page));
+    if (!!linkedPageNoteTag) {
+        data.query = '';
+        data.spaceId = 0;
+    }
 
     function onNameChange(newValue: string) {
         data.name = newValue;
@@ -74,17 +88,24 @@ function EditorComponent({ noteTag, note, notu }: NoteTagDataComponentProps) {
                 </XStack>
             )}
 
-            <XStack style={{alignItems: 'center'}}>
-                <Label width={labelWidth}>Space</Label>
-                <NotuSelect options={spaces}
-                            value={data.spaceId}
-                            onValueChange={handleSpaceChange} />
-            </XStack>
+            {!linkedPageNoteTag && (
+                <YStack>
+                    <XStack style={{alignItems: 'center'}}>
+                        <Label width={labelWidth}>Space</Label>
+                        <NotuSelect options={spaces}
+                                    value={data.spaceId}
+                                    onValueChange={handleSpaceChange} />
+                    </XStack>
 
-            <Label>Text</Label>
-            <Input value={data.query}
-                   multiline={true}
-                   onChangeText={handleQueryChange} />
+                    <Label>Query</Label>
+                    <Input value={data.query}
+                        multiline={true}
+                        onChangeText={handleQueryChange} />
+                </YStack>
+            )}
+            {!!linkedPageNoteTag && (
+                <Label>Process will show '{linkedPageNoteTag.tag.name}' page</Label>
+            )}
         </YStack>
     )
 }

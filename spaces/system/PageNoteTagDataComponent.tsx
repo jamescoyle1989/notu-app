@@ -27,6 +27,10 @@ export default class PageNoteTagDataComponentFactory implements NoteTagDataCompo
         if (!!note.getTag(systemSpace.processAvailability))
             throw Error(`A note cannot have both Page & Process Availability tags added to it.`);
 
+        const data = new PageData(noteTag);
+        if (data.showInPageSelector && !note.ownTag)
+            throw Error(`Notes not intended to be displayed in the screen selector must have their own tag specified.`);
+
         return Promise.resolve(true);
     }
 
@@ -45,6 +49,11 @@ function EditorComponent({ noteTag, refreshCallback }: NoteTagDataComponentProps
     const data = new PageData(noteTag);
     const manualRefresh = useManualRefresh();
     const labelWidth = 120;
+
+    function handleShowInScreenSelectorChanged(checked: CheckedState) {
+        data.showInPageSelector = (checked.valueOf() == true);
+        manualRefresh();
+    }
 
     function handleNameChange(value: string) {
         data.name = value;
@@ -85,16 +94,29 @@ function EditorComponent({ noteTag, refreshCallback }: NoteTagDataComponentProps
             </XStack>
 
             <XStack style={{alignItems: 'center'}}>
-                <Label width={labelWidth}>Group</Label>
-                <NotuInput value={data.group} flex={1}
-                           onChangeText={handleGroupChange} />
+                <Label marginInlineEnd={3}>Show In Page Selector</Label>
+                <Checkbox checked={data.showInPageSelector} onCheckedChange={handleShowInScreenSelectorChanged}>
+                    <Checkbox.Indicator>
+                        <Check />
+                    </Checkbox.Indicator>
+                </Checkbox>
             </XStack>
+            
+            {!!data.showInPageSelector && (
+                <YStack>
+                    <XStack style={{alignItems: 'center'}}>
+                        <Label width={labelWidth}>Group</Label>
+                        <NotuInput value={data.group} flex={1}
+                                onChangeText={handleGroupChange} />
+                    </XStack>
 
-            <XStack style={{alignItems: 'center'}}>
-                <Label width={labelWidth}>Order</Label>
-                <NumberInput numberValue={data.order} flex={1}
-                             onNumberChange={handleOrderChange} />
-            </XStack>
+                    <XStack style={{alignItems: 'center'}}>
+                        <Label width={labelWidth}>Order</Label>
+                        <NumberInput numberValue={data.order} flex={1}
+                                    onNumberChange={handleOrderChange} />
+                    </XStack>
+                </YStack>
+            )}
 
             <Label width={labelWidth}>Query</Label>
             <NotuInput value={data.query}

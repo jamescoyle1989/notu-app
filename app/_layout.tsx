@@ -109,7 +109,7 @@ function CustomDrawerContent(props: DrawerContentComponentProps & { onColorSchem
     }, [drawerStatus]);
 
     async function reloadPages(notu: Notu) {
-        setPageNotes(await notu.getNotes(`#System.Page`));
+        setPageNotes(await notu.getNotes(`#System.Page{IFNULL(.showInPageSelector, 1) = 1}`));
     }
 
     function getPageGroups(systemSpace: SystemSpace): Array<Array<{id: number, data: PageData}>> {

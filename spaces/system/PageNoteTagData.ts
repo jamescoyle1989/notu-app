@@ -14,6 +14,7 @@ export class PageData {
         this._nt = noteTag;
         if (!noteTag.data)
             noteTag.data = {};
+        this.showInPageSelector = this.showInPageSelector;
         this.name = this.name;
         this.group = this.group;
         this.order = this.order;
@@ -28,6 +29,20 @@ export class PageData {
     }
     static addTag(note: Note, systemSpace: SystemSpace): PageData {
         return new PageData(note.addTag(systemSpace.page));
+    }
+
+    get showInPageSelector(): boolean { return this._nt.data.showInPageSelector; }
+    set showInPageSelector(value: boolean) {
+        value = value ?? true;
+        if (this._nt.data.showInPageSelector == value)
+            return;
+        if (this._nt.isClean)
+            this._nt.dirty();
+        this._nt.data.showInPageSelector = value;
+        if (!value) {
+            this.group = '';
+            this.order = 0;
+        }
     }
 
     get name(): string { return this._nt.data.name; }

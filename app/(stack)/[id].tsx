@@ -1,12 +1,11 @@
 import GroupedNoteList from "@/components/GroupedNoteList";
 import { NoteSearch } from "@/components/NoteSearch";
 import { ShowCustomPageAction, ShowDynamicPageAction, ShowEditorAction, ShowErrorAction, ShowNoteListAction, UIAction } from "@/helpers/NoteAction";
-import { NoteTagDataComponentFactory } from "@/helpers/NotuRenderTools";
 import { getNotu } from "@/helpers/NotuSetup";
 import { NotuText } from "@/helpers/NotuStyles";
 import { PageData } from "@/spaces/system/PageNoteTagData";
 import { ProcessDataBase } from "@/spaces/system/ProcessNoteTagDataBaseClass";
-import { FilterComponentFactory, SystemSpace } from "@/spaces/system/SystemSpace";
+import { FilterComponentFactory, isFilter, SystemSpace } from "@/spaces/system/SystemSpace";
 import { DrawerActions } from "@react-navigation/native";
 import { Menu } from '@tamagui/lucide-icons';
 import { Stack, useLocalSearchParams, useNavigation, usePathname, useRouter } from "expo-router";
@@ -18,10 +17,6 @@ import { setActiveDynamicPage } from "./dynamicpage";
 import { setNoteBeingEdited } from "./editnote";
 import { setActiveNoteListAction } from "./listnoteobjects";
 
-
-function isFilter(compFactory: NoteTagDataComponentFactory) {
-    return 'getFilterComponent' in compFactory;
-}
 
 function sleep(milliseconds: number) {
     return new Promise(resolve => setTimeout(resolve, milliseconds));
@@ -134,7 +129,7 @@ export default function CustomPage() {
     async function handleProcessPress(noteTag: NoteTag) {
         try {
             const componentFactory = renderTools.getComponentFactoryForNoteTag(noteTag.tag, pageNote);
-            const processData = componentFactory.getDataObject(noteTag) as ProcessDataBase;
+            const processData = componentFactory.getDataObject(noteTag, pageNote) as ProcessDataBase;
             const tempPageNote = pageNote.duplicate();
             const tempPageData = tempPageNote.getTagData(systemSpace.page, PageData);
             tempPageData.query = queryState;

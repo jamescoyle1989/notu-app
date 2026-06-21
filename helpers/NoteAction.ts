@@ -1,4 +1,6 @@
-import { Note, Space } from "notu";
+import { PageData } from "@/spaces/system/PageNoteTagData";
+import { SystemSpace } from "@/spaces/system/SystemSpace";
+import { Note, Notu } from "notu";
 import { JSX } from "react";
 import { NotuRenderTools } from "./NotuRenderTools";
 
@@ -104,20 +106,20 @@ export class ShowCustomPageAction extends UIAction {
 }
 
 export class ShowDynamicPageAction extends UIAction {
-    private _title: string;
-    get title(): string { return this._title; }
+    private _pageNote: Note;
+    get pageNote(): Note { return this._pageNote; }
 
-    private _space: Space;
-    get space(): Space { return this._space; }
+    private _pageData: PageData;
+    get pageData(): PageData { return this._pageData; }
 
-    private _query: string;
-    get query(): string { return this._query; }
-
-    constructor(title: string, space: Space, query: string) {
+    constructor(pageNote: Note, notu: Notu) {
         super('ShowDynamicPage');
-        this._title = title;
-        this._space = space;
-        this._query = query;
+        const systemSpace = new SystemSpace(notu);
+        const pageData = pageNote.getTagData(systemSpace.page, PageData);
+        if (!pageData)
+            throw Error('No page data found on the passed in note');
+        this._pageNote = pageNote;
+        this._pageData = pageData;
     }
 }
 

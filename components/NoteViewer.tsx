@@ -52,7 +52,7 @@ export const NoteViewer = ({
                     if (procAvailData.query.trim() == '' || (await notuRenderTools.notu.getNoteCount(query)) > 0) {
                         for (const nt of process.tags.filter(x => x.tag.linksTo(systemSpace.process))) {
                             const factory = notuRenderTools.getComponentFactoryForNoteTag(nt.tag, process);
-                            const dataObj = factory.getDataObject(nt) as ProcessDataBase;
+                            const dataObj = factory.getDataObject(nt, process) as ProcessDataBase;
                             actionsList.push(new NoteAction(dataObj.name, n => dataObj.runProcess(note, notuRenderTools.notu), false));
                         }
                     }

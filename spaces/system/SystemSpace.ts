@@ -78,6 +78,13 @@ export interface FilterComponentFactory extends NoteTagDataComponentFactory {
 }
 
 
+export function isFilter(compFactory: NoteTagDataComponentFactory): boolean {
+    if (!compFactory)
+        return false;
+    return 'getFilterComponent' in compFactory;
+}
+
+
 export interface FilterComponentProps {
     query: ParsedQuery,
     onChange: (query: ParsedQuery) => void,

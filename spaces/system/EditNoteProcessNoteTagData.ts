@@ -90,7 +90,7 @@ export class EditNoteProcessData extends ProcessDataBase {
             if (!!tag) {
                 const nt = note.addTag(tag);
                 // This line ensures that if the notetag has any data needed for it, that it will be initialized properly
-                renderTools.getComponentFactoryForNoteTag(tag, note)?.getDataObject(nt);
+                renderTools.getComponentFactoryForNoteTag(tag, note)?.getDataObject(nt, note);
             }
         }
         if (!this.hasEditorSettings) {
