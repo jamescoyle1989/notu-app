@@ -1,9 +1,9 @@
 import { UIAction } from "@/helpers/NoteAction";
 import { NotuText } from "@/helpers/NotuStyles";
+import { ChevronDown, ChevronUp } from "@tamagui/lucide-icons";
 import { Note } from "notu";
-import { JSX, useMemo } from "react";
+import { JSX, useEffect, useState } from "react";
 import { SectionList } from "react-native";
-import { View } from "tamagui";
 import { NotuRenderTools } from "../helpers/NotuRenderTools";
 import { NoteViewer } from "./NoteViewer";
 
@@ -19,6 +19,8 @@ class GroupedNotes {
     public notes: Array<Note> = [];
 
     public title: string = '';
+
+    public expanded: boolean = true;
 
     public constructor(note: Note = null) {
         if (note != null) {
@@ -36,20 +38,73 @@ export default function GroupedNoteList({
     noteViewer
 }: GroupedNoteListProps) {
 
-    const groupedNotes = useMemo(() => {
-        let output = new Array<GroupedNotes>();
-        if (notes.length > 0)
-            output.push(new GroupedNotes(notes[0]));
-        for (let i = 1; i < notes.length; i++) {
-            if (notes[i].group == notes[i - 1].group)
-                output[output.length - 1].notes.push(notes[i]);
-            else
-                output.push(new GroupedNotes(notes[i]));
+    const [groupedNotes, setGroupedNotes] = useState<Array<GroupedNotes>>([]);
+    const [noteIdsToGroups, setNoteIdsToGroups] = useState<Map<number, GroupedNotes>>(new Map());
+
+    useEffect(() => {
+        const output = new Array<GroupedNotes>();
+        const map = new Map<number, GroupedNotes>();
+        
+        if (notes.length > 0) {
+            const group = new GroupedNotes(notes[0]);
+            output.push(group);
+            map.set(notes[0].id, group);
         }
-        return output;
+
+        for (let i = 1; i < notes.length; i++) {
+            if (notes[i].group == notes[i - 1].group) {
+                output[output.length - 1].notes.push(notes[i]);
+                map.set(notes[i].id, output[output.length - 1]);
+            }
+            else {
+                const group = new GroupedNotes(notes[i]);
+                output.push(group);
+                map.set(notes[i].id, group);
+            }
+        }
+        
+        for (const group of output) {
+            const existingGroup = groupedNotes.find(x => x.title == group.title);
+            if (!!existingGroup)
+                group.expanded = existingGroup.expanded;
+        }
+
+        setGroupedNotes(output);
+        setNoteIdsToGroups(map);
     }, [notes]);
 
-    function renderNoteViewer(note: Note) {
+    function findGroupIndex(groupNotes: Array<Note>): number {
+        if (groupNotes.length == 0)
+            return -1;
+        const findId = groupNotes[0].id;
+        for (let i = 0; i < groupedNotes.length; i++) {
+            const group = groupedNotes[i];
+            if (group.notes.find(x => x.id == findId))
+                return i;
+        }
+        return -1;
+    }
+
+    function onGroupTitlePress(groupNotes: Array<Note>): void {
+        const groupIndex = findGroupIndex(groupNotes);
+        if (groupIndex < 0)
+            return;
+
+        const newData = groupedNotes.slice();
+        newData[groupIndex].expanded = !newData[groupIndex].expanded;
+        setGroupedNotes(newData);
+    }
+
+    function renderSectionChevron(groupNotes: Array<Note>) {
+        const groupIndex = findGroupIndex(groupNotes);
+        if (groupIndex < 0 || !groupedNotes[groupIndex].expanded)
+            return (<ChevronUp size={15} marginEnd={5} />);
+        return (<ChevronDown size={15} marginEnd={5} />);
+    }
+
+    function renderNote(note: Note) {
+        if (!noteIdsToGroups.get(note.id).expanded)
+            return;
         if (!noteViewer) {
             return (
                 <NoteViewer note={note}
@@ -62,15 +117,13 @@ export default function GroupedNoteList({
 
     return (
         <SectionList sections={groupedNotes.map(x => ({title: x.title, data: x.notes}))}
-                     renderItem={({item}) => (
-                        <View key={item.id} borderBottomColor="$borderColor" borderBottomWidth={1}>
-                            {renderNoteViewer(item)}
-                        </View>
-                     )}
+                     renderItem={({item}) => renderNote(item)}
                      contentContainerStyle={{paddingBottom: 100}}
                      renderSectionHeader={({section}) => {
                         if (section.title != null) {
-                            return (<NotuText big bold underline>{section.title}</NotuText>)
+                            return (<NotuText big bold underline onPress={() => onGroupTitlePress(section.data)}>
+                                {renderSectionChevron(section.data)} {section.title}
+                            </NotuText>)
                         }
                      }}
                      keyExtractor={item => `${item.id}`}/>
