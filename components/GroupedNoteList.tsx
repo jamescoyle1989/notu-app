@@ -22,10 +22,16 @@ class GroupedNotes {
 
     public expanded: boolean = true;
 
+    public expandedManuallyChanged: boolean = false;
+
     public constructor(note: Note = null) {
         if (note != null) {
             this.notes.push(note);
             this.title = note.group;
+            if (!!this.title && this.title.endsWith('!~@MIN@~!')) {
+                this.expanded = false;
+                this.title = this.title.replace('!~@MIN@~!', '');
+            }
         }
     }
 }
@@ -65,7 +71,7 @@ export default function GroupedNoteList({
         
         for (const group of output) {
             const existingGroup = groupedNotes.find(x => x.title == group.title);
-            if (!!existingGroup)
+            if (!!existingGroup && existingGroup.expandedManuallyChanged)
                 group.expanded = existingGroup.expanded;
         }
 
@@ -92,6 +98,7 @@ export default function GroupedNoteList({
 
         const newData = groupedNotes.slice();
         newData[groupIndex].expanded = !newData[groupIndex].expanded;
+        newData[groupIndex].expandedManuallyChanged = true;
         setGroupedNotes(newData);
     }
 

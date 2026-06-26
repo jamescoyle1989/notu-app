@@ -205,6 +205,8 @@ export class NotuSQLiteClient {
                                 note.grouping = groupingName;
                             }
                         }
+                        if (parsedQuery.groupings[i].minimized)
+                            note.grouping += '!~@MIN@~!';
                     }
                     output.push(...grouping);
                 }

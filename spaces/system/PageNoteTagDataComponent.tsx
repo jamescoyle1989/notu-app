@@ -28,7 +28,7 @@ export default class PageNoteTagDataComponentFactory implements NoteTagDataCompo
             throw Error(`A note cannot have both Page & Process Availability tags added to it.`);
 
         const data = new PageData(noteTag);
-        if (data.showInPageSelector && !note.ownTag)
+        if (!data.showInPageSelector && !note.ownTag)
             throw Error(`Notes not intended to be displayed in the screen selector must have their own tag specified.`);
 
         return Promise.resolve(true);
