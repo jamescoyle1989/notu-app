@@ -1,4 +1,4 @@
-import { NoteAction, NoteActionsMenuBuilder, ShowErrorAction, UIAction } from '@/helpers/NoteAction';
+import { NoteAction, ShowErrorAction, UIAction } from '@/helpers/NoteAction';
 import { NotuButton, NotuText } from '@/helpers/NotuStyles';
 import { ProcessAvailabilityData } from '@/spaces/system/ProcessAvailabilityNoteTagData';
 import { ProcessDataBase } from '@/spaces/system/ProcessNoteTagDataBaseClass';
@@ -18,7 +18,7 @@ interface NoteViewerProps {
     note: Note,
     notuRenderTools: NotuRenderTools,
     onUIAction: (action: UIAction) => void,
-    customActions?: (note: Note, menuBuilder: NoteActionsMenuBuilder, notu: Notu) => void
+    customActions?: (note: Note, notu: Notu) => Array<NoteAction>
 }
 
 
@@ -39,9 +39,7 @@ export const NoteViewer = ({
         const actionsList = new Array<NoteAction>();
 
         if (!!customActions) {
-            const menuBuilder = new NoteActionsMenuBuilder();
-            customActions(note, menuBuilder, notuRenderTools.notu);
-            actionsList.push(...menuBuilder.actions)
+            actionsList.push(...customActions(note, notuRenderTools.notu))
         }
         else {
             const systemSpace = new SystemSpace(notuRenderTools.notu);

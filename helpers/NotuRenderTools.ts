@@ -3,7 +3,6 @@ import { NoteComponent, NoteComponentProcessor } from "notu/dist/types/notecompo
 import { ReactNode } from "react";
 import { NoteParagraph } from "../notecomponents/NoteParagraph";
 import { NoteText } from "../notecomponents/NoteText";
-import { NoteAction, NoteActionsMenuBuilder } from "./NoteAction";
 import { getNoteTagComponentFactories } from "./NotuSetup";
 
 export class NotuRenderTools {
@@ -47,25 +46,6 @@ export class NotuRenderTools {
                 return factory;
         }
         return null;
-    }
-
-    buildNoteActionsMenu(
-        note: Note,
-        textComponents: Array<any>,
-        customActions?: (note: Note, menuBuilder: NoteActionsMenuBuilder, notu: Notu) => void
-    ): Array<NoteAction> {
-        const builder = new NoteActionsMenuBuilder();
-        if (!!customActions) {
-            customActions(note, builder, this._notu);
-            return builder.actions;
-        }
-        if (textComponents != null) {
-            for (const rootComponent of textComponents) {
-                for (const component of rootComponent.getThisPlusAllChildComponents())
-                    component.buildNoteActionsMenu(note, builder, this.notu);
-            }
-        }
-        return builder.actions;
     }
 }
 

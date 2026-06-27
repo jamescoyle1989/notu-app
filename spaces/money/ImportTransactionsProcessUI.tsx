@@ -1,5 +1,5 @@
 import { NoteViewer } from "@/components/NoteViewer";
-import { NoteAction, NoteActionsMenuBuilder, PreviousScreenAction, RefreshAction, ShowNoteListAction, UIAction } from "@/helpers/NoteAction";
+import { NoteAction, PreviousScreenAction, RefreshAction, ShowNoteListAction, UIAction } from "@/helpers/NoteAction";
 import { NotuRenderTools } from "@/helpers/NotuRenderTools";
 import { NotuButton, NotuText } from "@/helpers/NotuStyles";
 import { Note, Notu } from "notu";
@@ -51,29 +51,33 @@ export function showProcessOutputScreen(
         ) => {
             const potentialDuplicates = potentialDuplicatesMap.get(note.id);
 
-            function buildNewTransactionMenuItems(note: Note, menuBuilder: NoteActionsMenuBuilder, notu: Notu) {
-                menuBuilder.addToTopOfStart(new NoteAction('Delete', async n => {
-                    note.delete();
-                    return new RefreshAction();
-                }));
+            function buildNewTransactionMenuItems(note: Note, notu: Notu): Array<NoteAction> {
+                return [
+                    new NoteAction('Delete', async n => {
+                        note.delete();
+                        return new RefreshAction();
+                    })
+                ];
             }
 
-            function buildPossibleDuplicateMenuItems(possibleDuplicate: Note, menuBuilder: NoteActionsMenuBuilder, notu: Notu) {
-                menuBuilder.addToTopOfStart(new NoteAction('Update Existing Transaction', async n => {
-                    const noteData = note.getTagData(moneySpace.transaction, TransactionData);
-                    const duplicateData = possibleDuplicate.getTagData(moneySpace.transaction, TransactionData);
-                    if (possibleDuplicate.text == duplicateData.description)
-                        possibleDuplicate.text = noteData.description;
-                    duplicateData.description = noteData.description;
-                    await notu.saveNotes([possibleDuplicate]);
-                    note.delete();
-                    return new RefreshAction();
-                }));
-                menuBuilder.addToBottomOfStart(new NoteAction('Delete Existing Transaction', async n => {
-                    await notu.saveNotes([possibleDuplicate.delete()]);
-                    potentialDuplicatesMap.set(note.id, potentialDuplicatesMap.get(note.id).filter(x => x.id != possibleDuplicate.id));
-                    return new RefreshAction();
-                }));
+            function buildPossibleDuplicateMenuItems(possibleDuplicate: Note, notu: Notu): Array<NoteAction> {
+                return [
+                    new NoteAction('Update Existing Transaction', async n => {
+                        const noteData = note.getTagData(moneySpace.transaction, TransactionData);
+                        const duplicateData = possibleDuplicate.getTagData(moneySpace.transaction, TransactionData);
+                        if (possibleDuplicate.text == duplicateData.description)
+                            possibleDuplicate.text = noteData.description;
+                        duplicateData.description = noteData.description;
+                        await notu.saveNotes([possibleDuplicate]);
+                        note.delete();
+                        return new RefreshAction();
+                    }),
+                    new NoteAction('Delete Existing Transaction', async n => {
+                        await notu.saveNotes([possibleDuplicate.delete()]);
+                        potentialDuplicatesMap.set(note.id, potentialDuplicatesMap.get(note.id).filter(x => x.id != possibleDuplicate.id));
+                        return new RefreshAction();
+                    })
+                ];
             }
 
             return (

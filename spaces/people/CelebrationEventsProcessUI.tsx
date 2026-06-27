@@ -1,5 +1,5 @@
 import { NoteViewer } from "@/components/NoteViewer";
-import { NoteAction, NoteActionsMenuBuilder, PreviousScreenAction, RefreshAction, ShowNoteListAction, UIAction } from "@/helpers/NoteAction";
+import { NoteAction, PreviousScreenAction, RefreshAction, ShowNoteListAction, UIAction } from "@/helpers/NoteAction";
 import { NotuRenderTools } from "@/helpers/NotuRenderTools";
 import { NotuButton } from "@/helpers/NotuStyles";
 import { Note, Notu } from "notu";
@@ -28,11 +28,13 @@ export function showGeneratedCelebrationEventsScreen(
             onUIAction: (action: UIAction) => void
         ) => {
 
-            function buildMenuItems(note: Note, menuBuilder: NoteActionsMenuBuilder, notu: Notu) {
-                menuBuilder.addToTopOfStart(new NoteAction('Delete', async n => {
-                    note.delete();
-                    return new RefreshAction();
-                }));
+            function buildMenuItems(note: Note, notu: Notu): Array<NoteAction> {
+                return [
+                    new NoteAction('Delete', async n => {
+                        note.delete();
+                        return new RefreshAction();
+                    })
+                ];
             }
 
             return (

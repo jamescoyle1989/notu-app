@@ -134,13 +134,13 @@ export class ShowNoteListAction extends UIAction {
         note: Note,
         notuRenderTools: NotuRenderTools,
         onUIAction: (action: UIAction) => void,
-        customActions: (menuBuilder: NoteActionsMenuBuilder) => void
+        customActions: () => Array<NoteAction>
     ) => JSX.Element;
     get customNoteViewer(): (
         note: Note,
         notuRenderTools: NotuRenderTools,
         onUIAction: (action: UIAction) => void,
-        customActions: (menuBuilder: NoteActionsMenuBuilder) => void
+        customActions: () => Array<NoteAction>
     ) => JSX.Element {
         return this._customNoteViewer;
     }
@@ -156,69 +156,12 @@ export class ShowNoteListAction extends UIAction {
             note: Note,
             notuRenderTools: NotuRenderTools,
             onUIAction: (action: UIAction) => void,
-            customActions: (menuBuilder: NoteActionsMenuBuilder) => void
+            customActions: () => Array<NoteAction>
     ) => JSX.Element
     ) {
         super('ShowNoteList');
         this._notes = notes;
         this._title = title;
         this._customNoteViewer = customNoteViewer;
-    }
-}
-
-
-export class NoteActionsMenuBuilder {
-    private _actions: Array<NoteAction> = [];
-    get actions(): Array<NoteAction> { return this._actions; }
-
-    private _middleStartIndex = 0;
-    private _endStartIndex = 0;
-
-    addToTopOfStart(action: NoteAction) {
-        this._removeActionsByName(action.name);
-        this._actions.splice(0, 0, action);
-        this._middleStartIndex++;
-        this._endStartIndex++;
-    }
-
-    addToBottomOfStart(action: NoteAction) {
-        this._removeActionsByName(action.name);
-        this._actions.splice(this._middleStartIndex, 0, action);
-        this._middleStartIndex++;
-        this._endStartIndex++;
-    }
-
-    addToTopOfMiddle(action: NoteAction) {
-        this._removeActionsByName(action.name);
-        this._actions.splice(this._middleStartIndex, 0, action);
-        this._endStartIndex++;
-    }
-
-    addToBottomOfMiddle(action: NoteAction) {
-        this._removeActionsByName(action.name);
-        this._actions.splice(this._endStartIndex, 0, action);
-        this._endStartIndex++;
-    }
-
-    addToTopOfEnd(action: NoteAction) {
-        this._removeActionsByName(action.name);
-        this._actions.splice(this._endStartIndex, 0, action);
-    }
-
-    addToBottomOfEnd(action: NoteAction) {
-        this._removeActionsByName(action.name);
-        this._actions.push(action);
-    }
-
-    private _removeActionsByName(name: string) {
-        for (let i = this._actions.length - 1; i >= 0; i--) {
-            if (this._actions[i].name == name) {
-                this._actions.splice(i, 1);
-                if (i < this._endStartIndex)
-                    this._endStartIndex--;
-                if (i > this._middleStartIndex)
-                    this._middleStartIndex--;
-            }
-        }
     }
 }

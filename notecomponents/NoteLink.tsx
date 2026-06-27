@@ -1,6 +1,5 @@
-import { NoteActionsMenuBuilder } from '@/helpers/NoteAction';
 import { NotuInput, NotuText } from '@/helpers/NotuStyles';
-import { NmlElement, Note, Notu } from 'notu';
+import { NmlElement, Note } from 'notu';
 import React, { useState } from 'react';
 import { Linking } from 'react-native';
 import { Dialog, View } from 'tamagui';
@@ -129,9 +128,6 @@ export class NoteLink {
             output.push(...cnt.getThisPlusAllChildComponents());
         }
         return output;
-    }
-    
-    buildNoteActionsMenu(note: Note, menuBuilder: NoteActionsMenuBuilder, notu: Notu) {
     }
 }
 

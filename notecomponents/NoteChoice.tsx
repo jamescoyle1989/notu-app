@@ -2,11 +2,10 @@ import { NoteComponentContainer } from "@/components/NoteComponentContainer";
 import { NotuCustomSelect } from "@/components/NotuCustomSelect";
 import { NumberInput } from "@/components/NumberInput";
 import { useManualRefresh } from "@/helpers/Hooks";
-import { NoteActionsMenuBuilder } from "@/helpers/NoteAction";
 import { NotuButton, NotuInput, NotuText } from "@/helpers/NotuStyles";
 import { SquarePen } from "@tamagui/lucide-icons";
 import { randomInt } from "es-toolkit";
-import { NmlElement, Note, Notu } from "notu";
+import { NmlElement, Note } from "notu";
 import { useState } from "react";
 import { Dialog, View, YStack } from "tamagui";
 import { NoteText } from "./NoteText";
@@ -236,9 +235,6 @@ export class NoteChoice {
             }
         }
         return output;
-    }
-        
-    buildNoteActionsMenu(note: Note, menuBuilder: NoteActionsMenuBuilder, notu: Notu) {
     }
 }
 

@@ -1,10 +1,9 @@
 import { NotuSelect } from "@/components/NotuSelect";
 import { useManualRefresh } from "@/helpers/Hooks";
-import { NoteActionsMenuBuilder } from "@/helpers/NoteAction";
 import { NotuInput, NotuText } from "@/helpers/NotuStyles";
 import { timespanToText } from "@/helpers/RenderHelpers";
 import { Parser } from 'expr-eval';
-import { NmlElement, Note, Notu } from "notu";
+import { NmlElement, Note } from "notu";
 import { useMemo, useState } from "react";
 import { Dialog, View } from "tamagui";
 
@@ -104,9 +103,6 @@ export class NoteCalc {
 
     getThisPlusAllChildComponents(): Array<any> {
         return [this];
-    }
-
-    buildNoteActionsMenu(note: Note, menuBuilder: NoteActionsMenuBuilder, notu: Notu) {
     }
 }
 

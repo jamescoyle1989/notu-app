@@ -1,7 +1,6 @@
-import { NoteAction, NoteActionsMenuBuilder, RefreshAction } from "@/helpers/NoteAction";
 import { NotuButton, NotuInput, NotuText } from "@/helpers/NotuStyles";
 import { Check } from "@tamagui/lucide-icons";
-import { NmlElement, Note, Notu } from "notu";
+import { NmlElement, Note } from "notu";
 import { useState } from "react";
 import { Checkbox, Dialog, View, XStack, YStack } from "tamagui";
 import { NoteComponentContainer } from "../components/NoteComponentContainer";
@@ -182,20 +181,6 @@ export class NoteChecklist {
             }
         }
         return output;
-    }
-
-    buildNoteActionsMenu(note: Note, menuBuilder: NoteActionsMenuBuilder, notu: Notu) {
-        if (!menuBuilder.actions.find(x => x.name == 'Remove checked off items')) {
-            menuBuilder.addToBottomOfStart(
-                new NoteAction('Removed checked off items',
-                    async () => {
-                        this.removeFinishedItems();
-                        await this._save();
-                        return new RefreshAction();
-                    }
-                )
-            )
-        }
     }
 }
 
