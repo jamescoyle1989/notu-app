@@ -10,10 +10,10 @@ const light = {
     colorPress: '#222',
     colorFocus: '#333',
     colorTransparent: 'rgba(0, 0, 0, 0.5)',
-    borderColor: '#444',
-    borderColorHover: '#555',
-    borderColorFocus: '#666',
-    borderColorPress: '#777',
+    borderColor: '#BBB',
+    borderColorHover: '#BBB',
+    borderColorFocus: '#BBB',
+    borderColorPress: '#BBB',
     shadowColor: '#837A75',
     shadowColorHover: '#837A75'
 };

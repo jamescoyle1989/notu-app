@@ -4,6 +4,7 @@ import { ChevronDown, ChevronUp } from "@tamagui/lucide-icons";
 import { Note } from "notu";
 import { JSX, useEffect, useState } from "react";
 import { SectionList } from "react-native";
+import { View } from "tamagui";
 import { NotuRenderTools } from "../helpers/NotuRenderTools";
 import { NoteViewer } from "./NoteViewer";
 
@@ -112,6 +113,14 @@ export default function GroupedNoteList({
     function renderNote(note: Note) {
         if (!noteIdsToGroups.get(note.id).expanded)
             return;
+        return (
+            <View borderBottomColor="$borderColor" borderBottomWidth={1}>
+                {renderNoteInnards(note)}
+            </View>
+        );
+    }
+
+    function renderNoteInnards(note: Note) {
         if (!noteViewer) {
             return (
                 <NoteViewer note={note}
