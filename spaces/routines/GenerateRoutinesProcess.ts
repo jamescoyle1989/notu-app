@@ -44,6 +44,18 @@ export class GenerateRoutinesProcessContext {
         );
     }
 
+    async getOverduePendingRoutineTasks(): Promise<Array<Note>> {
+        return await this._notu.getNotes(`
+            _#[${this._routines.routine.getFullName()}]
+            AND #[${this._common.scheduled.getFullName()}]{.start < {Today}}
+            AND #[${this._common.generated.getFullName()}]
+            AND NOT (
+                #[${this._common.finished.getFullName()}]
+                OR #[${this._common.cancelled.getFullName()}]
+            )`
+        );
+    }
+
     async getHistoricRoutineTasks(): Promise<Array<Note>> {
         return await this._notu.getNotes(`
             _#[${this._routines.routine.getFullName()}]

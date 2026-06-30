@@ -2,6 +2,7 @@ import { RefreshAction, UIAction } from "@/helpers/NoteAction";
 import { Note, NoteTag, Notu } from "notu";
 import { ProcessDataBase } from "../system/ProcessNoteTagDataBaseClass";
 import { generateRoutines, GenerateRoutinesProcessContext } from "./GenerateRoutinesProcess";
+import { showOverdueRoutinesScreen } from "./GenerateRoutinesProcessUI";
 import { RoutinesSpace } from "./RoutinesSpace";
 import { RoutinesSpaceSetup } from "./RoutinesSpaceSetup";
 
@@ -34,13 +35,17 @@ export class GenerateRoutinesProcessData extends ProcessDataBase {
 
     async runProcess(note: Note, notu: Notu): Promise<UIAction> {
         const routinesSpace = new RoutinesSpace(notu);
-        const newNotes = await generateRoutines(
-            new GenerateRoutinesProcessContext(
-                note.getTagData(routinesSpace.generateRooutinesProcess, GenerateRoutinesProcessData),
-                notu
-            )
+        const processContext = new GenerateRoutinesProcessContext(
+            note.getTagData(routinesSpace.generateRooutinesProcess, GenerateRoutinesProcessData),
+            notu
         );
+        const overdueRoutines = await processContext.getOverduePendingRoutineTasks();
+        if (overdueRoutines.length > 0)
+            return showOverdueRoutinesScreen(overdueRoutines, notu, processContext);
+
+        const newNotes = await generateRoutines(processContext);
         await notu.saveNotes(newNotes);
+        
         return new RefreshAction();
     }
 }
