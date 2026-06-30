@@ -1,6 +1,5 @@
 import GroupedNoteList from "@/components/GroupedNoteList";
 import { NoteSearch } from "@/components/NoteSearch";
-import { useManualRefresh } from "@/helpers/Hooks";
 import { ShowCustomPageAction, ShowDynamicPageAction, ShowEditorAction, ShowErrorAction, ShowNoteListAction, UIAction } from "@/helpers/NoteAction";
 import { getNotu } from "@/helpers/NotuSetup";
 import { NotuText } from "@/helpers/NotuStyles";
@@ -26,7 +25,6 @@ export default function Index() {
     const navigation = useNavigation();
     const router = useRouter();
     const activePage = last(_activeDynamicPageStack);
-    const manualRefresh = useManualRefresh();
     const insets = useSafeAreaInsets();
     const renderTools = getNotu();
     const searchRef = useRef(null);
@@ -60,7 +58,7 @@ export default function Index() {
     function onUIAction(action: UIAction) {
         setProcessError(null);
         if (action.name == 'Refresh')
-            manualRefresh();
+            searchRef.current.refresh();
         else if (action.name == 'Edit') {
             const editAction = action as ShowEditorAction;
             setNoteBeingEdited(editAction);
