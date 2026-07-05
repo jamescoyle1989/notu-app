@@ -147,5 +147,23 @@ export class SystemSpaceSetup {
             await notu.saveNotes([removeFinishedChecklistItemsProcess]);
             await notu.saveSpace(systemSpace);
         }
+
+        if (systemSpace.version == '1.4.0') {
+            systemSpace.version = '1.5.0';
+            const system = new SystemSpace(notu);
+
+            const enterPasswordProcess = new Note(`Process which can be called to either enter a password for viewing a specific note, or for all notes which are protected by the same password.`)
+                .in(systemSpace).setOwnTag(defs.enterPasswordProcess);
+            enterPasswordProcess.ownTag.asInternal();
+            enterPasswordProcess.addTag(system.process);
+
+            const forgetPasswordProcess = new Note(`Process which can be called to either forget a password that was entered for a specific note, or for all notes which are protected by the same password.`)
+                .in(systemSpace).setOwnTag(defs.forgetPasswordProcess);
+            forgetPasswordProcess.ownTag.asInternal();
+            forgetPasswordProcess.addTag(system.process);
+
+            await notu.saveNotes([enterPasswordProcess, forgetPasswordProcess]);
+            await notu.saveSpace(systemSpace);
+        }
     }
 }

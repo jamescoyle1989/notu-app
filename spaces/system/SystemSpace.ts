@@ -48,6 +48,12 @@ export class SystemSpace implements LogicalSpace {
     private _removeFinishedChecklistItemsProcess: Tag;
     get removeFinishedChecklistItemsProcess(): Tag { return this._removeFinishedChecklistItemsProcess; }
 
+    private _enterPasswordProcess: Tag;
+    get enterPasswordProcess(): Tag { return this._enterPasswordProcess; }
+
+    private _forgetPasswordProcess: Tag;
+    get forgetPasswordProcess(): Tag { return this._forgetPasswordProcess; }
+
 
     constructor(notu: Notu) {
         this._load(notu);
@@ -68,6 +74,8 @@ export class SystemSpace implements LogicalSpace {
         this._passwordProtection = notu.getTagByName(defs.passwordProtection, this._space);
         this._shuffleChoicesProcess = notu.getTagByName(defs.shuffleChoicesProcess, this._space);
         this._removeFinishedChecklistItemsProcess = notu.getTagByName(defs.removeFinishedChecklistItemsProcess, this._space);
+        this._enterPasswordProcess = notu.getTagByName(defs.enterPasswordProcess, this._space);
+        this._forgetPasswordProcess = notu.getTagByName(defs.forgetPasswordProcess, this._space);
     }
 }
 
