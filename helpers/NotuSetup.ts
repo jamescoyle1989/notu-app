@@ -58,6 +58,7 @@ import EnterPasswordProcessNoteTagDataComponentFactory from '@/spaces/system/Ent
 import ForgetPasswordProcessNoteTagDataComponentFactory from '@/spaces/system/ForgetPasswordProcessNoteTagDataComponent';
 import PageNoteTagDataComponentFactory from '@/spaces/system/PageNoteTagDataComponent';
 import PasswordProtectionNoteTagDataComponentFactory from '@/spaces/system/PasswordProtectionNoteTagDataComponent';
+import PasswordProtectionRefNoteTagDataComponentFactory from '@/spaces/system/PasswordProtectionRefNoteTagDataComponent';
 import ProcessAvailabilityNoteTagDataComponentFactory from '@/spaces/system/ProcessAvailabilityNoteTagDataComponent';
 import ProcessNoteTagDataComponentFactory from '@/spaces/system/ProcessNoteTagDataComponent';
 import RemoveFinishedChecklistItemsProcessNoteTagDataComponentFactory from '@/spaces/system/RemoveFinishedChecklistItemsProcessNoteTagDataComponent';
@@ -154,7 +155,8 @@ export function getNoteTagComponentFactories(cache: NotuCache): Array<NoteTagDat
         new RemoveFinishedChecklistItemsProcessNoteTagDataComponentFactory(),
         new PasswordProtectionNoteTagDataComponentFactory(),
         new EnterPasswordProcessNoteTagDataComponentFactory(),
-        new ForgetPasswordProcessNoteTagDataComponentFactory()
+        new ForgetPasswordProcessNoteTagDataComponentFactory(),
+        new PasswordProtectionRefNoteTagDataComponentFactory()
     ];
     if (!!cache.getSpaceByInternalName(CommonSpaceSetup.internalName)) {
         output.push(...[
