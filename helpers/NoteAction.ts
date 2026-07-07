@@ -105,6 +105,28 @@ export class ShowCustomPageAction extends UIAction {
     }
 }
 
+export class ShowOverlayAction extends UIAction {
+    private _render: (onUIAction: (action: UIAction) => void) => React.JSX.Element;
+    get render(): (onUIAction: (action: UIAction) => void) => React.JSX.Element {
+        return this._render;
+    }
+
+    constructor(render: (onUIAction: (action: UIAction) => void) => React.JSX.Element) {
+        super('ShowOverlay');
+        this._render = render;
+    }
+}
+
+export class HideOverlayAction extends UIAction {
+    private _childAction: UIAction;
+    get childAction(): UIAction { return this._childAction; }
+
+    constructor(childAction: UIAction) {
+        super('HideOverlay');
+        this._childAction = childAction;
+    }
+}
+
 export class ShowDynamicPageAction extends UIAction {
     private _pageNote: Note;
     get pageNote(): Note { return this._pageNote; }

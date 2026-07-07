@@ -1,6 +1,6 @@
 import GroupedNoteList from "@/components/GroupedNoteList";
 import { NoteSearch } from "@/components/NoteSearch";
-import { ShowCustomPageAction, ShowDynamicPageAction, ShowEditorAction, ShowErrorAction, ShowNoteListAction, UIAction } from "@/helpers/NoteAction";
+import { ShowCustomPageAction, ShowDynamicPageAction, ShowEditorAction, ShowErrorAction, ShowNoteListAction, ShowOverlayAction, UIAction } from "@/helpers/NoteAction";
 import { getNotu } from "@/helpers/NotuSetup";
 import { NotuText } from "@/helpers/NotuStyles";
 import { PageData } from "@/spaces/system/PageNoteTagData";
@@ -11,7 +11,7 @@ import { Menu } from '@tamagui/lucide-icons';
 import { Stack, useLocalSearchParams, useNavigation, usePathname, useRouter } from "expo-router";
 import { Note, NoteTag, ParsedQuery, parseQuery } from "notu";
 import { useEffect, useRef, useState } from "react";
-import { Button, Text, View, YStack } from "tamagui";
+import { Button, Dialog, Text, View, YStack } from "tamagui";
 import { setActiveCustomPage } from "./custompage";
 import { setActiveDynamicPage } from "./dynamicpage";
 import { setNoteBeingEdited } from "./editnote";
@@ -39,6 +39,7 @@ export default function CustomPage() {
     const systemSpace = new SystemSpace(renderTools.notu);
     const pageData = pageNote?.getTagData(systemSpace.page, PageData);
     const [processError, setProcessError] = useState<string>(null);
+    const [overlay, setOverlay] = useState<ShowOverlayAction>(null);
 
     useEffect(() => {
         setPageNote(null);
@@ -120,6 +121,13 @@ export default function CustomPage() {
             setActiveDynamicPage(showDynamicPageAction);
             router.push('/dynamicpage');
         }
+        else if (action.name == 'ShowOverlay') {
+            const showOverlayAction = action as ShowOverlayAction;
+            setOverlay(showOverlayAction);
+        }
+        else if (action.name == 'HideOverlay') {
+            setOverlay(null);
+        }
     }
 
     async function handleFilterChange(query: ParsedQuery): Promise<void> {
@@ -187,6 +195,19 @@ export default function CustomPage() {
                                  notuRenderTools={renderTools}
                                  onUIAction={onUIAction} />
             </YStack>
+
+            <Dialog modal open={!!overlay}>
+                <Dialog.Portal>
+                    <Dialog.Overlay key="idpageoverlay" onPress={() => setOverlay(null)} />
+                    <Dialog.FocusScope>
+                        <Dialog.Content bordered elevate
+                                        width="80%"
+                                        key="idpageoverlaycontent">
+                            {overlay?.render(onUIAction)}
+                        </Dialog.Content>
+                    </Dialog.FocusScope>
+                </Dialog.Portal>
+            </Dialog>
         </View>
     )
 }
