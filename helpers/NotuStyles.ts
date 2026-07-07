@@ -99,6 +99,11 @@ export const NotuInput = styled(Input, {
             true: {
                 color: '#F04438'
             }
+        },
+        success: {
+            true: {
+                color: '#38F075'
+            }
         }
     }
 });

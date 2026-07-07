@@ -19,7 +19,7 @@ interface NoteEditorProps {
     canEditText?: boolean,
     canEditTags?: boolean,
     /** Called when the save has gone through successfully */
-    onSave: (note: Note) => void
+    onSave: (note: Note) => Promise<void>
 }
 
 
@@ -57,8 +57,7 @@ export default function NoteEditor({
                     }
                 }
             }
-            await notuRenderTools.notu.saveNotes([note]);
-            try { onSave(note); } catch (err) { }
+            await onSave(note);
             setError(null);
         }
         catch (err) {

@@ -2,6 +2,7 @@ import { NoteCalcProcessor } from '@/notecomponents/NoteCalc';
 import { NoteChecklistProcessor } from '@/notecomponents/NoteChecklist';
 import { NoteChoiceProcessor } from '@/notecomponents/NoteChoice';
 import { NoteLinkProcessor } from '@/notecomponents/NoteLink';
+import { NoteSecretProcessor } from '@/notecomponents/NoteSecret';
 import { CalendarSpaceSetup } from '@/spaces/calendar/CalendarSpaceSetup';
 import RecurringEventsProcessNoteTagDataComponentFactory from '@/spaces/calendar/RecurringEventsProcessNoteTagDataComponent';
 import AddressNoteTagDataComponentFactory from '@/spaces/common/AddressNoteTagDataComponent';
@@ -53,7 +54,10 @@ import CustomProcessNoteTagDataComponentFactory from '@/spaces/system/CustomProc
 import DeleteDisplayedNotesProcessNoteTagDataComponentFactory from '@/spaces/system/DeleteDisplayedNotesProcessNoteTagDataComponent';
 import DeleteNoteProcessNoteTagDataComponentFactory from '@/spaces/system/DeleteNoteProcessNoteTagDataComponent';
 import EditNoteProcessNoteTagDataComponentFactory from '@/spaces/system/EditNoteProcessNoteTagDataComponent';
+import EnterPasswordProcessNoteTagDataComponentFactory from '@/spaces/system/EnterPasswordProcessNoteTagDataComponent';
+import ForgetPasswordProcessNoteTagDataComponentFactory from '@/spaces/system/ForgetPasswordProcessNoteTagDataComponent';
 import PageNoteTagDataComponentFactory from '@/spaces/system/PageNoteTagDataComponent';
+import PasswordProtectionNoteTagDataComponentFactory from '@/spaces/system/PasswordProtectionNoteTagDataComponent';
 import ProcessAvailabilityNoteTagDataComponentFactory from '@/spaces/system/ProcessAvailabilityNoteTagDataComponent';
 import ProcessNoteTagDataComponentFactory from '@/spaces/system/ProcessNoteTagDataComponent';
 import RemoveFinishedChecklistItemsProcessNoteTagDataComponentFactory from '@/spaces/system/RemoveFinishedChecklistItemsProcessNoteTagDataComponent';
@@ -117,7 +121,8 @@ export async function setupNotu(): Promise<NotuRenderTools> {
             new NoteLinkProcessor(),
             new NoteChecklistProcessor(),
             new NoteChoiceProcessor(),
-            new NoteCalcProcessor()
+            new NoteCalcProcessor(),
+            new NoteSecretProcessor()
         ],
         getNoteTagComponentFactories(notuCache)
     );
@@ -146,7 +151,10 @@ export function getNoteTagComponentFactories(cache: NotuCache): Array<NoteTagDat
         new ShowRelatedNotesProcessNoteTagDataComponentFactory(),
         new DeleteDisplayedNotesProcessNoteTagDataComponentFactory(),
         new ShuffleChoicesProcessNoteTagDataComponentFactory(),
-        new RemoveFinishedChecklistItemsProcessNoteTagDataComponentFactory()
+        new RemoveFinishedChecklistItemsProcessNoteTagDataComponentFactory(),
+        new PasswordProtectionNoteTagDataComponentFactory(),
+        new EnterPasswordProcessNoteTagDataComponentFactory(),
+        new ForgetPasswordProcessNoteTagDataComponentFactory()
     ];
     if (!!cache.getSpaceByInternalName(CommonSpaceSetup.internalName)) {
         output.push(...[
