@@ -2,6 +2,7 @@ import { PasswordForm } from '@/components/PasswordForm';
 import { ShowEditorAction } from '@/helpers/NoteAction';
 import { getNotu } from '@/helpers/NotuSetup';
 import { getPasswordCache } from '@/helpers/PasswordCache';
+import { NoteSecret } from '@/notecomponents/NoteSecret';
 import { PasswordProtectionData } from '@/spaces/system/PasswordProtectionNoteTagData';
 import { SystemSpace } from '@/spaces/system/SystemSpace';
 import { Stack, useRouter } from 'expo-router';
@@ -64,7 +65,11 @@ export default function Index() {
     }
 
     useEffect(() => {
-        showPasswordFormIfNecessary();
+        async function loadLogic() {
+            if (!(await showPasswordFormIfNecessary()))
+                decryptNoteSecrets();
+        }
+        loadLogic();
     }, []);
 
     async function handleSave(note: Note) {
@@ -76,6 +81,7 @@ export default function Index() {
     }
 
     async function saveAndReturn(note: Note) {
+        encryptNoteSecrets();
         await renderTools.notu.saveNotes([note]);
         router.back();
     }
@@ -93,8 +99,36 @@ export default function Index() {
     async function handlePasswordSubmit() {
         if (isSubmitting)
             await saveAndReturn(_action.note);
-        else
+        else {
             setPasswordPromptData(null);
+            decryptNoteSecrets();
+        }
+    }
+
+    function decryptNoteSecrets() {
+        const noteState = _action.note.state;
+
+        const rootComponents = renderTools.noteTextSplitter(_action.note, true);
+        const allComponents = (rootComponents[0] as any).getThisPlusAllChildComponents() as any[];
+        const secrets = allComponents.filter(x => x instanceof NoteSecret) as NoteSecret[];
+        for (const secret of secrets)
+            secret.decrypt();
+        _action.note.text = rootComponents.map(x => x.getText()).join();
+
+        _action.note.state = noteState;
+    }
+
+    function encryptNoteSecrets() {
+        const noteState = _action.note.state;
+
+        const rootComponents = renderTools.noteTextSplitter(_action.note, true);
+        const allComponents = (rootComponents[0] as any).getThisPlusAllChildComponents() as any[];
+        const secrets = allComponents.filter(x => x instanceof NoteSecret) as NoteSecret[];
+        for (const secret of secrets)
+            secret.encrypt();
+        _action.note.text = rootComponents.map(x => x.getText()).join();
+
+        _action.note.state = noteState;
     }
 
     return (

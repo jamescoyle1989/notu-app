@@ -13,6 +13,6 @@ export function showPasswordForm(
         <PasswordForm passwordNoteId={passwordNoteId}
                       passwordProtectionData={passwordProtectionData}
                       forNoteId={forNoteId}
-                      submitCallback={password => new HideOverlayAction(new RefreshAction())} />
+                      submitCallback={password => onUIAction(new HideOverlayAction(new RefreshAction()))} />
     )
 }

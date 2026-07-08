@@ -1,24 +1,58 @@
 import { NotuText } from "@/helpers/NotuStyles";
+import { getPasswordCache } from "@/helpers/PasswordCache";
+import { AES, Utf8 } from "crypto-es";
 import { NmlElement, Note, NoteTag } from "notu";
 import { useState } from "react";
 import defs from "../spaces/system/SystemSpaceDefs";
 
 export class NoteSecret {
-    private _cipherText: string;
-    get cipherText(): string { return this._cipherText; }
+    private _text: string;
+    get text(): string { return this._text; }
 
     private _note: Note;
     get note(): Note { return this._note; }
 
-    constructor(note: Note, cipherText: string) {
-        this._cipherText = cipherText;
+    constructor(note: Note, text: string) {
+        this._text = text;
         this._note = note;
     }
 
+    private _getPassword(): string {
+        for (const nt of this.note.tags) {
+            if (this._noteTagIsPasswordProtection(nt)) {
+                const passwordCache = getPasswordCache();
+                return passwordCache.get(nt.tag.id, this.note.id);
+            }
+        }
+    }
+
     render() {
-        return (
-            <NotuText>[Secret]</NotuText>
-        );
+        const password = this._getPassword();
+        if (!!password) {
+            const plainText = AES.decrypt(this.text, password).toString(Utf8);
+            return (
+                <NotuText>{plainText}</NotuText>
+            );
+        }
+        else {
+            return (
+                <NotuText>[Secret]</NotuText>
+            );
+        }
+    }
+
+    decrypt() {
+        const password = this._getPassword();
+        if (!password)
+            throw new Error('Unable to retrieve password for decryption');
+        this._text = AES.decrypt(this.text, password).toString(Utf8);
+    }
+
+    encrypt() {
+        const password = this._getPassword();
+        if (!password)
+            throw new Error('Unable to retrieve password for encryption');
+        this._text = AES.encrypt(this.text, password).toString();
     }
 
     renderForEdit(color: () => string) {
@@ -26,12 +60,12 @@ export class NoteSecret {
         const myself = this;
 
         return (
-            <NotuText bg={selectedColor as any}>{myself.cipherText}</NotuText>
+            <NotuText bg={selectedColor as any}>{myself.text}</NotuText>
         )
     }
 
     getText(): string {
-        return `<Secret>${this.cipherText}</Secret>`;
+        return `<Secret>${this.text}</Secret>`;
     }
 
     private _noteTagIsPasswordProtection(noteTag: NoteTag): boolean {
