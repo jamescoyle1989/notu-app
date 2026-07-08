@@ -28,8 +28,8 @@ export class ShuffleChoicesProcessData extends ProcessDataBase {
     async runProcess(note: Note, notu: Notu): Promise<UIAction> {
         const renderTools = getNotu();
         const rootComponents = renderTools.noteTextSplitter(note, false);
-        const allComponenets = (rootComponents[0] as any).getThisPlusAllChildComponents() as any[];
-        const choices = allComponenets.filter(x => x instanceof NoteChoice) as NoteChoice[];
+        const allComponents = rootComponents.flatMap(x => x.getThisPlusAllChildComponents()) as any[];
+        const choices = allComponents.filter(x => x instanceof NoteChoice) as NoteChoice[];
         for (const choice of choices)
             choice.shuffleSelection(true);
         note.text = rootComponents.map(x => x.getText()).join();

@@ -109,7 +109,7 @@ export default function Index() {
         const noteState = _action.note.state;
 
         const rootComponents = renderTools.noteTextSplitter(_action.note, true);
-        const allComponents = (rootComponents[0] as any).getThisPlusAllChildComponents() as any[];
+        const allComponents = rootComponents.flatMap(x => x.getThisPlusAllChildComponents()) as any[];
         const secrets = allComponents.filter(x => x instanceof NoteSecret) as NoteSecret[];
         for (const secret of secrets)
             secret.decrypt();
@@ -122,7 +122,7 @@ export default function Index() {
         const noteState = _action.note.state;
 
         const rootComponents = renderTools.noteTextSplitter(_action.note, true);
-        const allComponents = (rootComponents[0] as any).getThisPlusAllChildComponents() as any[];
+        const allComponents = rootComponents.flatMap(x => x.getThisPlusAllChildComponents()) as any[];
         const secrets = allComponents.filter(x => x instanceof NoteSecret) as NoteSecret[];
         for (const secret of secrets)
             secret.encrypt();

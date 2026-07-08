@@ -28,8 +28,8 @@ export class RemoveFinishedChecklistItemsProcessData extends ProcessDataBase {
     async runProcess(note: Note, notu: Notu): Promise<UIAction> {
         const renderTools = getNotu();
         const rootComponents = renderTools.noteTextSplitter(note, false);
-        const allComponenets = (rootComponents[0] as any).getThisPlusAllChildComponents() as any[];
-        const checklists = allComponenets.filter(x => x instanceof NoteChecklist) as NoteChecklist[];
+        const allComponents = rootComponents.flatMap(x => x.getThisPlusAllChildComponents()) as any[];
+        const checklists = allComponents.filter(x => x instanceof NoteChecklist) as NoteChecklist[];
         for (const checklist of checklists)
             checklist.removeFinishedItems();
         note.text = rootComponents.map(x => x.getText()).join();
