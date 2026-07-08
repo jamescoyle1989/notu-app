@@ -1,4 +1,5 @@
 import { HideOverlayAction, RefreshAction, ShowErrorAction, ShowOverlayAction, UIAction } from "@/helpers/NoteAction";
+import { getPasswordCache } from "@/helpers/PasswordCache";
 import { Note, NoteTag, Notu } from "notu";
 import { showPasswordForm } from "./EnterPasswordProcessUI";
 import { PasswordProtectionData } from "./PasswordProtectionNoteTagData";
@@ -32,6 +33,12 @@ export class DeleteNoteProcessData extends ProcessDataBase {
         const systemSpace = new SystemSpace(notu);
         const passwordNT = note.tags.find(x => x.tag.linksTo(systemSpace.passwordProtection));
         if (!passwordNT) {
+            await notu.saveNotes([note.delete()]);
+            return new RefreshAction();
+        }
+
+        const passwordCache = getPasswordCache();
+        if (!!passwordCache.get(passwordNT.tag.id, note.id)) {
             await notu.saveNotes([note.delete()]);
             return new RefreshAction();
         }
