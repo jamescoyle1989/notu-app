@@ -1,4 +1,4 @@
-import { ShowOverlayAction, UIAction } from "@/helpers/NoteAction";
+import { HideOverlayAction, RefreshAction, ShowOverlayAction, UIAction } from "@/helpers/NoteAction";
 import { Note, NoteTag, Notu } from "notu";
 import { showPasswordForm } from "./EnterPasswordProcessUI";
 import { PasswordProtectionData } from "./PasswordProtectionNoteTagData";
@@ -47,7 +47,7 @@ export class EnterPasswordProcessData extends ProcessDataBase {
             passwordNote.id,
             passwordProtectionData,
             this.forAllNotes ? null : note.id,
-            onUIAction
+            () => onUIAction(new HideOverlayAction(new RefreshAction()))
         ));
     }
 }
