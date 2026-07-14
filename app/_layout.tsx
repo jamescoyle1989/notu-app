@@ -1,3 +1,4 @@
+import { useManualRefresh } from "@/helpers/Hooks";
 import { getNotu, setupNotu } from "@/helpers/NotuSetup";
 import { NotuText } from "@/helpers/NotuStyles";
 import { PageData } from "@/spaces/system/PageNoteTagData";
@@ -102,6 +103,7 @@ function CustomDrawerContent(props: DrawerContentComponentProps & { onColorSchem
     const renderTools = getNotu();
     const systemSpace = new SystemSpace(renderTools.notu);
     const [expandedGroups, setExpandedGroups] = useState(new Set<string>());
+    const manualRefresh = useManualRefresh();
 
     useEffect(() => {
         if (drawerStatus == 'open')
@@ -147,6 +149,7 @@ function CustomDrawerContent(props: DrawerContentComponentProps & { onColorSchem
         else
             expandedGroups.add(groupName);
         setExpandedGroups(expandedGroups);
+        manualRefresh();
     }
 
     function renderGroup(group: Array<{id: number, data: PageData}>): Array<React.JSX.Element> {
