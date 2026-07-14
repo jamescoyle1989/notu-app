@@ -32,7 +32,7 @@ export class ShuffleChoicesProcessData extends ProcessDataBase {
         const choices = allComponents.filter(x => x instanceof NoteChoice) as NoteChoice[];
         for (const choice of choices)
             choice.shuffleSelection(true);
-        note.text = rootComponents.map(x => x.getText()).join();
+        note.text = rootComponents.map(x => x.getText()).join('');
         await notu.saveNotes([note]);
         return new RefreshAction();
     }

@@ -32,7 +32,7 @@ export class RemoveFinishedChecklistItemsProcessData extends ProcessDataBase {
         const checklists = allComponents.filter(x => x instanceof NoteChecklist) as NoteChecklist[];
         for (const checklist of checklists)
             checklist.removeFinishedItems();
-        note.text = rootComponents.map(x => x.getText()).join();
+        note.text = rootComponents.map(x => x.getText()).join('');
         await notu.saveNotes([note]);
         return new RefreshAction();
     }

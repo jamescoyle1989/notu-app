@@ -113,7 +113,7 @@ export default function Index() {
         const secrets = allComponents.filter(x => x instanceof NoteSecret) as NoteSecret[];
         for (const secret of secrets)
             secret.decrypt();
-        _action.note.text = rootComponents.map(x => x.getText()).join();
+        _action.note.text = rootComponents.map(x => x.getText()).join('');
 
         _action.note.state = noteState;
     }
@@ -126,7 +126,7 @@ export default function Index() {
         const secrets = allComponents.filter(x => x instanceof NoteSecret) as NoteSecret[];
         for (const secret of secrets)
             secret.encrypt();
-        _action.note.text = rootComponents.map(x => x.getText()).join();
+        _action.note.text = rootComponents.map(x => x.getText()).join('');
 
         _action.note.state = noteState;
     }
