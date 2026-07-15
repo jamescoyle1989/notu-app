@@ -1,17 +1,12 @@
-import { PasswordForm } from "@/components/PasswordForm";
-import { PasswordProtectionData } from "./PasswordProtectionNoteTagData";
+import { PasswordEnforcement, PasswordForm } from "@/components/PasswordForm";
 
 
 export function showPasswordForm(
-    passwordNoteId: number,
-    passwordProtectionData: PasswordProtectionData,
-    forNoteId: number | null,
+    data: Array<PasswordEnforcement>,
     submitCallback: () => void
 ) {
     return (
-        <PasswordForm passwordNoteId={passwordNoteId}
-                      passwordProtectionData={passwordProtectionData}
-                      forNoteId={forNoteId}
-                      submitCallback={password => submitCallback()} />
+        <PasswordForm data={data}
+                      submitCallback={() => submitCallback()} />
     )
 }

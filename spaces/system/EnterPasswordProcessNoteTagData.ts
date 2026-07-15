@@ -1,3 +1,4 @@
+import { PasswordEnforcement } from "@/components/PasswordForm";
 import { HideOverlayAction, RefreshAction, ShowOverlayAction, UIAction } from "@/helpers/NoteAction";
 import { Note, NoteTag, Notu } from "notu";
 import { showPasswordForm } from "./EnterPasswordProcessUI";
@@ -44,9 +45,7 @@ export class EnterPasswordProcessData extends ProcessDataBase {
         const passwordProtectionData = passwordNote.getTagData(systemSpace.passwordProtection, PasswordProtectionData);
 
         return new ShowOverlayAction(onUIAction => showPasswordForm(
-            passwordNote.id,
-            passwordProtectionData,
-            this.forAllNotes ? null : note.id,
+            [new PasswordEnforcement(passwordNote.ownTag, passwordProtectionData, this.forAllNotes ? null : [note.id])],
             () => onUIAction(new HideOverlayAction(new RefreshAction()))
         ));
     }

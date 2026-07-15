@@ -1,4 +1,4 @@
-import { PasswordForm } from '@/components/PasswordForm';
+import { PasswordEnforcement, PasswordForm } from '@/components/PasswordForm';
 import { ShowEditorAction } from '@/helpers/NoteAction';
 import { getNotu } from '@/helpers/NotuSetup';
 import { getPasswordCache } from '@/helpers/PasswordCache';
@@ -19,28 +19,11 @@ export function setNoteBeingEdited(action: ShowEditorAction) {
 }
 
 
-class EditNotePagePasswordPromptData {
-    passwordNoteId: number;
-    passwordProtectionData: PasswordProtectionData;
-    forNoteId: number;
-
-    constructor(
-        passwordNoteId: number,
-        passwordProtectionData: PasswordProtectionData,
-        forNoteId: number
-    ) {
-        this.passwordNoteId = passwordNoteId;
-        this.passwordProtectionData = passwordProtectionData;
-        this.forNoteId = forNoteId;
-    }
-}
-
-
 export default function Index() {
     const renderTools = getNotu();
     const notu = renderTools.notu;
     const router = useRouter();
-    const [passwordPromptData, setPasswordPromptData] = useState<EditNotePagePasswordPromptData>(null);
+    const [passwordEnforcement, setPasswordEnforcement] = useState<PasswordEnforcement>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     async function showPasswordFormIfNecessary(): Promise<boolean> {
@@ -56,10 +39,10 @@ export default function Index() {
         const passwordNote = (await notu.getNotes(`n.id = ${passwordNT.tag.id}`))[0];
         const passwordData = passwordNote.getTagData(systemSpace.passwordProtection, PasswordProtectionData);
 
-        setPasswordPromptData(new EditNotePagePasswordPromptData(
-            passwordNT.tag.id,
+        setPasswordEnforcement(new PasswordEnforcement(
+            passwordNT.tag,
             passwordData,
-            _action.note.id
+            [_action.note.id]
         ));
         return true;
     }
@@ -88,7 +71,7 @@ export default function Index() {
 
     function handlePasswordBackgroundPress() {
         if (isSubmitting) {
-            setPasswordPromptData(null);
+            setPasswordEnforcement(null);
             setIsSubmitting(false);
         }
         else {
@@ -100,7 +83,7 @@ export default function Index() {
         if (isSubmitting)
             await saveAndReturn(_action.note);
         else {
-            setPasswordPromptData(null);
+            setPasswordEnforcement(null);
             decryptNoteSecrets();
         }
     }
@@ -146,17 +129,15 @@ export default function Index() {
                             canEditText={_action.canEditText}
                             canEditTags={_action.canEditTags} />
 
-                <Dialog modal open={!!passwordPromptData}>
+                <Dialog modal open={!!passwordEnforcement}>
                     <Dialog.Portal>
                         <Dialog.Overlay key="editnotepageoverlay" onPress={handlePasswordBackgroundPress} />
                         <Dialog.FocusScope>
                             <Dialog.Content bordered elevate
                                             width="80%"
                                             key="editnotepageoverlaycontent">
-                                {!!passwordPromptData && (
-                                    <PasswordForm passwordNoteId={passwordPromptData.passwordNoteId}
-                                                  passwordProtectionData={passwordPromptData.passwordProtectionData}
-                                                  forNoteId={passwordPromptData.forNoteId}
+                                {!!passwordEnforcement && (
+                                    <PasswordForm data={[passwordEnforcement]}
                                                   submitCallback={handlePasswordSubmit} />
                                 )}
                             </Dialog.Content>
