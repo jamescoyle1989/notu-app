@@ -14,5 +14,6 @@ export default {
     shuffleChoicesProcess: 'Shuffle Choices',
     removeFinishedChecklistItemsProcess: 'Remove Finished Checklist Items',
     enterPasswordProcess: 'Enter Password',
-    forgetPasswordProcess: 'Forget Password'
+    forgetPasswordProcess: 'Forget Password',
+    textFilter: 'Text Filter'
 };

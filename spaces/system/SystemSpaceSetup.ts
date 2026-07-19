@@ -165,5 +165,18 @@ export class SystemSpaceSetup {
             await notu.saveNotes([enterPasswordProcess, forgetPasswordProcess]);
             await notu.saveSpace(systemSpace);
         }
+
+        if (systemSpace.version == '1.5.0') {
+            systemSpace.version = '1.6.0';
+            const system = new SystemSpace(notu);
+
+            const textFilter = new Note(`This filter allows for filtering any note search results by the text that they contain.`)
+                .in(systemSpace).setOwnTag(defs.textFilter);
+            textFilter.ownTag.asInternal();
+            textFilter.addTag(system.filter);
+
+            await notu.saveNotes([textFilter]);
+            await notu.saveSpace(systemSpace);
+        }
     }
 }

@@ -65,6 +65,7 @@ import RemoveFinishedChecklistItemsProcessNoteTagDataComponentFactory from '@/sp
 import ShowRelatedNotesProcessNoteTagDataComponentFactory from '@/spaces/system/ShowRelatedNotesProcessNoteTagDataComponent';
 import ShuffleChoicesProcessNoteTagDataComponentFactory from '@/spaces/system/ShuffleChoicesProcessNoteTagDataComponent';
 import { SystemSpaceSetup } from '@/spaces/system/SystemSpaceSetup';
+import TextFilterNoteTagDataComponentFactory from '@/spaces/system/TextFilterNoteTagDataComponent';
 import DeadlineNoteTagDataComponentFactory from '@/spaces/tasks/DeadlineNoteTagDataComponent';
 import { TasksSpaceSetup } from '@/spaces/tasks/TasksSpaceSetup';
 import { NotuSQLiteCacheFetcher } from '@/sqlite/NotuSQLiteCacheFetcher';
@@ -156,7 +157,8 @@ export function getNoteTagComponentFactories(cache: NotuCache): Array<NoteTagDat
         new PasswordProtectionNoteTagDataComponentFactory(),
         new EnterPasswordProcessNoteTagDataComponentFactory(),
         new ForgetPasswordProcessNoteTagDataComponentFactory(),
-        new PasswordProtectionRefNoteTagDataComponentFactory()
+        new PasswordProtectionRefNoteTagDataComponentFactory(),
+        new TextFilterNoteTagDataComponentFactory()
     ];
     if (!!cache.getSpaceByInternalName(CommonSpaceSetup.internalName)) {
         output.push(...[
