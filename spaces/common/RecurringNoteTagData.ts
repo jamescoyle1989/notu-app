@@ -24,6 +24,7 @@ export class RecurringData {
         this.monthsOfYear = this.monthsOfYear;
         this.daysPerCycle = this.daysPerCycle;
         this.timesPerCycle = this.timesPerCycle;
+        this.preventBunching = this.preventBunching;
         this.minDaysBetween = this.minDaysBetween;
         this.daysLookahead = this.daysLookahead;
     }
@@ -98,6 +99,14 @@ export class RecurringData {
         this._nt.data.timesPerCycle = value;
     }
 
+    get preventBunching(): boolean { return this._nt.data.preventBunching; }
+    set preventBunching(value: boolean) {
+        value = value ?? false;
+        if (this._nt.data.preventBunching != value && this._nt.isClean)
+            this._nt.dirty();
+        this._nt.data.preventBunching = value;
+    }
+
     get isCyclic(): boolean { return this.daysPerCycle != null && this.timesPerCycle != null; }
 
     get minDaysBetween(): number { return this._nt.data.minDaysBetween; }
@@ -134,6 +143,18 @@ export class RecurringData {
             const lookback = djsHistory.filter(x => x.add(this.daysPerCycle, 'days').isAfter(endOfDay));
             if (lookback.length >= this.timesPerCycle)
                 return false;
+            if (this.preventBunching) {
+                if (history.length > 0) {
+                    const minDaysToNote1 = Math.floor(this.daysPerCycle / this.timesPerCycle);
+                    if (last(djsHistory).add(minDaysToNote1, 'days').isAfter(endOfDay))
+                        return false;
+                }
+                if (history.length > 1) {
+                    const minDaysToNote2 = Math.floor(this.daysPerCycle * 2 / this.timesPerCycle);
+                    if (djsHistory.at(-2).add(minDaysToNote2, 'days').isAfter(endOfDay))
+                        return false;
+                }
+            }
         }
 
         if (this.daysOfWeek != null && this.daysOfWeek.length > 0) {

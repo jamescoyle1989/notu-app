@@ -63,6 +63,7 @@ function EditorComponent({ noteTag, refreshCallback }: NoteTagDataComponentProps
         else {
             data.daysPerCycle = null;
             data.timesPerCycle = null;
+            data.preventBunching = false;
         }
         manualRefresh();
     }
@@ -74,6 +75,11 @@ function EditorComponent({ noteTag, refreshCallback }: NoteTagDataComponentProps
 
     function handleDaysPerCycleChange(newValue: number) {
         data.daysPerCycle = newValue;
+        manualRefresh();
+    }
+
+    function handlePreventBunchingToggle(checkState: CheckedState) {
+        data.preventBunching = (checkState.valueOf() == true);
         manualRefresh();
     }
 
@@ -173,17 +179,27 @@ function EditorComponent({ noteTag, refreshCallback }: NoteTagDataComponentProps
             </XStack>
 
             {data.isCyclic && (
-                <XStack style={{alignItems: 'center'}}>
-                    <NumberInput numberValue={data.timesPerCycle}
-                                 onNumberChange={handleTimesPerCycleChange} />
+                <YStack>
+                    <XStack style={{alignItems: 'center'}}>
+                        <NumberInput numberValue={data.timesPerCycle}
+                                    onNumberChange={handleTimesPerCycleChange} />
 
-                    <NotuText> time{data.timesPerCycle == 1 ? '' : 's'} every </NotuText>
+                        <NotuText> time{data.timesPerCycle == 1 ? '' : 's'} every </NotuText>
 
-                    <NumberInput numberValue={data.daysPerCycle}
-                                 onNumberChange={handleDaysPerCycleChange} />
-                                 
-                    <NotuText> day{data.daysPerCycle == 1 ? '' : 's'}</NotuText>
-                </XStack>
+                        <NumberInput numberValue={data.daysPerCycle}
+                                    onNumberChange={handleDaysPerCycleChange} />
+                                    
+                        <NotuText> day{data.daysPerCycle == 1 ? '' : 's'}</NotuText>
+                    </XStack>
+                    <XStack style={{alignItems: 'center'}}>
+                        <Label width={labelWidth}>Prevent Bunching</Label>
+                        <Checkbox checked={data.preventBunching} onCheckedChange={handlePreventBunchingToggle}>
+                            <Checkbox.Indicator>
+                                <Check />
+                            </Checkbox.Indicator>
+                        </Checkbox>
+                    </XStack>
+                </YStack>
             )}
 
             <XStack style={{alignItems: 'center'}}>
