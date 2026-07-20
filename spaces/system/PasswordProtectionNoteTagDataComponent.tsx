@@ -91,6 +91,7 @@ function EditorComponent({ noteTag }: NoteTagDataComponentProps) {
                     <XStack style={{alignItems: 'center'}}>
                         <Label width={labelWidth}>Password</Label>
                         <NotuInput value={password} flex={1}
+                                   secureTextEntry={true}
                                    onChangeText={onPasswordChange}
                                    success={isPasswordGood} />
                     </XStack>
@@ -98,6 +99,7 @@ function EditorComponent({ noteTag }: NoteTagDataComponentProps) {
                     <XStack style={{alignItems: 'center'}}>
                         <Label width={labelWidth}>Confirm</Label>
                         <NotuInput value={confirmPassword} flex={1}
+                                   secureTextEntry={true}
                                    onChangeText={onConfirmPasswordChange}
                                    success={isPasswordGood} />
                     </XStack>
@@ -107,6 +109,7 @@ function EditorComponent({ noteTag }: NoteTagDataComponentProps) {
                 <XStack style={{alignItems: 'center'}}>
                     <Label width={labelWidth}>Test Password</Label>
                     <NotuInput value={password} flex={1}
+                               secureTextEntry={true}
                                onChangeText={onTestPasswordChange}
                                success={isPasswordGood} />
                 </XStack>

@@ -1,6 +1,6 @@
 import GroupedNoteList from "@/components/GroupedNoteList";
 import { NoteSearch } from "@/components/NoteSearch";
-import { ShowCustomPageAction, ShowDynamicPageAction, ShowEditorAction, ShowErrorAction, ShowNoteListAction, UIAction } from "@/helpers/NoteAction";
+import { ShowCustomPageAction, ShowDynamicPageAction, ShowEditorAction, ShowErrorAction, ShowNoteListAction, ShowOverlayAction, UIAction } from "@/helpers/NoteAction";
 import { getNotu } from "@/helpers/NotuSetup";
 import { NotuText } from "@/helpers/NotuStyles";
 import { PageData } from "@/spaces/system/PageNoteTagData";
@@ -11,7 +11,7 @@ import { Stack, useFocusEffect, useNavigation, useRouter } from "expo-router";
 import { Note, NoteTag, ParsedQuery, parseQuery } from "notu";
 import { useCallback, useRef, useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Button, View, YStack } from "tamagui";
+import { Button, Dialog, View, YStack } from "tamagui";
 import { setActiveCustomPage } from "./custompage";
 import { setNoteBeingEdited } from "./editnote";
 import { setActiveNoteListAction } from "./listnoteobjects";
@@ -21,6 +21,8 @@ export function setActiveDynamicPage(page: ShowDynamicPageAction) {
     _activeDynamicPageStack.push(page);
 }
 
+
+// This page is used for showing dynamically generated queries of notes. Otherwise it is basically doing exactly the same thing as the [id] page
 export default function Index() {
     const navigation = useNavigation();
     const router = useRouter();
@@ -33,6 +35,7 @@ export default function Index() {
     const [processError, setProcessError] = useState<string>(null);
     const [pageFilters, setPageFilters] = useState<Array<FilterComponentFactory>>([]);
     const systemSpace = new SystemSpace(renderTools.notu);
+    const [overlay, setOverlay] = useState<ShowOverlayAction>();
 
     useFocusEffect(
         useCallback(() => {
@@ -86,6 +89,13 @@ export default function Index() {
         else if (action.name == 'PreviousScreen') {
             _activeDynamicPageStack.pop();
             router.back();
+        }
+        else if (action.name == 'ShowOverlay') {
+            const showOverlayAction = action as ShowOverlayAction;
+            setOverlay(showOverlayAction);
+        }
+        else if (action.name == 'HideOverlay') {
+            setOverlay(null);
         }
     }
 
@@ -147,6 +157,19 @@ export default function Index() {
                                  notuRenderTools={renderTools}
                                  onUIAction={onUIAction} />
             </YStack>
+
+            <Dialog modal open={!!overlay}>
+                <Dialog.Portal>
+                    <Dialog.Overlay key="dynamicpageoverlay" onPress={() => setOverlay(null)} />
+                    <Dialog.FocusScope>
+                        <Dialog.Content bordered elevate
+                                        width="80%"
+                                        key="dynamicpageoverlaycontent">
+                            {overlay?.render(onUIAction)}
+                        </Dialog.Content>
+                    </Dialog.FocusScope>
+                </Dialog.Portal>
+            </Dialog>
         </View>
     )
 }

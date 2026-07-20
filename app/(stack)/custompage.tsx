@@ -12,6 +12,7 @@ export function setActiveCustomPage(page: ShowCustomPageAction) {
     _activeCustomPageStack.push(page);
 }
 
+// This page is used for displaying pages of custom content. This is generally used by certain processes which need to display their own specific screen
 export default function Index() {
     const navigation = useNavigation();
     const router = useRouter();
