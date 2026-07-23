@@ -7,7 +7,7 @@ import { PageData } from "@/spaces/system/PageNoteTagData";
 import { ProcessDataBase } from "@/spaces/system/ProcessNoteTagDataBaseClass";
 import { FilterComponentFactory, isFilter, SystemSpace } from "@/spaces/system/SystemSpace";
 import { last } from "es-toolkit";
-import { Stack, useFocusEffect, useNavigation, useRouter } from "expo-router";
+import { Stack, useFocusEffect, useNavigation, usePathname, useRouter } from "expo-router";
 import { Note, NoteTag, ParsedQuery, parseQuery } from "notu";
 import { useCallback, useRef, useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -25,6 +25,7 @@ export function setActiveDynamicPage(page: ShowDynamicPageAction) {
 // This page is used for showing dynamically generated queries of notes. Otherwise it is basically doing exactly the same thing as the [id] page
 export default function Index() {
     const navigation = useNavigation();
+    const pathName = usePathname();
     const router = useRouter();
     const activePage = last(_activeDynamicPageStack);
     const insets = useSafeAreaInsets();
@@ -48,8 +49,18 @@ export default function Index() {
                 .filter(isFilter)
                 .map(x => x as FilterComponentFactory);
             setPageFilters(filters);
-        }, [navigation])
+        }, [])
     );
+
+    // This feels a bit crappy but it just means that if I navigate to a child page
+    // then when I come back to this it will actually do a proper refresh of everything
+    if (pathName != '/dynamicpage') {
+        return (
+            <View flex={1}>
+                <NotuText>Loading...</NotuText>
+            </View>
+        )
+    }
 
     let parsedQuery: ParsedQuery;
     try {

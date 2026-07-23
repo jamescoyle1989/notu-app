@@ -8,9 +8,9 @@ import { ProcessDataBase } from "@/spaces/system/ProcessNoteTagDataBaseClass";
 import { FilterComponentFactory, isFilter, SystemSpace } from "@/spaces/system/SystemSpace";
 import { DrawerActions } from "@react-navigation/native";
 import { Menu } from '@tamagui/lucide-icons';
-import { Stack, useLocalSearchParams, useNavigation, usePathname, useRouter } from "expo-router";
+import { Stack, useFocusEffect, useLocalSearchParams, useNavigation, usePathname, useRouter } from "expo-router";
 import { Note, NoteTag, ParsedQuery, parseQuery } from "notu";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Button, Dialog, Text, View, YStack } from "tamagui";
 import { setActiveCustomPage } from "./custompage";
 import { setActiveDynamicPage } from "./dynamicpage";
@@ -41,24 +41,26 @@ export default function CustomPage() {
     const [processError, setProcessError] = useState<string>(null);
     const [overlay, setOverlay] = useState<ShowOverlayAction>(null);
 
-    useEffect(() => {
-        setPageNote(null);
-        async function loadPage() {
-            //I hate that I've had to put this line here, but otherwise the drawer just stays open when switching between screens
-            nav.dispatch(DrawerActions.closeDrawer());
+    useFocusEffect(
+        useCallback(() => {
+            setPageNote(null);
+            async function loadPage() {
+                //I hate that I've had to put this line here, but otherwise the drawer just stays open when switching between screens
+                nav.dispatch(DrawerActions.closeDrawer());
 
-            const idn = Number(id);
-            const note = (await notu.getNotes(`n.id = ${idn}`))[0];
-            setQueryState(note.getTagData(systemSpace.page, PageData).query);
-            const filters = note.tags
-                .map(nt => renderTools.getComponentFactoryForNoteTag(nt.tag, note))
-                .filter(isFilter)
-                .map(x => x as FilterComponentFactory);
-            setPageFilters(filters);
-            setPageNote(note);
-        }
-        loadPage();
-    }, [pathName]);
+                const idn = Number(id);
+                const note = (await notu.getNotes(`n.id = ${idn}`))[0];
+                setQueryState(note.getTagData(systemSpace.page, PageData).query);
+                const filters = note.tags
+                    .map(nt => renderTools.getComponentFactoryForNoteTag(nt.tag, note))
+                    .filter(isFilter)
+                    .map(x => x as FilterComponentFactory);
+                setPageFilters(filters);
+                setPageNote(note);
+            }
+            loadPage();
+        }, [])
+    );
 
     useEffect(() => {
         if (!!pageData?.showQuery || !searchRef.current)
