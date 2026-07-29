@@ -1,5 +1,5 @@
-import { mapDateToNumber, mapNumberToDate } from "@/sqlite/SQLMappings";
 import { Note, NoteTag } from "notu";
+import { mapDateToNumber, mapNumberToDate } from "../../sqlite/SQLMappings";
 import { MoneySpace } from "./MoneySpace";
 import { MoneySpaceSetup } from "./MoneySpaceSetup";
 

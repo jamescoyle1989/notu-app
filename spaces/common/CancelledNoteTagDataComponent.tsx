@@ -36,9 +36,7 @@ export default class CancelledNoteTagDataComponentFactory implements NoteTagData
 function BadgeComponent({ noteTag }: NoteTagDataComponentProps) {
     const data = new CancelledData(noteTag);
     return (
-        <View>
-            <NotuText>{datetimeToText(data.date)}</NotuText>
-        </View>
+        <NotuText small>{datetimeToText(data.date)}</NotuText>
     );
 }
 
