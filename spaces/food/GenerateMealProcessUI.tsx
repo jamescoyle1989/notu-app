@@ -9,18 +9,18 @@ import { generateMeal, GenerateMealProcessContext } from "./GenerateMealProcess"
 import { GenerateMealProcessData } from "./GenerateMealProcessNoteTagData";
 import { RecipeData } from "./RecipeNoteTagData";
 
-export function showCustomiseMealScreen(
+export async function showCustomiseMealScreen(
     recipe: Note,
     notu: Notu,
     processData: GenerateMealProcessData
-): UIAction {
+): Promise<UIAction> {
 
     const foodSpace = new FoodSpace(notu);
     const recipeData = RecipeData.new(recipe.getTag(foodSpace.recipe));
     const processContext = new GenerateMealProcessContext(processData, notu);
 
     if (!recipeData.ingredients.find(x => x.optional) && !recipeData.groups.find(x => x.optional)) {
-        const meal = generateMeal(recipe, [], processContext);
+        const meal = await generateMeal(recipe, [], processContext);
         return new ShowEditorAction(meal);
     }
 
@@ -69,12 +69,12 @@ export function showCustomiseMealScreen(
                 return true;
             })();
 
-            function confirmMeal() {
+            async function confirmMeal() {
                 const finalInclusions = [
                     ...selectedItems,
                     ...groupRequiredIngredients.filter(x => selectedItems.includes(x.groupId)).map(x => x.id)
                 ];
-                const meal = generateMeal(recipe, finalInclusions, processContext);
+                const meal = await generateMeal(recipe, finalInclusions, processContext);
                 onUIAction(new ShowEditorAction(meal));
             }
             

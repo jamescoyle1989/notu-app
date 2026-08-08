@@ -28,14 +28,18 @@ export class GenerateMealProcessContext {
         const spaceId = this._processData.saveMealToSpaceId;
         return this._notu.getSpace(spaceId);
     }
+
+    async saveNote(note: Note): Promise<Note> {
+        return (await this._notu.saveNotes([note]))[0];
+    }
 }
 
 
-export function generateMeal(
+export async function generateMeal(
     recipe: Note,
     includedOptionalIds: Array<number>,
     context: GenerateMealProcessContext
-): Note {
+): Promise<Note> {
 
     const recipeData = recipe.getTagData(context.foodSpace.recipe, RecipeData);
     if (!recipeData)
@@ -114,6 +118,9 @@ export function generateMeal(
     const recipeDurationData = recipe.getTagData(context.commonSpace.duration, DurationData);
     if (!!recipeDurationData)
         scheduledData.durationMs = recipeDurationData.ms;
+
+    recipeData.lastUsed = new Date();
+    await context.saveNote(recipe);
 
     return meal;
 }

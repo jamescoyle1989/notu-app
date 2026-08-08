@@ -277,6 +277,13 @@ function EditorComponent({ noteTag, refreshCallback }: NoteTagDataComponentProps
                              onNumberChange={handleServingsChange} flex={1} />
             </XStack>
 
+            {!!data.lastUsed && (
+                <XStack style={{alignItems: 'center'}}>
+                    <Label width={labelWidth}>Last Used</Label>
+                    <Label>{data.lastUsed.toDateString()}</Label>
+                </XStack>
+            )}
+
             <NotuText bold onPress={deselectAll}>Ingredients</NotuText>
 
             {ingredients.filter(x => x.groupId == null).map(ingredient => {

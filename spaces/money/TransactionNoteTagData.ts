@@ -5,6 +5,7 @@ import { MoneySpaceSetup } from "./MoneySpaceSetup";
 
 export class TransactionData {
     private _nt: NoteTag;
+    private _isLoading = true;
     constructor(noteTag: NoteTag) {
         if (
             noteTag.tag.name != MoneySpaceSetup.transaction ||
@@ -21,6 +22,7 @@ export class TransactionData {
         this.effectiveStart = this.effectiveStart;
         this.effectiveEnd = this.effectiveEnd;
         this.confirmed = this.confirmed;
+        this._isLoading = false;
     }
     static new(noteTag: NoteTag) {
         if (!noteTag)
@@ -65,6 +67,11 @@ export class TransactionData {
         if (this._nt.data.effectiveStart != newVal && this._nt.isClean)
             this._nt.dirty();
         this._nt.data.effectiveStart = newVal;
+        if (!this._isLoading) {
+            const endVal = mapDateToNumber(this.effectiveEnd);
+            if (endVal < newVal)
+                this.effectiveEnd = this.effectiveStart;
+        }
     }
 
     get effectiveEnd(): Date {
@@ -77,6 +84,11 @@ export class TransactionData {
         if (this._nt.data.effectiveEnd != newVal && this._nt.isClean)
             this._nt.dirty();
         this._nt.data.effectiveEnd = newVal;
+        if (!this._isLoading) {
+            const startVal = mapDateToNumber(this.effectiveStart);
+            if (startVal > newVal)
+                this.effectiveStart = this.effectiveEnd;
+        }
     }
 
     get confirmed(): boolean { return this._nt.data.confirmed; }

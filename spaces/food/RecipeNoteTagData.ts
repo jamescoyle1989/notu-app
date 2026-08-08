@@ -1,4 +1,5 @@
 import { areArraysDifferent } from "@/helpers/RenderHelpers";
+import { mapDateToNumber, mapNumberToDate } from "@/sqlite/SQLMappings";
 import { maxBy, minBy } from "es-toolkit";
 import { Note, NoteTag } from "notu";
 import { FoodSpace } from "./FoodSpace";
@@ -18,6 +19,7 @@ export class RecipeData {
             noteTag.data = {};
         this.name = this.name;
         this.servings = this.servings;
+        this.lastUsed = this.lastUsed;
         this._nt.data.groups = this._nt.data.groups ?? [];
         this._nt.data.ingredients = this._nt.data.ingredients ?? [];
         this._nt.data.steps = this._nt.data.steps ?? [];
@@ -45,6 +47,22 @@ export class RecipeData {
         if (this._nt.data.servings != value && this._nt.isClean)
             this._nt.dirty();
         this._nt.data.servings = value;
+    }
+
+    get lastUsed(): Date | null {
+        if (!this._nt.data.lastUsed)
+            return null;
+        return mapNumberToDate(this._nt.data.lastUsed);
+    }
+    set lastUsed(value: Date | null) {
+        if (value == null) {
+            this._nt.data.lastUsed = null;
+            return;
+        }
+        let newVal = mapDateToNumber(value);
+        if (this._nt.data.lastUsed && this._nt.isClean)
+            this._nt.dirty();
+        this._nt.data.lastUsed = newVal;
     }
 
     get groups(): Array<RecipeGroupData> {
