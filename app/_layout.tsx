@@ -6,6 +6,7 @@ import { SystemSpace } from "@/spaces/system/SystemSpace";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DrawerContentComponentProps, DrawerContentScrollView, DrawerItem, useDrawerStatus } from "@react-navigation/drawer";
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import dayjs from "dayjs";
 import { orderBy } from "es-toolkit";
 import { Href, useRouter } from "expo-router";
 import { Drawer } from "expo-router/drawer";
@@ -16,6 +17,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { TamaguiProvider, View } from 'tamagui';
 import { tamaguiConfig } from '../tamagui.config';
+const customParseFormat = require('dayjs/plugin/customParseFormat');
 
 
 export default function RootLayout() {
@@ -34,6 +36,7 @@ export default function RootLayout() {
                 if (!!fetchedColorScheme)
                     setColorScheme(fetchedColorScheme);
                 setIsLoaded(true);
+                dayjs.extend(customParseFormat);
             }
             catch (err) {
                 setError(err);

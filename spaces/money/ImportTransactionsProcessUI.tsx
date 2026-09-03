@@ -53,7 +53,7 @@ export function showProcessOutputScreen(
 
             function buildNewTransactionMenuItems(note: Note, notu: Notu): Array<NoteAction> {
                 return [
-                    new NoteAction('Delete', async n => {
+                    new NoteAction('Ignore', async n => {
                         note.delete();
                         return new RefreshAction();
                     })
