@@ -39,7 +39,7 @@ export class GenerateShoppingListProcessData extends ProcessDataBase {
     get tagIds(): Array<number> { return this._nt.data.tagIds; }
     set tagIds(value: Array<number>) {
         value = value ?? [];
-        if (areArraysDifferent(value, this._nt.data.tagIds) && this._nt.isClean)
+        if (areArraysDifferent<number>(value, this._nt.data.tagIds) && this._nt.isClean)
             this._nt.dirty();
         this._nt.data.tagIds = value;
     }

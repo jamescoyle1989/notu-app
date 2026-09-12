@@ -254,7 +254,7 @@ export class RecipeStepData {
     get condition(): Array<number> { return this._stepData.condition; }
     set condition(value: Array<number>) {
         value = value ?? [];
-        if (areArraysDifferent(value, this._stepData.condition) && this._nt.isClean)
+        if (areArraysDifferent<number>(value, this._stepData.condition) && this._nt.isClean)
             this._nt.dirty();
         this._stepData.condition = value;
     }

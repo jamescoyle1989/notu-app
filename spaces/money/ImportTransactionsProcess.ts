@@ -151,6 +151,8 @@ function findTransactionDuplicates(newTxn: Note, existingTxns: Array<Note>, mone
         if (oldTxn.date.getTime() == newTxn.date.getTime() && oldData.accountCurrencyAmount == newData.accountCurrencyAmount) {
             if (oldData.description.trim().toUpperCase() == newData.description.trim().toUpperCase())
                 return null;
+            else if (!!oldData.alternativeDescriptions.find(x => x.trim().toUpperCase() == newData.description.trim().toUpperCase()))
+                return null;
             else
                 potentialDuplicates.push(oldTxn);
         }

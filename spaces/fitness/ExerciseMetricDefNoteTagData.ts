@@ -108,7 +108,7 @@ export class ExerciseMetricDefData {
         value = value ?? [];
         if (this.mode != 'Set')
             value = null;
-        if (areArraysDifferent(value, this._nt.data.values) && this._nt.isClean)
+        if (areArraysDifferent<number>(value, this._nt.data.values) && this._nt.isClean)
             this._nt.dirty();
         this._nt.data.values = value;
         if (!this._isLoading && !this._isSwitchingMode)

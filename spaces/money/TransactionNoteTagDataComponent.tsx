@@ -185,6 +185,10 @@ function EditorComponent({ noteTag, note, notu, refreshCallback }: NoteTagDataCo
                    onChangeText={onDescriptionChange}
                    disabled />
 
+            {data.alternativeDescriptions.length > 0 && data.alternativeDescriptions.map((x, i) => (
+                <Input value={x} key={i} disabled />
+            ))}
+
             {(!data.confirmed || addedCategories.length > 0) && (
                 <XStack style={{alignItems: 'center'}}>
                     <Label marginInlineEnd={10}>Categories</Label>

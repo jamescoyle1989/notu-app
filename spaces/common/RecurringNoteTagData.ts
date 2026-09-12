@@ -54,7 +54,7 @@ export class RecurringData {
         value = value ?? null;
         if (value != null)
             value = value.map(x => Math.round(x)).filter(x => x >= 0 && x <= 6);
-        if (areArraysDifferent(value, this._nt.data.daysOfWeek) && this._nt.isClean)
+        if (areArraysDifferent<number>(value, this._nt.data.daysOfWeek) && this._nt.isClean)
             this._nt.dirty();
         this._nt.data.daysOfWeek = value;
     }
@@ -64,7 +64,7 @@ export class RecurringData {
         value = value ?? null;
         if (value != null)
             value = value.map(x => Math.round(x)).filter(x => x >= -31 && x <= 31 && x != 0);
-        if (areArraysDifferent(value, this._nt.data.daysOfMonth) && this._nt.isClean)
+        if (areArraysDifferent<number>(value, this._nt.data.daysOfMonth) && this._nt.isClean)
             this._nt.dirty();
         this._nt.data.daysOfMonth = value;
     }
@@ -74,7 +74,7 @@ export class RecurringData {
         value = value ?? null;
         if (value != null)
             value = value.map(x => Math.round(x)).filter(x => x >= 1 && x <= 12);
-        if (areArraysDifferent(value, this._nt.data.monthsOfYear) && this._nt.isClean)
+        if (areArraysDifferent<number>(value, this._nt.data.monthsOfYear) && this._nt.isClean)
             this._nt.dirty();
         this._nt.data.monthsOfYear = value;
     }

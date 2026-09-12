@@ -65,9 +65,7 @@ export function showProcessOutputScreen(
                     new NoteAction('Update Existing Transaction', async n => {
                         const noteData = note.getTagData(moneySpace.transaction, TransactionData);
                         const duplicateData = possibleDuplicate.getTagData(moneySpace.transaction, TransactionData);
-                        if (possibleDuplicate.text == duplicateData.description)
-                            possibleDuplicate.text = noteData.description;
-                        duplicateData.description = noteData.description;
+                        duplicateData.alternativeDescriptions.push(noteData.description);
                         await notu.saveNotes([possibleDuplicate]);
                         note.delete();
                         return new RefreshAction();

@@ -41,7 +41,7 @@ export class EditNoteProcessData extends ProcessDataBase {
     get addTagIds(): Array<number> { return this._nt.data.addTagIds; }
     set addTagIds(value: Array<number>) {
         value = value ?? [];
-        if (areArraysDifferent(value, this._nt.data.addTagIds) && this._nt.isClean)
+        if (areArraysDifferent<number>(value, this._nt.data.addTagIds) && this._nt.isClean)
             this._nt.dirty();
         this._nt.data.addTagIds = value;
     }
@@ -49,7 +49,7 @@ export class EditNoteProcessData extends ProcessDataBase {
     get removeTagIds(): Array<number> { return this._nt.data.removeTagIds; }
     set removeTagIds(value: Array<number>) {
         value = value ?? [];
-        if (areArraysDifferent(value, this._nt.data.removeTagIds) && this._nt.isClean)
+        if (areArraysDifferent<number>(value, this._nt.data.removeTagIds) && this._nt.isClean)
             this._nt.dirty();
         this._nt.data.removeTagIds = value;
     }

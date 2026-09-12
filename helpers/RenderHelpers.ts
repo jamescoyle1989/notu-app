@@ -48,12 +48,12 @@ export function timespanToText(milliseconds: number, showSeconds: boolean = fals
 }
 
 
-export function areArraysDifferent(array1: Array<number> | null, array2: Array<number> | null): boolean {
+export function areArraysDifferent<T>(array1: Array<T> | null, array2: Array<T> | null): boolean {
     if ((array1 == null) != (array2 == null))
         return true;
     if (array1 == null && array2 == null)
         return false;
     if (array1.length != array2.length)
         return true;
-    return (difference(array1, array2).length > 0);
+    return (difference<T>(array1, array2).length > 0);
 }
