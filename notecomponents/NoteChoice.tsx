@@ -109,6 +109,7 @@ export class NoteChoice {
                 <NotuText> </NotuText>
                 <SquarePen size={14} onPress={() => setShowSelect(true)} />
                 <NotuCustomSelect open={showSelect}
+                                  onOpenChange={value => setShowSelect(value)}
                                   onValueChange={onOptionSelected}
                                   options={getSelectOptions()} />
             </NotuText>

@@ -51,7 +51,7 @@ export const NotuSelect = ({
                             <Adapt.Contents />
                         </ScrollView>
                     </Sheet.Frame>
-                    <Sheet.Overlay transparent={false}
+                    <Sheet.Overlay bg="rgba(0,0,0,0.5)"
                                    animation="lazy"
                                    enterStyle={{opacity: 0}}
                                    exitStyle={{opacity: 0}} />

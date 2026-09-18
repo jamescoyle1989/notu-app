@@ -150,7 +150,8 @@ export const NoteTextEditor = React.forwardRef((
 
             <NotuCustomSelect options={getComponentsDropdownData()}
                               onValueChange={handleNoteComponentSelectValueChange}
-                              open={showNoteComponentsSelect} />
+                              open={showNoteComponentsSelect}
+                              onOpenChange={value => setShowNoteComponentsSelect(value)} />
         </YStack>
     );
 });

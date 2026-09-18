@@ -425,7 +425,8 @@ function EditorComponent({ noteTag, refreshCallback }: NoteTagDataComponentProps
 
             <NotuCustomSelect options={getAvailableConditions(steps[selectedStepIndex])}
                               onValueChange={value => handleStepConditionChange(steps[selectedStepIndex], value)}
-                              open={showStepConditionSelect && selectedStepIndex >= 0} />
+                              open={showStepConditionSelect && selectedStepIndex >= 0}
+                              onOpenChange={value => setShowStepConditionSelect(value)} />
 
             <NotuText pressable onPress={handleAddStep}>Add Step</NotuText>
         </YStack>

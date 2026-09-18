@@ -5,14 +5,16 @@ import { Adapt, ScrollView, Select, Sheet } from 'tamagui';
 interface NotuCustomSelectProps {
     options: Array<{name: string, value: any}>,
     onValueChange: (value: any) => void,
-    open: boolean
+    open: boolean,
+    onOpenChange: (value) => void
 }
 
 
 export const NotuCustomSelect = ({
     options,
     onValueChange,
-    open
+    open,
+    onOpenChange
 }: NotuCustomSelectProps) => {
 
     function handleValueChange(valueName: string) {
@@ -23,7 +25,7 @@ export const NotuCustomSelect = ({
     //See this for buggy behaviour with the select component on android
     //https://github.com/tamagui/tamagui/issues/3436#issuecomment-3133812014
     return (
-        <Select value={null} onValueChange={handleValueChange} disablePreventBodyScroll open={open}>
+        <Select value={null} onValueChange={handleValueChange} disablePreventBodyScroll open={open} onOpenChange={onOpenChange}>
             <Adapt when="maxMd" platform="touch">
                 <Sheet modal dismissOnSnapToBottom animation='100ms'>
                     <Sheet.Frame>
@@ -31,7 +33,7 @@ export const NotuCustomSelect = ({
                             <Adapt.Contents />
                         </ScrollView>
                     </Sheet.Frame>
-                    <Sheet.Overlay transparent={false}
+                    <Sheet.Overlay bg="rgba(0,0,0,0.5)"
                                    animation="lazy"
                                    enterStyle={{opacity: 0}}
                                    exitStyle={{opacity: 0}} />
