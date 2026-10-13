@@ -9,6 +9,7 @@ export class MoneySpaceSetup {
     static get budget(): string { return 'Budget'; }
     static get transaction(): string { return 'Transaction'; }
     static get importTransactionsProcess(): string { return 'Import Transactions'; }
+    static get showBudgetTransactionsProcess(): string { return 'Show Budget Transactions'; }
 
     static async setup(notu: Notu): Promise<void> {
         let moneySpace = notu.getSpaceByInternalName(this.internalName);
@@ -72,6 +73,20 @@ Transactions also allow you to add categories to them. Each category that you ad
             importTransactionsProcess.ownTag.asInternal();
             importTransactionsProcess.addTag(systemSpace.process);
             await notu.saveNotes([importTransactionsProcess]);
+        }
+
+        if (moneySpace.version == '1.0.0') {
+            moneySpace.version = '1.1.0';
+            const systemSpace = new SystemSpace(notu);
+
+            const showBudgetTransactionsProcess = new Note(`This process will display a page that shows all transactions which belong within the selected budget. They will all be grouped by period, with transactions that span multiple periods separated amongst them.`)
+                .in(moneySpace).setOwnTag(this.showBudgetTransactionsProcess);
+            showBudgetTransactionsProcess.ownTag.asInternal();
+            showBudgetTransactionsProcess.addTag(systemSpace.process);
+            await notu.saveNotes([showBudgetTransactionsProcess]);
+
+            await notu.saveNotes([showBudgetTransactionsProcess]);
+            await notu.saveSpace(moneySpace);
         }
     }
 }

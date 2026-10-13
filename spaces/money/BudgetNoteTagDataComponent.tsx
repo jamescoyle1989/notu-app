@@ -96,6 +96,7 @@ function BadgeComponent({ noteTag, note, notu}: NoteTagDataComponentProps) {
                                     { yKey: "movingAverage", label: "Moving Average", strokeDasharray: [6, 4], strokeOpacity: 0.72 }
                                ]}
                                referenceLines={getReferenceLines()}
+                               showHorizontalGridLines={true}
                                legend={{ position: "bottom", wrap: true }}
                                width={screenWidth * 0.8} height={screenWidth * 0.8 * 0.7} />
                 )}
@@ -104,6 +105,7 @@ function BadgeComponent({ noteTag, note, notu}: NoteTagDataComponentProps) {
                                xKey="date"
                                yKey="value"
                                referenceLines={getReferenceLines()}
+                               showHorizontalGridLines={true}
                                width={screenWidth * 0.8} height={screenWidth * 0.8 * 0.7} />
                 )}
                 {isLoading && (

@@ -20,7 +20,7 @@ export default class TransactionNoteTagDataComponentFactory implements NoteTagDa
 
     getBadgeComponent(noteTag: NoteTag, note: Note, notu: Notu, textColor: string): ReactNode {
         const data = new TransactionData(noteTag);
-        return (<NotuText color={textColor} small>{dateToText(data.effectiveStart)} | <NotuText bold>{data.baseCurrencyAmount}</NotuText>{data.confirmed ? ' ✔' : ''}</NotuText>)
+        return (<NotuText color={textColor} small>{dateToText(data.effectiveStart)} | <NotuText bold>{data.baseCurrencyAmount.toFixed(2)}</NotuText>{data.confirmed ? ' ✔' : ''}</NotuText>)
     }
 
     getEditorComponent(noteTag: NoteTag, note: Note, notu: Notu, refreshCallback: () => void): ReactNode {

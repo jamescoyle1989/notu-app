@@ -25,6 +25,9 @@ export class MoneySpace implements LogicalSpace {
     private _importTransactionsProcess: Tag;
     get importTransactionsProcess(): Tag { return this._importTransactionsProcess; }
 
+    private _showBudgetTransactionsProcess: Tag;
+    get showBudgetTransactionsProcess(): Tag { return this._showBudgetTransactionsProcess; }
+
 
     constructor(notu: Notu) {
         this._load(notu);
@@ -38,5 +41,6 @@ export class MoneySpace implements LogicalSpace {
         this._budget = notu.getTagByName(MoneySpaceSetup.budget, this._space);
         this._transaction = notu.getTagByName(MoneySpaceSetup.transaction, this._space);
         this._importTransactionsProcess = notu.getTagByName(MoneySpaceSetup.importTransactionsProcess, this._space);
+        this._showBudgetTransactionsProcess = notu.getTagByName(MoneySpaceSetup.showBudgetTransactionsProcess, this._space);
     }
 }

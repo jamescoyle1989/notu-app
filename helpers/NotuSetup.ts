@@ -36,6 +36,8 @@ import BudgetNoteTagDataComponentFactory from '@/spaces/money/BudgetNoteTagDataC
 import CurrencyNoteTagDataComponentFactory from '@/spaces/money/CurrencyNoteTagDataComponent';
 import ImportTransactionsProcessNoteTagDataComponentFactory from '@/spaces/money/ImportTransactionsProcessNoteTagDataComponent';
 import { MoneySpaceSetup } from '@/spaces/money/MoneySpaceSetup';
+import ShowBudgetTransactionsProcessNoteTagDataComponentFactory from '@/spaces/money/ShowBudgetTransactionsProcessNoteTagDataComponent';
+import TransactionCategoryNoteTagDataComponentFactory from '@/spaces/money/TransactionCategoryNoteTagDataComponent';
 import TransactionNoteTagDataComponentFactory from '@/spaces/money/TransactionNoteTagDataComponent';
 import CelebrationEventsProcessNoteTagDataComponentFactory from '@/spaces/people/CelebrationEventsProcessNoteTagDataComponent';
 import CelebrationNoteTagDataComponentFactory from '@/spaces/people/CelebrationNoteTagDataComponent';
@@ -205,7 +207,9 @@ export function getNoteTagComponentFactories(cache: NotuCache): Array<NoteTagDat
             new BudgetNoteTagDataComponentFactory(),
             new CurrencyNoteTagDataComponentFactory(),
             new ImportTransactionsProcessNoteTagDataComponentFactory(),
-            new TransactionNoteTagDataComponentFactory()
+            new ShowBudgetTransactionsProcessNoteTagDataComponentFactory(),
+            new TransactionNoteTagDataComponentFactory(),
+            new TransactionCategoryNoteTagDataComponentFactory()
         ]);
     }
     if (!!cache.getSpaceByInternalName(PeopleSpaceSetup.internalName)) {
