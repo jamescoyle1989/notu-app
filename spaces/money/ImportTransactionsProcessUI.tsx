@@ -66,6 +66,7 @@ export function showProcessOutputScreen(
                         const noteData = note.getTagData(moneySpace.transaction, TransactionData);
                         const duplicateData = possibleDuplicate.getTagData(moneySpace.transaction, TransactionData);
                         duplicateData.alternativeDescriptions.push(noteData.description);
+                        duplicateData.addAlternativeDescription(noteData.description);
                         await notu.saveNotes([possibleDuplicate]);
                         note.delete();
                         return new RefreshAction();

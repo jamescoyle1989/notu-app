@@ -1,5 +1,5 @@
-import { areArraysDifferent } from "@/helpers/RenderHelpers";
 import { Note, NoteTag } from "notu";
+import { areArraysDifferent } from "../../helpers/RenderHelpers";
 import { mapDateToNumber, mapNumberToDate } from "../../sqlite/SQLMappings";
 import { MoneySpace } from "./MoneySpace";
 import { MoneySpaceSetup } from "./MoneySpaceSetup";
@@ -65,6 +65,22 @@ export class TransactionData {
         if (areArraysDifferent<string>(value, this._nt.data.alternativeDescriptions) && this._nt.isClean)
             this._nt.dirty();
         this._nt.data.alternativeDescriptions = value;
+    }
+    addAlternativeDescription(value: string): boolean {
+        if (this.alternativeDescriptions.includes(value))
+            return false;
+        if (this._nt.isClean)
+            this._nt.dirty();
+        this.alternativeDescriptions.push(value);
+        return true;
+    }
+    removeAlternativeDescription(value: string): boolean {
+        if (!this.alternativeDescriptions.includes(value))
+            return false;
+        if (this._nt.isClean)
+            this._nt.dirty();
+        this._nt.data.alternativeDescriptions = this.alternativeDescriptions.filter(x => x != value);
+        return true;
     }
 
     get effectiveStart(): Date {
