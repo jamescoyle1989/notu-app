@@ -137,7 +137,7 @@ export function getNewEventDates(
                 previousEventDates.push(date);
             }
         }
-        date = dayjs(date).add(1, 'day').toDate();
+        date = dayjs(date).add(1, 'day').startOf('day').add(12, 'hours').toDate();
     }
     return output;
 }
